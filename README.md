@@ -4,5 +4,5 @@
   <li>Davide D'Acunto</li>
   <li>Arianna de Risi</li>
   <li>Alessandro Carosetti</li>
-  <li>Giovanni Petrone</li>
+  <li>Gianluca Petrone</li>
 </ul>
