@@ -15,7 +15,7 @@ xmlns:m="http://schemas.microsoft.com/office/2004/12/omml"
 xmlns="http://www.w3.org/TR/REC-html40">
 
 <head>
-<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+<meta http-equiv=Content-Type content="text/html; charset=UTF-8">
 <meta name=ProgId content=Word.Document>
 <meta name=Generator content="Microsoft Word 15">
 <meta name=Originator content="Microsoft Word 15">
@@ -1097,7 +1097,7 @@ ul
 
 <p class=MsoTitle style='line-height:115%'><a name=h.qsirxggsjdd1></a><span
 lang=EN-US style='mso-ansi-language:EN-US;mso-fareast-language:EN-US'>Progetto
-1 � Gestione Esami Universitari</span><span lang=EN-US style='mso-ansi-language:
+1. Gestione Esami Universitari</span><span lang=EN-US style='mso-ansi-language:
 EN-US'><o:p></o:p></span></p>
 
 <table class=MsoNormalTable border=1 cellspacing=0 cellpadding=0 width="100%"
@@ -1117,14 +1117,14 @@ EN-US'><o:p></o:p></span></p>
   mso-fareast-language:EN-US'><span style='mso-list:Ignore'>-<span
   style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></span><![endif]><span
   lang=EN-US style='color:#434343;mso-ansi-language:EN-US;mso-fareast-language:
-  EN-US'>Non � necessario che i dati usati nell�applicazione siano veritieri.<o:p></o:p></span></p>
+  EN-US'>Non è necessario che i dati usati nell'applicazione siano veritieri.<o:p></o:p></span></p>
   <p class=MsoNormal style='margin-left:54.0pt;text-indent:-18.0pt;mso-list:
   l0 level1 lfo1;tab-stops:18.0pt 54.0pt'><![if !supportLists]><span
   lang=EN-US style='mso-fareast-font-family:Arial;mso-ansi-language:EN-US;
   mso-fareast-language:EN-US'><span style='mso-list:Ignore'>-<span
   style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></span><![endif]><span
   lang=EN-US style='color:#434343;mso-ansi-language:EN-US;mso-fareast-language:
-  EN-US'>L�interfaccia utente deve contenere sempre almeno tre schermate.<o:p></o:p></span></p>
+  EN-US'>L'interfaccia utente deve contenere sempre almeno tre schermate.<o:p></o:p></span></p>
   <p class=MsoNormal style='margin-left:54.0pt;text-indent:-18.0pt;mso-list:
   l0 level1 lfo1;tab-stops:18.0pt 54.0pt'><![if !supportLists]><span
   lang=EN-US style='mso-fareast-font-family:Arial;mso-ansi-language:EN-US;
@@ -1138,8 +1138,8 @@ EN-US'><o:p></o:p></span></p>
   Arial;mso-ansi-language:EN-US;mso-fareast-language:EN-US'><span
   style='mso-list:Ignore'>-<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
   </span></span></span><![endif]><span lang=EN-US style='color:#434343;
-  mso-ansi-language:EN-US;mso-fareast-language:EN-US'>Si � liberi di
-  implementare qualunque altra feature utile nel contesto affrontato dall�applicazione.</span><span
+  mso-ansi-language:EN-US;mso-fareast-language:EN-US'>Si è liberi di
+  implementare qualunque altra feature utile nel contesto affrontato dall'applicazione.</span><span
   lang=EN-US style='font-size:20.0pt;line-height:115%;color:#434343;mso-ansi-language:
   EN-US;mso-fareast-language:EN-US'><o:p></o:p></span></p>
   </td>
@@ -1148,13 +1148,13 @@ EN-US'><o:p></o:p></span></p>
 
 <h1 style='line-height:115%'><a name=h.fhfi7vkhvmgj></a><span lang=EN-US
 style='mso-ansi-language:EN-US;mso-fareast-language:EN-US'>Descrizione generale
-dell�applicazione</span><span lang=EN-US style='mso-ansi-language:EN-US'><o:p></o:p></span></h1>
+dell'applicazione</span><span lang=EN-US style='mso-ansi-language:EN-US'><o:p></o:p></span></h1>
 
 <p class=MsoNormal style='margin-top:12.0pt;margin-right:0cm;margin-bottom:
 12.0pt;margin-left:0cm'><span lang=EN-US style='mso-ansi-language:EN-US;
-mso-fareast-language:EN-US'>L�obiettivo di questo tema di progetto � sviluppare
-un�applicazione mobile multipiattaforma per la gestione degli esami
-unversitari. L�app dovrebbe permettere di elencare gli esami universitari nella
+mso-fareast-language:EN-US'>L'obiettivo di questo tema di progetto è sviluppare
+un'applicazione mobile multipiattaforma per la gestione degli esami
+unversitari. L'app dovrebbe permettere di elencare gli esami universitari nella
 propria carriera, categorizzarli, inserire note, promemoria e monitorare i
 progressi.</span><span lang=EN-US style='mso-ansi-language:EN-US'><o:p></o:p></span></p>
 
@@ -1164,7 +1164,7 @@ Utente</span><span lang=EN-US style='mso-ansi-language:EN-US'><o:p></o:p></span>
 
 <p class=MsoNormal style='margin-top:12.0pt;margin-right:0cm;margin-bottom:
 12.0pt;margin-left:0cm'><span lang=EN-US style='mso-ansi-language:EN-US;
-mso-fareast-language:EN-US'>L�applicazione dovrebbe essere composta almeno
+mso-fareast-language:EN-US'>L'applicazione dovrebbe essere composta almeno
 dalle seguenti schermate principali:</span><span lang=EN-US style='mso-ansi-language:
 EN-US'><o:p></o:p></span></p>
 
@@ -1189,7 +1189,7 @@ l1 level3 lfo2;tab-stops:90.0pt 126.0pt'><![if !supportLists]><span lang=EN-US
 style='mso-fareast-font-family:Arial;mso-ansi-language:EN-US'><span
 style='mso-list:Ignore'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;
 </span></span></span><![endif]><span lang=EN-US style='mso-ansi-language:EN-US;
-mso-fareast-language:EN-US'>Possibilit� di scegliere una visualizzazione
+mso-fareast-language:EN-US'>Possibilità di scegliere una visualizzazione
 mensile o settimanale</span><span lang=EN-US style='mso-ansi-language:EN-US'><o:p></o:p></span></p>
 
 <p class=MsoNormal style='margin-left:126.0pt;text-indent:-18.0pt;mso-list:
@@ -1207,7 +1207,7 @@ style='mso-fareast-font-family:Arial;mso-ansi-language:EN-US'><span
 style='mso-list:Ignore'>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;
 </span></span></span><![endif]><span lang=EN-US style='mso-ansi-language:EN-US;
 mso-fareast-language:EN-US'>Promemoria dei primi 3 esami imminenti entro una
-certa data d (il valore d pu� essere stabilito dall�utente; esempio: entro la
+certa data d (il valore d può essere stabilito dall'utente; esempio: entro la
 prossima settimana di default, entro il prossimo mese).</span><span lang=EN-US
 style='mso-ansi-language:EN-US'><o:p></o:p></span></p>
 
@@ -1241,9 +1241,9 @@ style='mso-fareast-font-family:Arial;mso-ansi-language:EN-US'><span
 style='mso-list:Ignore'>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;
 </span></span></span><![endif]><span lang=EN-US style='mso-ansi-language:EN-US;
 mso-fareast-language:EN-US'>Ogni esame riporta differenti informazioni,
-esempio: nome, corso di studi, CFU, data, ora, luogo, tipologia d�esame,
-docente, voto (queste sono informazioni specificate dall�utente all�atto dell�inserimento
-dell�esame).</span><span lang=EN-US style='mso-ansi-language:EN-US'><o:p></o:p></span></p>
+esempio: nome, corso di studi, CFU, data, ora, luogo, tipologia d'esame,
+docente, voto (queste sono informazioni specificate dall'utente all'atto dell'inserimento
+dell'esame).</span><span lang=EN-US style='mso-ansi-language:EN-US'><o:p></o:p></span></p>
 
 <p class=MsoNormal style='margin-left:90.0pt;text-indent:-18.0pt;mso-list:l1 level2 lfo2;
 tab-stops:54.0pt 90.0pt'><![if !supportLists]><span lang=EN-US
@@ -1251,7 +1251,7 @@ style='mso-fareast-font-family:Arial;mso-ansi-language:EN-US'><span
 style='mso-list:Ignore'>3.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;
 </span></span></span><![endif]><span lang=EN-US style='mso-ansi-language:EN-US;
 mso-fareast-language:EN-US'>Ogni esame riporta un diario, ovvero una serie di
-informazioni che l�utente pu� inserire durante il periodo di studio per quell�esame.</span><span
+informazioni che l'utente può inserire durante il periodo di studio per quell'esame.</span><span
 lang=EN-US style='mso-ansi-language:EN-US'><o:p></o:p></span></p>
 
 <p class=MsoNormal style='margin-left:54.0pt;text-indent:-18.0pt;mso-list:l1 level1 lfo2;
@@ -1268,7 +1268,7 @@ style='mso-fareast-font-family:Arial;mso-ansi-language:EN-US'><span
 style='mso-list:Ignore'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;
 </span></span></span><![endif]><span lang=EN-US style='mso-ansi-language:EN-US;
 mso-fareast-language:EN-US'>Deve permettere di aggiungere un nuovo esame oppure
-modificarne uno esistente (quest�ultimo scelta dalla schermata 2).</span><span
+modificarne uno esistente (quest'ultimo scelta dalla schermata 2).</span><span
 lang=EN-US style='mso-ansi-language:EN-US'><o:p></o:p></span></p>
 
 <p class=MsoNormal style='margin-left:90.0pt;text-indent:-18.0pt;mso-list:l1 level2 lfo2;
@@ -1323,7 +1323,7 @@ lang=EN-US style='background:yellow;mso-shading:yellow;mso-pattern:solid yellow;
 mso-ansi-language:EN-US'><o:p></o:p></span></p>
 
 <h1 style='line-height:115%'><a name=h.r5va5csg7igz></a><span lang=EN-US
-style='mso-ansi-language:EN-US;mso-fareast-language:EN-US'>Funzionalit� dell�app</span><span
+style='mso-ansi-language:EN-US;mso-fareast-language:EN-US'>Funzionalità dell'app</span><span
 lang=EN-US style='mso-ansi-language:EN-US'><o:p></o:p></span></h1>
 
 <p class=MsoNormal style='margin-left:54.0pt;text-indent:-18.0pt;mso-list:l2 level1 lfo3;
@@ -1331,7 +1331,7 @@ tab-stops:18.0pt 54.0pt'><![if !supportLists]><span lang=EN-US
 style='mso-fareast-font-family:Arial;mso-ansi-language:EN-US'><span
 style='mso-list:Ignore'>&#9679;<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
 </span></span></span><![endif]><span lang=EN-US style='mso-ansi-language:EN-US;
-mso-fareast-language:EN-US'>L�utente deve poter inserire, modificare o
+mso-fareast-language:EN-US'>L'utente deve poter inserire, modificare o
 eliminare gli esami.</span><span lang=EN-US style='mso-ansi-language:EN-US'><o:p></o:p></span></p>
 
 <p class=MsoNormal style='margin-left:54.0pt;text-indent:-18.0pt;mso-list:l2 level1 lfo3;
@@ -1339,7 +1339,7 @@ tab-stops:18.0pt 54.0pt'><![if !supportLists]><span lang=EN-US
 style='mso-fareast-font-family:Arial;mso-ansi-language:EN-US'><span
 style='mso-list:Ignore'>&#9679;<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
 </span></span></span><![endif]><span lang=EN-US style='mso-ansi-language:EN-US;
-mso-fareast-language:EN-US'>L�utente deve poter associare un diario ad un
+mso-fareast-language:EN-US'>L'utente deve poter associare un diario ad un
 esame, modificarlo o eliminarlo.</span><span lang=EN-US style='mso-ansi-language:
 EN-US'><o:p></o:p></span></p>
 
@@ -1356,7 +1356,7 @@ tab-stops:54.0pt 90.0pt'><![if !supportLists]><span lang=EN-US
 style='mso-fareast-font-family:Arial;mso-ansi-language:EN-US'><span
 style='mso-list:Ignore'>&#9675;<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
 </span></span></span><![endif]><span lang=EN-US style='mso-ansi-language:EN-US;
-mso-fareast-language:EN-US'>un esame pu� appartenere ad una o pi� categorie;</span><span
+mso-fareast-language:EN-US'>un esame può appartenere ad una o più categorie;</span><span
 lang=EN-US style='mso-ansi-language:EN-US'><o:p></o:p></span></p>
 
 <p class=MsoNormal style='margin-left:90.0pt;text-indent:-18.0pt;mso-list:l2 level2 lfo3;
@@ -1365,8 +1365,8 @@ style='mso-fareast-font-family:Arial;mso-ansi-language:EN-US'><span
 style='mso-list:Ignore'>&#9675;<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
 </span></span></span><![endif]><span lang=EN-US style='background:yellow;
 mso-shading:yellow;mso-pattern:solid yellow;mso-ansi-language:EN-US;mso-fareast-language:
-EN-US'>le categorie possono essere create dall�utente; una categoria resta
-attiva se vi � almeno un esame in quella categoria.</span><span lang=EN-US
+EN-US'>le categorie possono essere create dall'utente; una categoria resta
+attiva se vi è almeno un esame in quella categoria.</span><span lang=EN-US
 style='background:yellow;mso-shading:yellow;mso-pattern:solid yellow;
 mso-ansi-language:EN-US'><o:p></o:p></span></p>
 
@@ -1376,7 +1376,7 @@ style='mso-fareast-font-family:Arial;mso-ansi-language:EN-US'><span
 style='mso-list:Ignore'>&#9679;<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
 </span></span></span><![endif]><span lang=EN-US style='background:yellow;
 mso-shading:yellow;mso-pattern:solid yellow;mso-ansi-language:EN-US;mso-fareast-language:
-EN-US'>L�app pu� inviare notifiche push per ricordare all�utente della data di
+EN-US'>L'app può inviare notifiche push per ricordare all'utente della data di
 un esame imminente.</span><span lang=EN-US style='background:yellow;mso-shading:
 yellow;mso-pattern:solid yellow;mso-ansi-language:EN-US'><o:p></o:p></span></p>
 
@@ -1389,7 +1389,7 @@ tab-stops:18.0pt 54.0pt'><![if !supportLists]><span lang=EN-US
 style='mso-fareast-font-family:Arial;mso-ansi-language:EN-US'><span
 style='mso-list:Ignore'>&#9679;<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
 </span></span></span><![endif]><span lang=EN-US style='mso-ansi-language:EN-US;
-mso-fareast-language:EN-US'>L�app deve essere sviluppata utilizzando React
+mso-fareast-language:EN-US'>L'app deve essere sviluppata utilizzando React
 Native o Flutter.</span><span lang=EN-US style='mso-ansi-language:EN-US'><o:p></o:p></span></p>
 
 <p class=MsoNormal style='margin-left:54.0pt;text-indent:-18.0pt;mso-list:l3 level1 lfo4;
@@ -1397,7 +1397,7 @@ tab-stops:18.0pt 54.0pt'><![if !supportLists]><span lang=EN-US
 style='mso-fareast-font-family:Arial;mso-ansi-language:EN-US'><span
 style='mso-list:Ignore'>&#9679;<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
 </span></span></span><![endif]><span lang=EN-US style='mso-ansi-language:EN-US;
-mso-fareast-language:EN-US'>L�interfaccia deve essere responsive ed adattarsi a
+mso-fareast-language:EN-US'>L'interfaccia deve essere responsive ed adattarsi a
 diverse dimensioni di schermo.</span><span lang=EN-US style='mso-ansi-language:
 EN-US'><o:p></o:p></span></p>
 
@@ -1407,7 +1407,7 @@ style='mso-fareast-font-family:Arial;mso-ansi-language:EN-US'><span
 style='mso-list:Ignore'>&#9675;<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
 </span></span></span><![endif]><span lang=EN-US style='background:yellow;
 mso-shading:yellow;mso-pattern:solid yellow;mso-ansi-language:EN-US;mso-fareast-language:
-EN-US'>L�app deve adattarsi sia in portrait che in landscape mode.</span><span
+EN-US'>L'app deve adattarsi sia in portrait che in landscape mode.</span><span
 lang=EN-US style='background:yellow;mso-shading:yellow;mso-pattern:solid yellow;
 mso-ansi-language:EN-US'><o:p></o:p></span></p>
 
@@ -1416,7 +1416,7 @@ tab-stops:18.0pt 54.0pt'><![if !supportLists]><span lang=EN-US
 style='mso-fareast-font-family:Arial;mso-ansi-language:EN-US'><span
 style='mso-list:Ignore'>&#9679;<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
 </span></span></span><![endif]><span lang=EN-US style='mso-ansi-language:EN-US;
-mso-fareast-language:EN-US'>Per la persistenza dei dati, � consigliato usare
+mso-fareast-language:EN-US'>Per la persistenza dei dati, è consigliato usare
 SQLite.</span><span lang=EN-US style='mso-ansi-language:EN-US'><o:p></o:p></span></p>
 
 <p class=MsoNormal style='margin-left:54.0pt;text-indent:-18.0pt;mso-list:l3 level1 lfo4;
