@@ -1,6 +1,7 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
+import Home from './components/Home';
 import type {PropsWithChildren} from 'react';
 import {
   StatusBar,
@@ -18,13 +19,17 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
-
+const Stack = createNativeStackNavigator();
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
   return (
     <>
       <StatusBar/>
-      Navig
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName='Home'>
+          <Stack.Screen name="Home" component={Home}/>
+        </Stack.Navigator>
+      </NavigationContainer>
     </>
   )
 
