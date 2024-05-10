@@ -222,3 +222,10 @@ yarn-error.log
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+ios/Podfile.lock
+ios/Gestore_Esami/PrivacyInfo.xcprivacy
+ios/Gestore_Esami.xcodeproj/project.pbxproj
+ios/Gestore_Esami.xcworkspace/contents.xcworkspacedata
+ios/Gestore_Esami.xcodeproj/project.pbxproj
+ios/Gestore_Esami/PrivacyInfo.xcprivacy
+ios/Gestore_Esami.xcodeproj/project.pbxproj
