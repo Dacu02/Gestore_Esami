@@ -1,7 +1,7 @@
 import React from "react";
 import {Text, View} from "react-native";
 
-const Home = (props) => {
+const Home = () => {
     return (
         <View>
             <Text>Text</Text>
