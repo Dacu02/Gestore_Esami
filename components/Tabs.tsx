@@ -14,6 +14,27 @@ import {
 const Tab = createBottomTabNavigator();
 
 const Tabs = () => {
+
+    const opzioniTab =(img:any)=> ({
+        headerShown:false,
+        tabBarIcon: ({ focused }: { focused: boolean }) => (
+            <View style={{alignItems:'center', justifyContent:'center',top:10}}>
+                <Image
+                source={img}
+                resizeMode="contain"
+                style={{
+                    width:25,
+                    height:25,
+                    tintColor:focused ? '#e32f45' : '#748c94',
+                }}
+                />
+                <Text
+                style={{ color: focused ? '#e32f45' : '#748c94', fontSize: 12}}>
+                    HOME
+                </Text>
+            </View>
+        )});
+
   return (
     <Tab.Navigator
 
@@ -21,7 +42,7 @@ const Tabs = () => {
         headerShown: false,
         tabBarStyle: {
           position:'absolute',
-          backgroundColor: '#ffffff', // Imposta il colore di sfondo della barra di navigazione
+          backgroundColor: '#ffffff', 
           borderTopColor: 'transparent',
           bottom:25,
           left:20,
@@ -37,31 +58,16 @@ const Tabs = () => {
       }}
        >
       <Tab.Screen name="Home" component={Home} 
-      options={{
-        headerShown:false,
-        tabBarIcon: ({focused}) => (
-            <View style={{alignItems:'center', justifyContent:'center',top:10}}>
-                <Image
-                source={require('../immaginitest/icons8-home.png')}
-                resizeMode="contain"
-                style={{
-                    width:25,
-                    height:25,
-                    tintColor:focused ? '#e32f45' : '#748c94',
-                }}
-                />
-                <Text
-                style={{ color: focused ? '#e32f45' : '#748c94', fontSize: 12}}>
-                    HOME
-                </Text>
-            </View>
-        )
-      }}/>
-      <Tab.Screen name="Settings" component={ModificaEsame} />
-      <Tab.Screen name="AggiungiEsame" component={AggiungiEsame} />
-      <Tab.Screen name="Azione4" component={ModificaEsame} />
-      <Tab.Screen name="Azione5" component={ModificaEsame} />
-    </Tab.Navigator>
+      options={opzioniTab(require('../immaginitest/icons8-home.png'))}/>
+      <Tab.Screen name="Settings" component={ModificaEsame}
+      options={opzioniTab(require('../immaginitest/icons8-home.png'))}/>
+      <Tab.Screen name="AggiungiEsame" component={AggiungiEsame}
+      options={opzioniTab(require('../immaginitest/icons8-home.png'))}/>
+      <Tab.Screen name="Azione4" component={ModificaEsame} 
+      options={opzioniTab(require('../immaginitest/icons8-home.png'))}/>
+      <Tab.Screen name="Azione5" component={ModificaEsame}
+      options={opzioniTab(require('../immaginitest/icons8-home.png'))}/>
+    </Tab.Navigator> 
   );
 }
 
