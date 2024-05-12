@@ -1,12 +1,32 @@
 import React from "react";
-import {Text, View} from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
-const Home = () => {
+const esame = (props:any) => {
+
     return (
         <View>
-            <Text>Text</Text>
+            
         </View>
     )
 }
 
+const Home = () => {
+    return (
+        <>
+            <View>
+                <Text style={style.text}>Stamm nda merd</Text>
+            </View>
+        </>
+
+    )
+}
+
+const style = StyleSheet.create({
+    text: {
+        color: 'black'
+    },
+    esame: {
+
+    }
+})
 export default Home

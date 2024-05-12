@@ -2,19 +2,21 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
 import Home from './components/Home';
-import type {PropsWithChildren} from 'react';
+import Header from './components/Header';
+import ModificaEsame from './components/ModificaEsame';
+import type { PropsWithChildren } from 'react';
 import {
   StatusBar,
   StyleSheet,
   Text,
   useColorScheme,
   View,
+  TouchableOpacity,
 } from 'react-native';
 
 import {
   Colors,
   DebugInstructions,
-  Header,
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
@@ -24,10 +26,11 @@ function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
   return (
     <>
-      <StatusBar/>
+      <StatusBar />
+      <Header/>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName='Home'>
-          <Stack.Screen name="Home" component={Home}/>
+        <Stack.Navigator initialRouteName='ModificaEsame' screenOptions={{headerShown:false}}>
+          <Stack.Screen name="ModificaEsame" component={ModificaEsame} />
         </Stack.Navigator>
       </NavigationContainer>
     </>
