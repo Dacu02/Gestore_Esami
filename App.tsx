@@ -34,7 +34,7 @@ function App(): React.JSX.Element {
         <Stack.Navigator initialRouteName='Esame' screenOptions={{headerShown:false}}>
           <Stack.Screen name="Esame" component={Esame} />
         </Stack.Navigator>
-      </NavigationContainer>*/} 
+      </NavigationContainer>
       <NavigationContainer>
       <Tabs />
       </NavigationContainer>
