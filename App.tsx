@@ -4,7 +4,7 @@ import React from 'react';
 import Home from './components/Home';
 import Header from './components/Header';
 import Tabs from './components/Tabs';
-import ModificaEsame from './components/ModificaEsame';
+import Esame from './components/Esame';
 import type { PropsWithChildren } from 'react';
 
 import {
@@ -30,9 +30,9 @@ function App(): React.JSX.Element {
     <>
       <StatusBar />
       <Header/>
-{/*    <NavigationContainer>
-        <Stack.Navigator initialRouteName='ModificaEsame' screenOptions={{headerShown:false}}>
-          <Stack.Screen name="ModificaEsame" component={ModificaEsame} />
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName='Esame' screenOptions={{headerShown:false}}>
+          <Stack.Screen name="Esame" component={Esame} />
         </Stack.Navigator>
       </NavigationContainer>*/} 
       <NavigationContainer>
