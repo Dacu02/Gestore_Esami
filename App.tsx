@@ -31,7 +31,7 @@ function App(): React.JSX.Element {
     {/*
       <StatusBar />
       <Header/>
-      <NavigationContainer>
+     {/* <NavigationContainer>
         <Stack.Navigator initialRouteName='Esame' screenOptions={{headerShown:false}}>
           <Stack.Screen name="Esame" component={Esame} />
         </Stack.Navigator>
