@@ -31,19 +31,14 @@ const Tabs = () => {
           height:90,
           ...styles.shadow
         },
-        tabBarActiveTintColor: 'your_color_here', // Imposta il colore dell'icona e dell'etichetta dell'elemento selezionato
-        tabBarInactiveTintColor: 'your_color_here', // Imposta il colore dell'icona e dell'etichetta degli elementi non selezionati
         tabBarLabelStyle: {
-          fontSize: 16, // Imposta la dimensione del testo dell'etichetta
-          fontWeight: 'bold', // Imposta lo stile del testo dell'etichetta (opzionale)
-        },
-        tabBarIconStyle: {
-          // Stile per le icone della barra di navigazione (opzionale)
-        },
+            display: 'none', 
+          },
       }}
        >
-      <Tab.Screen name="Home" component={Home}
+      <Tab.Screen name="Home" component={Home} 
       options={{
+        headerShown:false,
         tabBarIcon: ({focused}) => (
             <View style={{alignItems:'center', justifyContent:'center',top:10}}>
                 <Image
