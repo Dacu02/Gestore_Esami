@@ -3,8 +3,10 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
 import Home from './components/Home';
 import Header from './components/Header';
+import Tabs from './components/Tabs';
 import ModificaEsame from './components/ModificaEsame';
 import type { PropsWithChildren } from 'react';
+
 import {
   StatusBar,
   StyleSheet,
@@ -28,10 +30,13 @@ function App(): React.JSX.Element {
     <>
       <StatusBar />
       <Header/>
-      <NavigationContainer>
+{/*    <NavigationContainer>
         <Stack.Navigator initialRouteName='ModificaEsame' screenOptions={{headerShown:false}}>
           <Stack.Screen name="ModificaEsame" component={ModificaEsame} />
         </Stack.Navigator>
+      </NavigationContainer>*/} 
+      <NavigationContainer>
+      <Tabs />
       </NavigationContainer>
     </>
   )
