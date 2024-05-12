@@ -42,7 +42,26 @@ const Tabs = () => {
         },
       }}
        >
-      <Tab.Screen name="Home" component={Home} />
+      <Tab.Screen name="Home" component={Home}
+      options={{
+        tabBarIcon: ({focused}) => (
+            <View style={{alignItems:'center', justifyContent:'center',top:10}}>
+                <Image
+                source={require('../immaginitest/icons8-home.svg')}
+                resizeMode="contain"
+                style={{
+                    width:25,
+                    height:25,
+                    tintColor:focused ? '#e32f45' : '#748c94',
+                }}
+                />
+                <Text
+                style={{ color: focused ? '#e32f45' : '#748c94', fontSize: 12}}>
+                    HOME
+                </Text>
+            </View>
+        )
+      }}/>
       <Tab.Screen name="Settings" component={ModificaEsame} />
       <Tab.Screen name="AggiungiEsame" component={AggiungiEsame} />
       <Tab.Screen name="Azione4" component={ModificaEsame} />
