@@ -28,14 +28,13 @@ function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
   return (
     <>
-    {/*
       <StatusBar />
       <Header/>
      {/* <NavigationContainer>
         <Stack.Navigator initialRouteName='Esame' screenOptions={{headerShown:false}}>
           <Stack.Screen name="Esame" component={Esame} />
         </Stack.Navigator>
-      </NavigationContainer>*/}
+      </NavigationContainer> 
       <NavigationContainer>
       <Tabs />
       </NavigationContainer>
