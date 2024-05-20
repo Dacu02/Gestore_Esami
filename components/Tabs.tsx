@@ -13,6 +13,28 @@ import {
   } from 'react-native';
 const Tab = createBottomTabNavigator();
 
+const CustomTabBarButton = ({children}:{children:any}, onPress:any)=>(
+
+<TouchableOpacity
+style={{
+    top:-30,
+    justifyContent:'center',
+    alignItems:'center',
+    ...styles.shadow
+}}
+onPress={onPress}>
+    <View style={{
+        width:70,
+        height:70,
+        borderRadius:35,
+        backgroundColor:'#e32f45'
+    }}>
+        {children}
+    </View>
+</TouchableOpacity>
+
+);
+
 const Tabs = () => {
 
     const opzioniTab =(img:any)=> ({
@@ -36,8 +58,8 @@ const Tabs = () => {
         )});
 
   return (
-    <Tab.Navigator
 
+    <Tab.Navigator
     screenOptions={{
         headerShown: false,
         tabBarStyle: {
@@ -51,21 +73,42 @@ const Tabs = () => {
           borderRadius:15,
           height:90,
           ...styles.shadow
-        },
+                     },
         tabBarLabelStyle: {
             display: 'none', 
-          },
-      }}
+                },
+            }}
        >
-      <Tab.Screen name="Home" component={Home} 
+    
+      <Tab.Screen name="Home" component={Home} /* Componente che porta alla home*/
       options={opzioniTab(require('../immaginitest/icons8-home.png'))}/>
-      <Tab.Screen name="Settings" component={ModificaEsame}
+
+      <Tab.Screen name="Settings" component={ ModificaEsame} /* Componente che fa qualcosa */
       options={opzioniTab(require('../immaginitest/icons8-home.png'))}/>
-      <Tab.Screen name="AggiungiEsame" component={AggiungiEsame}
+
+      <Tab.Screen name=" AggiungiEsame" component={AggiungiEsame} /* Componente che fa qualcosa */
+      options={{tabBarIcon:({focused})=>(
+      <Image
+                source={require('../immaginitest/icons8-libro-50.png')}
+                resizeMode="contain"
+                style={{
+                    width:30,
+                    height:30,
+                    tintColor:'#fff',
+                }}
+                />
+            ),
+            tabBarButton:(props) =>(
+                <CustomTabBarButton {...props} />
+            )
+      }}
+      />
+
+     
+      <Tab.Screen name="Azione4" component={ModificaEsame} /* Componente che fa qualcosa */
       options={opzioniTab(require('../immaginitest/icons8-home.png'))}/>
-      <Tab.Screen name="Azione4" component={ModificaEsame} 
-      options={opzioniTab(require('../immaginitest/icons8-home.png'))}/>
-      <Tab.Screen name="Azione5" component={ModificaEsame}
+      
+      <Tab.Screen name="Azione5" component={ModificaEsame} /* Componente che fa qualcosa */
       options={opzioniTab(require('../immaginitest/icons8-home.png'))}/>
     </Tab.Navigator> 
   );
