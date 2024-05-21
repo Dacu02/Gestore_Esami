@@ -1,6 +1,7 @@
 import React from 'react'
-import { View, StyleSheet, Text, TextInput, Button } from 'react-native'
+import { View, StyleSheet, Text, TextInput, Button, TouchableOpacity } from 'react-native'
 import Footer from './Footer'
+import { primary_color, secondary_color, tertiary_color } from '../global'
 /*  
     ! Ogni esame riporta differenti informazioni, esempio: nome, corso di studi,
     ! CFU, data, ora, luogo, tipologia d’esame, docente, voto
@@ -12,7 +13,7 @@ import Footer from './Footer'
 */
 
 
-const Esame = ({navigation}:any) => {
+const Esame = ({ navigation }: any) => {
     const style = StyleSheet.create({
         riga: {
             display: "flex",
@@ -43,9 +44,37 @@ const Esame = ({navigation}:any) => {
         buttons: {
             display: "flex",
             flexDirection: "row",
+            marginLeft: 30,
+            marginRight: 30,
+            marginTop: 30,
+        },
+        confirm: {
+            backgroundColor: "lightgreen",
+            padding: 10,
+            borderRadius: 40,
+            margin: 10,
+        },
+        deny: {
+            backgroundColor: "red",
+            padding: 10,
+            borderRadius: 40,
+            margin: 10,
+        },
+        confirmText: {
+            color: "black",
+            textAlign: "center",
+            fontSize: 20,
+        },
+        denyText: {
+            color: "white",
+            textAlign: "center",
+            fontSize: 20,
         },
         button: {
             flex: 1,
+            borderRadius: 40,
+            borderColor: tertiary_color,
+            borderWidth: 2
         }
     })
     const Riga = (props: any) => {
@@ -63,10 +92,14 @@ const Esame = ({navigation}:any) => {
             <Riga testo="Corso" />
             <Riga testo="Voto" />
             <View style={style.buttons}>
-                {/* <Button style={style.button} title="CONFERMA"/>
-                <Button style={style.button} title="ANNULLA"/> */}
+                <TouchableOpacity style={[style.confirm, style.button]}>
+                    <Text style={style.confirmText}>Conferma</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={[style.deny, style.button]}>
+                    <Text style={style.denyText}>Annulla</Text>
+                </TouchableOpacity>
             </View>
-            <Footer navigation={navigation}/>
+            <Footer navigation={navigation} />
 
         </>
     )

@@ -22,6 +22,7 @@ const style = StyleSheet.create({
         backgroundColor: 'rgb(246, 246, 254)',
         alignItems: 'center',
         paddingTop: 10,
+        borderBottomWidth: 1,
     },
     testo: {
         fontSize: 22,
