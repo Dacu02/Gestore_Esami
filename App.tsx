@@ -4,7 +4,7 @@ import React from 'react';
 import Home from './components/Home';
 import Header from './components/Header';
 import Tabs from './components/Tabs';
-import Esame from './components/Esame';
+import AggiungiEsame from './components/AggiungiEsame';
 import type { PropsWithChildren } from 'react';
 
 import {
@@ -23,9 +23,11 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 import Footer from './components/Footer';
+import Esame from './components/Esame';
 
 const Stack = createNativeStackNavigator();
 function App(): React.JSX.Element {
+
   const isDarkMode = useColorScheme() === 'dark';
   return (
     <>
@@ -33,8 +35,8 @@ function App(): React.JSX.Element {
       <NavigationContainer>
         <Stack.Navigator initialRouteName='Esame' screenOptions={{ header: () => <Header title="Testo Header" /> }} >
           <Stack.Screen name="Esame" component={Esame} />
+          <Stack.Screen name="AggiungiEsame" component={AggiungiEsame} />
         </Stack.Navigator>
-        <Footer />
       </NavigationContainer>
     </>
   )

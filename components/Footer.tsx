@@ -1,19 +1,20 @@
-import { faHouse } from '@fortawesome/free-solid-svg-icons';
+import { faHouse, faPlus, faUser } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
-const Footer = () => {
+const Footer = ({navigation}:any) => {
     return (
         <View style={style.footer}>
-            <View style={style.tab}>
+            <TouchableOpacity style={style.tab} onPress={()=>{navigation.navigate("AggiungiEsame")}}>
+                <FontAwesomeIcon size={20} color={"#084197"} icon={faPlus} />
+            </TouchableOpacity>
+            <TouchableOpacity style={style.tab}>
                 <FontAwesomeIcon size={20} color={"#084197"} icon={faHouse} />
-                {/* <Text style={style.testo}>Home</Text> */}
-            </View>
-            <View style={style.tab}>
-                <FontAwesomeIcon size={20} color={"#084197"} icon={faHouse} />
-                {/* <Text style={style.testo}>Home</Text> */}
-            </View>
+            </TouchableOpacity>
+            <TouchableOpacity style={style.tab}>
+                <FontAwesomeIcon size={20} color={"#084197"} icon={faUser} />
+            </TouchableOpacity>
         </View>
     )
 }
@@ -24,6 +25,8 @@ const style = StyleSheet.create({
         paddingTop: 10,
         paddingBottom: 10,
         flexDirection: "row",
+        position: 'absolute',
+        bottom: 0,
 
     },
     tab: {
