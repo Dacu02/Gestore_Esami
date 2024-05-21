@@ -2,6 +2,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import ModificaEsame from './ModificaEsame';
 import Home from './Home';
 import AggiungiEsame from './AggiungiEsame';
+import Esame from './Esame';
 import {
     StatusBar,
     StyleSheet,
@@ -11,7 +12,6 @@ import {
     Image,
     TouchableOpacity,
   } from 'react-native';
-const Tab = createBottomTabNavigator();
 
 const CustomTabBarButton = ({children}:{children:any}, onPress:any)=>(
 
@@ -58,35 +58,15 @@ const Tabs = () => {
         )});
 
   return (
-
-    <Tab.Navigator
-    screenOptions={{
-        headerShown: false,
-        tabBarStyle: {
-          position:'absolute',
-          backgroundColor: '#ffffff', 
-          borderTopColor: 'transparent',
-          bottom:25,
-          left:20,
-          right:20,
-          
-          borderRadius:15,
-          height:90,
-          ...styles.shadow
-                     },
-        tabBarLabelStyle: {
-            display: 'none', 
-                },
-            }}
-       >
+    <>
     
-      <Tab.Screen name="Home" component={Home} /* Componente che porta alla home*/
+      <View name="Home" component={Home} /* Componente che porta alla home*/
       options={opzioniTab(require('../immaginitest/icons8-home.png'))}/>
 
-      <Tab.Screen name="Settings" component={ ModificaEsame} /* Componente che fa qualcosa */
+      <View name="Settings" component={ ModificaEsame} /* Componente che fa qualcosa */
       options={opzioniTab(require('../immaginitest/icons8-home.png'))}/>
 
-      <Tab.Screen name=" AggiungiEsame" component={AggiungiEsame} /* Componente che fa qualcosa */
+      <View name=" AggiungiEsame" component={AggiungiEsame} /* Componente che fa qualcosa */
       options={{tabBarIcon:({focused})=>(
       <Image
                 source={require('../immaginitest/icons8-libro-50.png')}
@@ -101,16 +81,17 @@ const Tabs = () => {
             tabBarButton:(props) =>(
                 <CustomTabBarButton {...props} />
             )
-      }}
-      />
+        }}
+        />
 
      
-      <Tab.Screen name="Azione4" component={ModificaEsame} /* Componente che fa qualcosa */
+      <View name="Azione4" component={ModificaEsame} /* Componente che fa qualcosa */
       options={opzioniTab(require('../immaginitest/icons8-home.png'))}/>
-      
-      <Tab.Screen name="Azione5" component={ModificaEsame} /* Componente che fa qualcosa */
+      <View name="Azione4" component={Esame} 
       options={opzioniTab(require('../immaginitest/icons8-home.png'))}/>
-    </Tab.Navigator> 
+      <View name="Azione5" component={ModificaEsame}
+      options={opzioniTab(require('../immaginitest/icons8-home.png'))}/>
+    </> 
   );
 }
 

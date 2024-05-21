@@ -1,23 +1,33 @@
-import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"
+import { faGraduationCap } from '@fortawesome/free-solid-svg-icons'
 
-const Header = (props:any) => {
+import React from "react"
+import { StyleSheet, Text, View } from "react-native"
+
+const Header = (props: any) => {
     return (
-        <>
-            <View style={{marginLeft:15}}>
-                <Text style={{fontWeight: 'bold', fontSize:22}}>Text</Text>
-               {props.name}
-             
-            </View>
-        
-        </>
-
+        <View style={style.header}>
+            <FontAwesomeIcon size={60} icon={faGraduationCap} color="rgb(8,65,151)" />
+            {
+                props.title ?
+                    <Text style={style.testo}>{props.title}</Text>
+                    : null
+            }
+        </View>
     )
 }
 
 const style = StyleSheet.create({
-    "text": {
-        color: 'black'
-    }}
-)
+    header: {
+        backgroundColor: 'rgb(246, 246, 254)',
+        alignItems: 'center',
+        paddingTop: 10,
+    },
+    testo: {
+        fontSize: 22,
+        marginTop: 5,
+        paddingBottom: 10,
+        color: "#3a414a",
+    }
+})
 export default Header;

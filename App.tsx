@@ -22,6 +22,7 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
+import Footer from './components/Footer';
 
 const Stack = createNativeStackNavigator();
 function App(): React.JSX.Element {
@@ -29,14 +30,11 @@ function App(): React.JSX.Element {
   return (
     <>
       <StatusBar />
-      <Header/>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName='Esame' screenOptions={{headerShown:false}}>
+        <Stack.Navigator initialRouteName='Esame' screenOptions={{ header: () => <Header title="Testo Header" /> }} >
           <Stack.Screen name="Esame" component={Esame} />
         </Stack.Navigator>
-      </NavigationContainer> 
-      <NavigationContainer>
-      <Tabs />
+        <Footer />
       </NavigationContainer>
     </>
   )
