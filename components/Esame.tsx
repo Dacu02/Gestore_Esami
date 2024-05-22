@@ -2,7 +2,9 @@ import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Footer from "./Footer";
 import { primary_color, secondary_color, tertiary_color } from '../global'
-const Promemoria = (props) => {
+import Header from "./Header";
+import { faCalendarDays, faGear } from "@fortawesome/free-solid-svg-icons";
+const Promemoria = (props: any) => {
     return (
         <View style={style.promemoria}>
             <Text style={style.titoloPromemoria}>{props.nome}</Text>
@@ -14,8 +16,8 @@ const Promemoria = (props) => {
             </View>
             <View>
 
-            {props.luogo ? <Text style={style.luogoPromemoria}>Luogo: {props.luogo}</Text> : null}
-            <Text style={style.dataPromemoria}>{props.data} {props.ora}</Text>
+            {props.luogo ? <Text style={style.luogoPromemoria}>{props.luogo}</Text> : null}
+            <Text style={style.dataPromemoria}>{props.data} - {props.ora}</Text>
             </View>
         </View>
     )
@@ -56,9 +58,20 @@ const style = StyleSheet.create({
     }
 
 })
+
+
+const setSettings = () => {
+    console.log("Impostazioni")
+}
+
+
+const setCalendar = () => {
+    console.log("Calendario")
+}
+
+
 const Esame = ({ navigation }: any) => {
-    /*: nome, corso di studi,
-CFU, data, ora, luogo, tipologia d’esame, docente, voto */
+    
     const testData = [{
         nome: "Esame di Sistemi Operativi",
         corso: "Informatica",
@@ -84,6 +97,7 @@ CFU, data, ora, luogo, tipologia d’esame, docente, voto */
 
     return (
         <>
+            <Header title="Lista esami" leftIcon={faGear} onPressLeft={setSettings} rightIcon={faCalendarDays} onPressRight={setCalendar} />
             {testData.map((esame, index) => <Promemoria key={index} {...esame} />)}
 
             <Footer navigation={navigation} />
