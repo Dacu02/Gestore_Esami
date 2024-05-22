@@ -33,9 +33,9 @@ function App(): React.JSX.Element {
     <>
       <StatusBar />
       <NavigationContainer>
-        <Stack.Navigator initialRouteName='Esame' screenOptions={{ header: () => <Header title="Testo Header" /> }} >
-          <Stack.Screen name="Esame" component={Esame} />
-          <Stack.Screen name="AggiungiEsame" component={AggiungiEsame} />
+        <Stack.Navigator initialRouteName='Esame' >
+          <Stack.Screen name="Esame" component={Esame} options={{ header: () => <Header title="Lista Esami" /> }}/>
+          <Stack.Screen name="AggiungiEsame" component={AggiungiEsame} options={{ header: () => <Header title="Inserisci esame" /> }} />
         </Stack.Navigator>
       </NavigationContainer>
     </>
