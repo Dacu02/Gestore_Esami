@@ -1,9 +1,11 @@
-import React from "react";
-import { StyleSheet, Text, View } from "react-native";
-import Footer from "./Footer";
+import React, { useEffect, useContext } from "react"
+import { Settings, StyleSheet, Text, View, TextInput, Modal } from "react-native"
+import Footer from "./Footer"
 import { primary_color, secondary_color, tertiary_color } from '../global'
-import Header from "./Header";
-import { faCalendarDays, faGear } from "@fortawesome/free-solid-svg-icons";
+import Header from "./Header"
+import { faCalendarDays, faGear } from "@fortawesome/free-solid-svg-icons"
+import { DataBase, DataBaseContext } from "./DataBase"
+import {openDatabase } from 'react-native-sqlite-storage'
 const Promemoria = (props: any) => {
     return (
         <View style={style.promemoria}>
@@ -16,8 +18,8 @@ const Promemoria = (props: any) => {
             </View>
             <View>
 
-            {props.luogo ? <Text style={style.luogoPromemoria}>{props.luogo}</Text> : null}
-            <Text style={style.dataPromemoria}>{props.data} - {props.ora}</Text>
+                {props.luogo ? <Text style={style.luogoPromemoria}>{props.luogo}</Text> : null}
+                <Text style={style.dataPromemoria}>{props.data} - {props.ora}</Text>
             </View>
         </View>
     )
@@ -54,15 +56,20 @@ const style = StyleSheet.create({
         fontSize: 16,
         color: secondary_color,
         textAlign: "right",
-    
-    }
-
+    },
+    modal: {
+        margin: "auto",
+        marginTop: "30%",
+        width: "80%",
+        backgroundColor: primary_color,
+    },
+    modalTitle: {
+        fontSize: 20,
+        fontWeight: "bold",
+        color: "white",
+        textAlign: "center",
+    },
 })
-
-
-const setSettings = () => {
-    console.log("Impostazioni")
-}
 
 
 const setCalendar = () => {
@@ -72,6 +79,13 @@ const setCalendar = () => {
 
 const Esame = ({ navigation }: any) => {
     
+
+    const [data, setData] = React.useState([])
+
+    console.log(useContext(DataBaseContext))
+
+    const [setting, setSetting] = React.useState(false)
+
     const testData = [{
         nome: "Esame di Sistemi Operativi",
         corso: "Informatica",
@@ -97,7 +111,12 @@ const Esame = ({ navigation }: any) => {
 
     return (
         <>
-            <Header title="Lista esami" leftIcon={faGear} onPressLeft={setSettings} rightIcon={faCalendarDays} onPressRight={setCalendar} />
+            <Modal visible={setting} animationType="fade"  onRequestClose={() => setSetting(false)}>
+                <View style={style.modal}>
+                    <Text style={style.modalTitle}>Impostazioni</Text>
+                </View>
+            </Modal>
+            <Header title="Lista esami" leftIcon={faGear} onPressLeft={() => setSetting(true)} rightIcon={faCalendarDays} onPressRight={setCalendar} />
             {testData.map((esame, index) => <Promemoria key={index} {...esame} />)}
 
             <Footer navigation={navigation} />

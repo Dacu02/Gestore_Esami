@@ -1,11 +1,10 @@
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import React from 'react';
-import Home from './components/Home';
-import Header from './components/Header';
-import Tabs from './components/Tabs';
-import AggiungiEsame from './components/AggiungiEsame';
-import type { PropsWithChildren } from 'react';
+import { NavigationContainer } from '@react-navigation/native'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import React, { useEffect } from 'react'
+import Home from './components/Home'
+import Header from './components/Header'
+import AggiungiEsame from './components/AggiungiEsame'
+import type { PropsWithChildren } from 'react'
 
 import {
   StatusBar,
@@ -14,31 +13,36 @@ import {
   useColorScheme,
   View,
   TouchableOpacity,
-} from 'react-native';
+} from 'react-native'
 
 import {
   Colors,
   DebugInstructions,
   LearnMoreLinks,
   ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-import Footer from './components/Footer';
-import Esame from './components/Esame';
+} from 'react-native/Libraries/NewAppScreen'
+import Esame from './components/Esame'
+import { openDatabase } from 'react-native-sqlite-storage'
+import { DataBase } from './components/DataBase'
 
 const Stack = createNativeStackNavigator();
 function App(): React.JSX.Element {
 
+
+
+
+
   const isDarkMode = useColorScheme() === 'dark';
   return (
-    <>
+    <DataBase>
       <StatusBar />
       <NavigationContainer>
         <Stack.Navigator initialRouteName='Esame' >
-          <Stack.Screen name="Esame" component={Esame} options={{headerShown:false}} /*options={{ header: () => <Header title="Lista Esami" /> }}*//>
+          <Stack.Screen name="Esame" component={Esame} options={{ headerShown: false }} /*options={{ header: () => <Header title="Lista Esami" /> }}*/ />
           <Stack.Screen name="AggiungiEsame" component={AggiungiEsame} options={{ header: () => <Header title="Inserisci esame" /> }} />
         </Stack.Navigator>
       </NavigationContainer>
-    </>
+    </DataBase>
   )
 
 

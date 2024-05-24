@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, StyleSheet, Text, TextInput, Button, TouchableOpacity } from 'react-native'
+import { View, StyleSheet, Text, TextInput, Button, TouchableOpacity, ScrollView } from 'react-native'
 import Footer from './Footer'
 import { primary_color, secondary_color, tertiary_color } from '../global'
 /*  
@@ -18,7 +18,7 @@ const Riga = (props: any) => {
     return (
         <View style={style.riga}>
             <Text style={style.text}>{props.testo.toUpperCase()}</Text>
-            <TextInput style={style.textfield} keyboardType={props.type} placeholder={"Inserisci " + props.testo.toLowerCase()} placeholderTextColor="#888" value={props.value} onChangeText={(v) => props.setValue(v)} />
+            <TextInput style={style.textfield} maxLength={60} keyboardType={props.type} placeholder={"Inserisci " + props.testo.toLowerCase()} placeholderTextColor="#888" value={props.value} onChangeText={(v) => props.setValue(v)} />
         </View>
     )
 }
@@ -126,20 +126,35 @@ const Esame = ({ navigation }: any) => {
 
     }
 
+    const setNumero = (v: string, setState:Function) => {
+        if (!isNaN(Number(v))) {
+            setState(v)
+        }
+    }
+
     return (
         <>
-            <Riga testo="Nome" type="default" value={nome} setValue={(v: any) => setNome(v)} />
-            <Riga testo="Corso" type="default" />
-            <Riga testo="Voto" type="numeric" />
-            <View style={style.buttons}>
-                <TouchableOpacity onPress={() => console.log(datiEsame)} style={[style.confirm, style.button]}>
-                    <Text style={style.confirmText}>Conferma</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={[style.deny, style.button]}>
-                    <Text style={style.denyText}>Annulla</Text>
-                </TouchableOpacity>
-            </View>
-            <Text style={style.errorMessage}>{err}</Text>
+            <ScrollView>
+                <Riga testo="Nome" type="default" value={nome} setValue={(v: string) => setNome(v)} />
+                <Riga testo="Corso" type="default" value={corso} setValue={(v: string) => setCorso(v)} />
+                <Riga testo="Voto" type="numeric" value={voto} setValue={(v: string) => setNumero(v, setVoto)} />
+                <Riga testo="CFU" type="numeric" value={cfu} setValue={(v: string) => setNumero(v, setCfu)} />
+                <Riga testo="Tipologia" type="default" value={tipologia} setValue={(v: string) => setTipologia(v)} />
+                <Riga testo="Docente" type="default" value={docente} setValue={(v: string) => setDocente(v)} />
+                <Riga testo="Data" type="default" />
+                <Riga testo="Ora" type="default" />
+                <Riga testo="Luogo" type="default" value={luogo} setValue={(v: string) => setLuogo(v)} />
+                <View style={style.buttons}>
+                    <TouchableOpacity onPress={() => console.log(datiEsame)} style={[style.confirm, style.button]}>
+                        <Text style={style.confirmText}>Conferma</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => navigation.goBack()} style={[style.deny, style.button]}>
+                        <Text style={style.denyText}>Annulla</Text>
+                    </TouchableOpacity>
+                </View>
+                {err ? <Text style={style.errorMessage}>{err}</Text> : null}
+                    <View style={{height: 50}}/>
+            </ScrollView>
             <Footer navigation={navigation} />
 
         </>

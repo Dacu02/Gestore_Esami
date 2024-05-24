@@ -28,8 +28,6 @@ const style = StyleSheet.create({
         flexDirection: "row",
         display: "flex",
         minWidth: "75%",
-        paddingTop: 10,
-        paddingBottom: 10,
         borderTopWidth: 1,
         marginRight: "12.5%",
         marginLeft: "12.5%",
@@ -38,6 +36,8 @@ const style = StyleSheet.create({
     tab: {
         flex: 1,
         alignItems: 'center',
+        paddingTop: 10,
+        paddingBottom: 10,
     },
     testo: {
         fontSize: 22,
