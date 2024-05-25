@@ -1,3 +1,10 @@
-export const primary_color = "#f6f6ff"
-export const secondary_color = "#084197"
-export const tertiary_color = "#282c33"
+export const primary_color = (dark=false) => ( dark ? "#141314" : "#f6f6ff" ) //bianco ari : dark-grey
+// colore sfondo
+
+
+export const secondary_color = "#084197" // blu app
+//colore dettagli
+
+
+export const tertiary_color = (dark=false) => ( dark ? "#f9f6ee" : "#282c33" ) // nero lucid : 
+//colore testo

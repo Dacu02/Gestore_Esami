@@ -38,8 +38,8 @@ function App(): React.JSX.Element {
       <StatusBar />
       <NavigationContainer>
         <Stack.Navigator initialRouteName='Esame' >
-          <Stack.Screen name="Esame" component={Esame} options={{ headerShown: false }} /*options={{ header: () => <Header title="Lista Esami" /> }}*/ />
-          <Stack.Screen name="AggiungiEsame" component={AggiungiEsame} options={{ header: () => <Header title="Inserisci esame" /> }} />
+          <Stack.Screen name="Esame" initialParams={{temaScuro:isDarkMode}} component={Esame} options={{ headerShown: false }} /*options={{ header: () => <Header title="Lista Esami" /> }}*/ />
+          <Stack.Screen name="AggiungiEsame" initialParams={{temaScuro:isDarkMode}} component={AggiungiEsame} options={{ header: () => <Header title="Inserisci esame" scuro={isDarkMode} /> }} />
         </Stack.Navigator>
       </NavigationContainer>
     </DataBase>
