@@ -1,13 +1,13 @@
-import React, { useEffect, useContext } from "react"
-import { Settings, StyleSheet, Text, View, TextInput, Modal } from "react-native"
+import React, { useEffect, useContext, useState } from "react"
+import { Settings, StyleSheet, Text, View, TextInput, Modal, Dimensions } from "react-native"
 import Footer from "./Footer"
 import { primary_color, secondary_color, tertiary_color } from '../global'
 import Header from "./Header"
 import { faCalendarDays, faGear } from "@fortawesome/free-solid-svg-icons"
 import { DataBase, DataBaseContext } from "./DataBase"
-import {openDatabase } from 'react-native-sqlite-storage'
+import { openDatabase } from 'react-native-sqlite-storage'
 const Promemoria = (props: any) => {
-    
+
     return (
         <View style={props.style.promemoria}>
             <Text style={props.style.titoloPromemoria}>{props.nome}</Text>
@@ -33,7 +33,18 @@ const setCalendar = () => {
 
 
 const Esame = ({ navigation, route }: any) => {
+
     
+
+    const getOrientamento = () => (
+        (Dimensions.get("screen").width > Dimensions.get("screen").height) ?
+            "landscape"
+            :
+            "portrait"
+    )
+
+    const [orientamento, setOrientamento] = useState(getOrientamento())
+
     const style = StyleSheet.create({
         promemoria: {
             backgroundColor: route.params.temaScuro ? "#222" : "#ddd",
@@ -42,6 +53,7 @@ const Esame = ({ navigation, route }: any) => {
             borderRadius: 10,
             borderWidth: 2,
             borderColor: secondary_color,
+            flex: orientamento=='portrait'? undefined:1,
         },
         titoloPromemoria: {
             fontSize: 20,
@@ -58,7 +70,7 @@ const Esame = ({ navigation, route }: any) => {
         },
         dataPromemoria: {
             fontSize: 16,
-            color: secondary_color, 
+            color: secondary_color,
             textAlign: "right",
         },
         luogoPromemoria: {
@@ -78,13 +90,17 @@ const Esame = ({ navigation, route }: any) => {
             color: "white",
             textAlign: "center",
         },
+        viewPromemoria: {
+            display: "flex",
+            flexDirection: orientamento ==='portrait' ? "column" : "row",
+        }
     })
-    
-    const [data, setData] = React.useState([])
+
+    const [data, setData] = useState([])
 
     console.log(useContext(DataBaseContext))
 
-    const [setting, setSetting] = React.useState(false)
+    const [setting, setSetting] = useState(false)
 
     const testData = [{
         nome: "Esame di Sistemi Operativi",
@@ -109,15 +125,20 @@ const Esame = ({ navigation, route }: any) => {
         luogo: "Aula 2"
     }]
 
+    Dimensions.addEventListener("change", () => setOrientamento(getOrientamento()))
+
     return (
-        <View style={{backgroundColor: primary_color(route.params.temaScuro), minHeight: "100%"}}>
-            <Modal visible={setting} animationType="fade"  onRequestClose={() => setSetting(false)}>
+        <View style={{ backgroundColor: primary_color(route.params.temaScuro), minHeight: "100%" }}>
+            <Modal visible={setting} animationType="fade" onRequestClose={() => setSetting(false)}>
                 <View style={style.modal}>
                     <Text style={style.modalTitle}>Impostazioni</Text>
                 </View>
             </Modal>
             <Header title="Lista esami" leftIcon={faGear} onPressLeft={() => setSetting(true)} rightIcon={faCalendarDays} onPressRight={setCalendar} scuro={route.params.temaScuro} />
-            {testData.map((esame, index) => <Promemoria key={index} {...esame} style={style} />)}
+            
+            <View style={style.viewPromemoria}>
+                {testData.map((esame, index) => <Promemoria key={index} {...esame} style={style} />)}
+            </View>
 
             <Footer navigation={navigation} scuro={route.params.temaScuro} />
         </View>

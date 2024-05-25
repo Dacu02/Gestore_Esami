@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react'
-import { View, StyleSheet, Text, TextInput, Button, TouchableOpacity, ScrollView, Switch } from 'react-native'
+import { View, StyleSheet, Text, TextInput, Button, TouchableOpacity, ScrollView, Switch, Dimensions } from 'react-native'
 import Footer from './Footer'
 import { primary_color, secondary_color, tertiary_color } from '../global'
 import DatePicker from 'react-native-date-picker'
@@ -27,6 +27,20 @@ const Riga = (props: any) => {
 
 
 const Esame = ({ navigation, route }: any) => {
+
+
+      
+
+    const getOrientamento = () => (
+        (Dimensions.get("screen").width > Dimensions.get("screen").height) ?
+            "landscape"
+            :
+            "portrait"
+    )
+
+    const [orientamento, setOrientamento] = useState(getOrientamento())
+
+
     const [nome, setNome] = useState("")
     const [corso, setCorso] = useState("")
     const [voto, setVoto] = useState()
@@ -43,17 +57,17 @@ const Esame = ({ navigation, route }: any) => {
     const style = StyleSheet.create({
         riga: {
             display: "flex",
-            flexDirection: "row",
+            flexDirection: orientamento==='portrait'?"row":"column",
             marginTop: 20,
-            marginRight: 50,
             alignItems: "center",
-            marginBottom: 15,
-
+            marginBottom: 10,
+            margin: 'auto',
         },
         text: {
             color: tertiary_color(route.params.temaScuro),
             flex: 1,
             fontSize: 20,
+            maxWidth: orientamento==='portrait'?"40%":"auto",
             textAlign: "center",
         },
         textfield: {
@@ -66,11 +80,14 @@ const Esame = ({ navigation, route }: any) => {
             padding: 10,
             flex: 1,
             textAlign: "center",
+            alignContent: "center",
+            marginLeft: orientamento==='portrait' ? "5%": 0,
+            marginRight: orientamento==='portrait'?"10%":0,
         },
         switch: {
             flex: 1,
-            marginRight: "20%",
-            marginLeft: "-10%",
+            position: "relative",
+            right: orientamento==='portrait'?"390%":"auto",
         },
         buttons: {
             display: "flex",
@@ -126,12 +143,20 @@ const Esame = ({ navigation, route }: any) => {
         },
         diary: {
             width: "75%",
+            padding: 20,
             borderWidth: 2,
             borderColor: secondary_color,
             borderRadius: 25,
             margin: "auto",
             fontSize: 20,
-        }
+        }, 
+        container: {
+            backgroundColor: primary_color(route.params.temaScuro),
+        },
+        box: orientamento==='portrait'?{}:{
+            display: "flex",
+            flexDirection: "row",
+        },
     })
 
 
@@ -205,11 +230,12 @@ const Esame = ({ navigation, route }: any) => {
     }
 
     return (
-        <View style={{ backgroundColor: primary_color(route.params.temaScuro) }}>
-            <ScrollView>
+            <ScrollView contentContainerStyle={style.container}>
+                <View style={style.box}>
                 <Riga style={style} testo="Nome" type="default" value={nome} setValue={setNome} />
                 <Riga style={style} testo="Corso" type="default" value={corso} setValue={setCorso} />
                 <Riga style={style} testo="Voto" type="numeric" value={voto} setValue={(v: string) => { setNumero(v, setVoto); setLode(false) }} />
+                </View>
                 {voto && !isNaN(voto) && parseInt(voto) == 30 ?
                     <View style={style.riga}>
                         <Text style={style.text}>LODE</Text>
@@ -217,9 +243,12 @@ const Esame = ({ navigation, route }: any) => {
                     </View>
                     : null
                 }
+                <View style={style.box}>
                 <Riga style={style} testo="CFU" type="numeric" value={cfu} setValue={(v: string) => setNumero(v, setCfu)} />
                 <Riga style={style} testo="Tipologia" type="default" value={tipologia} setValue={setTipologia} />
                 <Riga style={style} testo="Docente" type="default" value={docente} setValue={setDocente} />
+                <Riga style={style} testo="Luogo" type="default" value={luogo} setValue={(v: string) => setLuogo(v)} />
+                </View>
                 <View style={{ margin: "auto" }}>
                     <DatePicker
                         date={dataOra}
@@ -231,7 +260,6 @@ const Esame = ({ navigation, route }: any) => {
                         theme={route.params.temaScuro ? 'dark' : 'light'}
                     />
                 </View>
-                <Riga style={style} testo="Luogo" type="default" value={luogo} setValue={(v: string) => setLuogo(v)} />
                 <Text style={[style.text, { marginTop: "10%" }]} >DIARIO</Text>
                 <TextInput style={style.diary} numberOfLines={4} multiline={true} value={diario} onChangeText={setDiario} />
                 <View style={style.buttons}>
@@ -243,10 +271,8 @@ const Esame = ({ navigation, route }: any) => {
                     </TouchableOpacity>
                 </View>
                 {err ? <Text style={style.errorMessage}>{err}</Text> : null}
-                <View style={{ height: 50 }} />
+                {/* <View style={{ height: 50 }} /> */}
             </ScrollView>
-
-        </View>
     )
 }
 
