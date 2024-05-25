@@ -2,7 +2,7 @@ export const primary_color = (dark=false) => ( dark ? "#141314" : "#f6f6ff" ) //
 // colore sfondo
 
 
-export const secondary_color = "#084197" // blu app
+export const secondary_color = "#094db3" // blu app
 //colore dettagli
 
 

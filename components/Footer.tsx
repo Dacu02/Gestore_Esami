@@ -37,7 +37,7 @@ const Footer = ( { navigation, ...props }: any) => {
 
     const Tab = (props: any) => (
         <TouchableOpacity style={style.tab} onPress={() => { navigation.navigate(props.nav) }}>
-            <FontAwesomeIcon size={20} color={"#084197"} icon={props.icon} />
+            <FontAwesomeIcon size={20} color={secondary_color} icon={props.icon} />
         </TouchableOpacity>
 
     )

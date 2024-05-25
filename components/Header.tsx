@@ -39,10 +39,10 @@ const style = StyleSheet.create({
 
     return (
         <View style={style.header}>
-            <FontAwesomeIcon size={60} icon={faGraduationCap} color="rgb(8,65,151)" />
+            <FontAwesomeIcon size={60} icon={faGraduationCap} color={secondary_color} />
             <View style={style.headerInside}>
                 {props.leftIcon ? <TouchableOpacity onPress={props.onPressLeft}>
-                    <FontAwesomeIcon size={30} icon={props.leftIcon} color="rgb(8,65,151)" style={style.icon} />
+                    <FontAwesomeIcon size={30} icon={props.leftIcon} color={secondary_color} style={style.icon} />
                 </TouchableOpacity> : null}
                 {
                     props.title ?
@@ -50,7 +50,7 @@ const style = StyleSheet.create({
                         : null
                 }
                 {props.rightIcon ? <TouchableOpacity onPress={props.onPressRight}>
-                    <FontAwesomeIcon size={30} icon={props.rightIcon} color="rgb(8,65,151)" style={style.icon} />
+                    <FontAwesomeIcon size={30} icon={props.rightIcon} color={secondary_color} style={style.icon} />
                 </TouchableOpacity> : null}
             </View>
         </View>

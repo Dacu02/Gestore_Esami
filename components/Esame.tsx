@@ -36,17 +36,17 @@ const Esame = ({ navigation, route }: any) => {
     
     const style = StyleSheet.create({
         promemoria: {
-            backgroundColor: "#ddd",
+            backgroundColor: route.params.temaScuro ? "#222" : "#ddd",
             padding: 10,
             margin: 10,
             borderRadius: 10,
             borderWidth: 2,
-            borderColor: tertiary_color(route.params.temaScuro),
+            borderColor: secondary_color,
         },
         titoloPromemoria: {
             fontSize: 20,
             fontWeight: "bold",
-            color: "#084197",
+            color: secondary_color,
             textAlign: "center",
         },
         contenutoPromemoria: {
@@ -54,7 +54,7 @@ const Esame = ({ navigation, route }: any) => {
         },
         testoPromemoria: {
             fontSize: 18,
-            color: "black",
+            color: tertiary_color(route.params.temaScuro),
         },
         dataPromemoria: {
             fontSize: 16,
@@ -110,7 +110,7 @@ const Esame = ({ navigation, route }: any) => {
     }]
 
     return (
-        <>
+        <View style={{backgroundColor: primary_color(route.params.temaScuro), minHeight: "100%"}}>
             <Modal visible={setting} animationType="fade"  onRequestClose={() => setSetting(false)}>
                 <View style={style.modal}>
                     <Text style={style.modalTitle}>Impostazioni</Text>
@@ -120,7 +120,7 @@ const Esame = ({ navigation, route }: any) => {
             {testData.map((esame, index) => <Promemoria key={index} {...esame} style={style} />)}
 
             <Footer navigation={navigation} scuro={route.params.temaScuro} />
-        </>
+        </View>
     )
 }
 

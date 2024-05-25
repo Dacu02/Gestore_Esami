@@ -1,8 +1,9 @@
-import React, { useState } from 'react'
-import { View, StyleSheet, Text, TextInput, Button, TouchableOpacity, ScrollView } from 'react-native'
+import React, { useContext, useState } from 'react'
+import { View, StyleSheet, Text, TextInput, Button, TouchableOpacity, ScrollView, Switch } from 'react-native'
 import Footer from './Footer'
 import { primary_color, secondary_color, tertiary_color } from '../global'
 import DatePicker from 'react-native-date-picker'
+import { DataBaseContext } from './DataBase'
 /*  
     ! Ogni esame riporta differenti informazioni, esempio: nome, corso di studi,
     ! CFU, data, ora, luogo, tipologia d’esame, docente, voto
@@ -28,13 +29,15 @@ const Riga = (props: any) => {
 const Esame = ({ navigation, route }: any) => {
     const [nome, setNome] = useState("")
     const [corso, setCorso] = useState("")
-    const [voto, setVoto] = useState("")
+    const [voto, setVoto] = useState()
+    const [lode, setLode] = useState(false)
     const [cfu, setCfu] = useState("")
     const [tipologia, setTipologia] = useState("")
     const [docente, setDocente] = useState("")
     const [dataOra, setDataOra] = useState(new Date())
     const [luogo, setLuogo] = useState("")
-    const [err, setErr] = useState("Arianna merda sempre e per sempre!")
+    const [diario, setDiario] = useState("")
+    const [err, setErr] = useState("")
     const [viewDTP, setViewDTP] = useState(false)
 
     const style = StyleSheet.create({
@@ -45,7 +48,7 @@ const Esame = ({ navigation, route }: any) => {
             marginRight: 50,
             alignItems: "center",
             marginBottom: 15,
-    
+
         },
         text: {
             color: tertiary_color(route.params.temaScuro),
@@ -64,6 +67,11 @@ const Esame = ({ navigation, route }: any) => {
             flex: 1,
             textAlign: "center",
         },
+        switch: {
+            flex: 1,
+            marginRight: "20%",
+            marginLeft: "-10%",
+        },
         buttons: {
             display: "flex",
             flexDirection: "row",
@@ -72,19 +80,19 @@ const Esame = ({ navigation, route }: any) => {
             marginTop: 30,
         },
         confirm: {
-            backgroundColor: route.params.temaScuro ? primary_color(true) :"lightgreen",
+            backgroundColor: route.params.temaScuro ? primary_color(true) : "lightgreen",
             padding: 10,
             borderRadius: 40,
             margin: 10,
             borderWidth: 2,
-            borderColor: route.params.temaScuro? "lightgreen" : tertiary_color(false),
+            borderColor: route.params.temaScuro ? "lightgreen" : tertiary_color(false),
         },
         deny: {
-            backgroundColor: route.params.temaScuro? primary_color(true) : "red",
+            backgroundColor: route.params.temaScuro ? primary_color(true) : "red",
             padding: 10,
             borderRadius: 40,
             margin: 10,
-            borderColor: route.params.temaScuro? "red" : tertiary_color(false),
+            borderColor: route.params.temaScuro ? "red" : tertiary_color(false),
         },
         confirmText: {
             color: tertiary_color(route.params.temaScuro),
@@ -106,7 +114,7 @@ const Esame = ({ navigation, route }: any) => {
             textAlign: "center",
             fontSize: 20,
             marginTop: 20,
-            backgroundColor: route.params.temaScuro ? primary_color(true): "#fdd",
+            backgroundColor: route.params.temaScuro ? primary_color(true) : "#fdd",
             margin: 20,
             marginLeft: "25%",
             marginRight: "25%",
@@ -115,10 +123,18 @@ const Esame = ({ navigation, route }: any) => {
             borderRadius: 25,
             borderWidth: 1,
             borderColor: route.params.temaScuro ? "red" : "transparent",
+        },
+        diary: {
+            width: "75%",
+            borderWidth: 2,
+            borderColor: secondary_color,
+            borderRadius: 25,
+            margin: "auto",
+            fontSize: 20,
         }
     })
-    
-    
+
+
 
     const datiEsame = {
         nome: nome,
@@ -138,26 +154,88 @@ const Esame = ({ navigation, route }: any) => {
         }
     }
 
+    const db = useContext(DataBaseContext)
+
+
+    const submit = () => {
+        if (nome == "") {
+            setErr("Inserisci il nome dell'esame")
+            return
+        }
+        if (corso == "") {
+            setErr("Inserisci il corso di studi")
+            return
+        }
+        if (cfu == "") {
+            setErr("Inserisci i CFU")
+            return
+        }
+        const d = new Date()
+        if (voto == "" && dataOra < d) {
+            setErr("Inserisci una data futura per un esame non ancora sostenuto")
+            return
+        }
+
+        if (!(voto && !isNaN(voto) && voto > 17 && voto < 31)) {
+            setErr("Inserisci un voto tra 18 e 30")
+            return
+        }
+
+
+        if (Object.keys(db).length === 0) { // Se il database è stato inizializzato
+            setErr("Errore interno")
+            return
+        }
+
+        (db as any).executeSql('insert into esame (nome, corso, cfu, tipologia, docente, voto, lode, data, ora, luogo, diario) values (?,?,?,?,?,?,?,?,?,?,?)',
+            [nome, corso, cfu, tipologia, docente, voto, lode, dataOra.toLocaleDateString(), dataOra.toLocaleTimeString(), luogo, diario], (tx: any, res: any) => {
+                if (res.rowsAffected > 0) {
+                    navigation.goBack()
+                } else {
+                    setErr("Errore inserimento dati")
+                }
+            }, (err: any) => {
+                if (err.message.contains("UNIQUE constraint failed")) 
+                    setErr("Esame già presente")
+                else
+                    setErr(err.message)
+            }
+        )
+
+    }
+
     return (
-        <View style={{backgroundColor:primary_color(route.params.temaScuro)}}>
+        <View style={{ backgroundColor: primary_color(route.params.temaScuro) }}>
             <ScrollView>
                 <Riga style={style} testo="Nome" type="default" value={nome} setValue={setNome} />
                 <Riga style={style} testo="Corso" type="default" value={corso} setValue={setCorso} />
-                <Riga style={style} testo="Voto" type="numeric" value={voto} setValue={(v: string) => setNumero(v, setVoto)} />
+                <Riga style={style} testo="Voto" type="numeric" value={voto} setValue={(v: string) => { setNumero(v, setVoto); setLode(false) }} />
+                {voto && !isNaN(voto) && parseInt(voto) == 30 ?
+                    <View style={style.riga}>
+                        <Text style={style.text}>LODE</Text>
+                        <Switch style={style.switch} thumbColor={secondary_color} value={lode} onValueChange={setLode} />
+                    </View>
+                    : null
+                }
                 <Riga style={style} testo="CFU" type="numeric" value={cfu} setValue={(v: string) => setNumero(v, setCfu)} />
                 <Riga style={style} testo="Tipologia" type="default" value={tipologia} setValue={setTipologia} />
                 <Riga style={style} testo="Docente" type="default" value={docente} setValue={setDocente} />
-                <DatePicker
-                    date={dataOra}
-                    onDateChange={setDataOra}
-                    minuteInterval={15}
-                    mode='datetime'
-                    locale='it-IT'
-                    modal={false}
-                />
+                <View style={{ margin: "auto" }}>
+                    <DatePicker
+                        date={dataOra}
+                        onDateChange={setDataOra}
+                        minuteInterval={15}
+                        mode='datetime'
+                        locale='it-IT'
+                        modal={false}
+                        theme={route.params.temaScuro ? 'dark' : 'light'}
+                    />
+                </View>
                 <Riga style={style} testo="Luogo" type="default" value={luogo} setValue={(v: string) => setLuogo(v)} />
+                <Text style={[style.text, { marginTop: "10%" }]} >DIARIO</Text>
+                <TextInput style={style.diary} numberOfLines={4} multiline={true} value={diario} onChangeText={setDiario} />
                 <View style={style.buttons}>
-                    <TouchableOpacity onPress={() => console.log(datiEsame)} style={[style.confirm, style.button]}>
+                    <TouchableOpacity onPress={submit} style={[style.confirm, style.button]}>
                         <Text style={style.confirmText}>Conferma</Text>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => navigation.goBack()} style={[style.deny, style.button]}>
@@ -167,7 +245,6 @@ const Esame = ({ navigation, route }: any) => {
                 {err ? <Text style={style.errorMessage}>{err}</Text> : null}
                 <View style={{ height: 50 }} />
             </ScrollView>
-            <Footer navigation={navigation} scuro={route.params.temaScuro}/>
 
         </View>
     )

@@ -43,7 +43,7 @@ function App(): React.JSX.Element {
         </Stack.Navigator>
       </NavigationContainer>
     </DataBase>
-  )
+  ) 
 
 
 }

@@ -15,10 +15,14 @@ export const DataBase = ({ children }: any) => {
                 'cfu integer check(cfu>0),' +
                 'tipologia varchar(60),' +
                 'docente varchar(60),' +
-                'voto integer check(voto>17 and voto<=31),' +
-                'data date not null,' +
+                'voto integer check(voto>17 and voto<31),' +
+                'lode boolean,' +
+                'data date,' +
                 'ora time,' +
-                'luogo varchar(60));')
+                'luogo varchar(60),'+
+                'diario text,'+
+                'check ((lode and voto=30) or not lode));'
+            );
         }, (err)=> {
             console.error(err)
         }))
