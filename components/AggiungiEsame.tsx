@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { View, StyleSheet, Text, TextInput, Button, TouchableOpacity, ScrollView, Switch, Dimensions, Modal } from 'react-native'
+import { View, StyleSheet, Text, TextInput, Button, TouchableOpacity, ScrollView, Switch, Dimensions, Modal, Pressable } from 'react-native'
 import { primary_color, secondary_color, tertiary_color } from '../global'
 import { DataBaseContext } from './DataBase'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import Header from './Header'
-import DatePicker from 'react-native-modern-datepicker'
-import { getToday,getFormatedDate } from 'react-native-modern-datepicker'
+import DatePicker, { getToday, getFormatedDate } from 'react-native-modern-datepicker'
+import TimePicker from '@react-native-community/datetimepicker'
 import SQLite from 'react-native-sqlite-storage'
 /*  
     ! Ogni esame riporta differenti informazioni, esempio: nome, corso di studi,
@@ -33,21 +33,11 @@ const Riga = (props: any) => {
 
 const Esame = ({ navigation }: any) => {
 
-    const [open, setOpen] = useState(false) //per aprire il cazzo di calendario
-    const [date1, setDate1] = useState('12/12/2023') //per la variabile data
-    
-    const today= new Date();
-    today.setDate(today.getDate() + 1 );
+    const [openCalendar, setOpenCalendar] = useState(false)
+    const [openClock, setOpenClock] = useState(false)
 
-    const dataInizio = getFormatedDate(today , 'YYYY/MM/DD');
 
-    function handleOnPress(){
-        setOpen(!open); 
-    }
- 
-    function handleChange(propDate:any){
-        setDate1(propDate); 
-    }
+
 
 
     const getOrientamento = () => (
@@ -70,22 +60,22 @@ const Esame = ({ navigation }: any) => {
     const [luogo, setLuogo] = useState("")
     const [diario, setDiario] = useState("")
     const [err, setErr] = useState("")
-    const [dataOra, setDataOra] = useState(new Date())
-    const [viewDTP, setViewDTP] = useState(false)
+    const [data, setData] = useState(new Date())
+    const [ora, setOra] = useState(new Date())
 
-    const getTema = async () => 
+    const getTema = async () =>
         (await AsyncStorage.getItem('tema') === 'dark')
 
     const [tema, setTema] = useState(true)
 
-    useEffect(()=> {
+    useEffect(() => {
         getTema().then(value => setTema(value))
     }, [])
 
     const style = StyleSheet.create({
         riga: {
             display: "flex",
-            flexDirection: orientamento==='portrait'?"row":"column",
+            flexDirection: orientamento === 'portrait' ? "row" : "column",
             marginTop: 20,
             alignItems: "center",
             marginBottom: 10,
@@ -95,7 +85,7 @@ const Esame = ({ navigation }: any) => {
             color: tertiary_color(tema),
             flex: 1,
             fontSize: 20,
-            maxWidth: orientamento==='portrait'?"40%":"auto",
+            maxWidth: orientamento === 'portrait' ? "40%" : "auto",
             textAlign: "center",
         },
         textfield: {
@@ -109,13 +99,13 @@ const Esame = ({ navigation }: any) => {
             flex: 1,
             textAlign: "center",
             alignContent: "center",
-            marginLeft: orientamento==='portrait' ? "5%": 0,
-            marginRight: orientamento==='portrait'?"10%":0,
+            marginLeft: orientamento === 'portrait' ? "5%" : 0,
+            marginRight: orientamento === 'portrait' ? "10%" : 0,
         },
         switch: {
             flex: 1,
             position: "relative",
-            right: orientamento==='portrait'?"390%":"auto",
+            right: orientamento === 'portrait' ? "390%" : "auto",
         },
         buttons: {
             display: "flex",
@@ -150,7 +140,6 @@ const Esame = ({ navigation }: any) => {
             color: tertiary_color(tema),
         },
         button: {
-            flex: 1,
             borderRadius: 40,
             borderWidth: 2
         },
@@ -176,39 +165,49 @@ const Esame = ({ navigation }: any) => {
             borderRadius: 25,
             margin: "auto",
             fontSize: 20,
-        }, 
+        },
         container: {
             backgroundColor: primary_color(tema),
         },
-        box: orientamento==='portrait'?{}:{
+        box: orientamento === 'portrait' ? {} : {
             display: "flex",
             flexDirection: "row",
         },
-        centeredView:{
-            flex:1,
-            justifyContent:'center',
-            alignItems:'center',
-            marginTop:22,
+        centeredView: {
+            flex: 1,
+            justifyContent: 'center',
+            backgroundColor: 'rgba(0,0,0,0.5)',
         },
-        modalView:{
-            margin:20,
-            backgroundColor:'white',
-            borderRadius:20,
-            width:'90%',
-            padding:15,
-            alignItems:'center',
-            shadowColor:'#000',
-            shadowOffset:{
-                width:0,
-                height:2,
+        modalView: {
+            margin: 'auto',
+            backgroundColor: primary_color(tema),
+            borderRadius: 20,
+            borderWidth: 2,
+            borderColor: secondary_color,
+            width: '90%',
+            padding: 15,
+            alignItems: 'center',
+            shadowColor: '#000',
+            shadowOffset: {
+                width: 0,
+                height: 2,
             },
-            shadowOpacity:0.25,
-            shadowRadius:4,
-            elevation:5,
+            shadowOpacity: 0.25,
+            shadowRadius: 4,
+            elevation: 5,
         },
-        calendarContainer:{
-           marginTop:20
+        calendarContainer: {
+            marginTop: 20,
+            margin: 'auto'
         },
+        dataora: {
+            textAlign: 'center',
+            borderRadius: 40,
+            borderWidth: 2,
+            padding: 10,
+            fontSize: 20,
+            borderColor: secondary_color,
+        }
     })
 
 
@@ -220,7 +219,8 @@ const Esame = ({ navigation }: any) => {
         cfu: cfu,
         tipologia: tipologia,
         docente: docente,
-        dataOra: dataOra,
+        data: data,
+        ora: ora,
         luogo: luogo
 
     }
@@ -248,12 +248,12 @@ const Esame = ({ navigation }: any) => {
             return
         }
         const d = new Date()
-        if (voto == "" && dataOra < d) {
+        if (voto == "" && data < d) {
             setErr("Inserisci una data futura per un esame non ancora sostenuto")
             return
         }
 
-        if (voto== '' && !(voto && !isNaN(voto) && voto > 17 && voto < 31) && dataOra<d) {
+        if (voto == '' && !(voto && !isNaN(voto) && voto > 17 && voto < 31) && data < d) {
             setErr("Inserisci un voto tra 18 e 30")
             return
         }
@@ -264,25 +264,25 @@ const Esame = ({ navigation }: any) => {
             return
         }
 
-        (db as SQLite.SQLiteDatabase).transaction((tx)=>{
+        (db as SQLite.SQLiteDatabase).transaction((tx) => {
             tx.executeSql('insert into esame (nome, corso, cfu, tipologia, docente, voto, lode, data, ora, luogo, diario) values (?,?,?,?,?,?,?,?,?,?,?)',
-            [nome, corso, cfu, tipologia, docente, voto, lode, dataOra.toLocaleDateString(), dataOra.toLocaleTimeString(), luogo, diario], (_: any, res: any) => {
-                navigation.goBack()
-            }, (err: any) => {
-                setErr("Esame già presente o dati errati")
-            })
+                [nome, corso, cfu, tipologia, docente, voto, lode, data.toLocaleDateString(), data.toLocaleTimeString(), luogo, diario], (_: any, res: any) => {
+                    navigation.goBack()
+                }, (err: any) => {
+                    setErr("Esame già presente o dati errati")
+                })
 
         })
     }
 
     return (
-        <View style={{backgroundColor: primary_color(tema)}}>
-        <Header scuro={tema} title="Inserisci esame"/>
+        <View style={{ backgroundColor: primary_color(tema) }}>
+            <Header scuro={tema} title="Inserisci esame" />
             <ScrollView contentContainerStyle={style.container}>
                 <View style={style.box}>
-                <Riga style={style} testo="Nome" type="default" value={nome} setValue={setNome} />
-                <Riga style={style} testo="Corso" type="default" value={corso} setValue={setCorso} />
-                <Riga style={style} testo="Voto" type="numeric" value={voto} setValue={(v: string) => { setNumero(v, setVoto); setLode(false) }} />
+                    <Riga style={style} testo="Nome" type="default" value={nome} setValue={setNome} />
+                    <Riga style={style} testo="Corso" type="default" value={corso} setValue={setCorso} />
+                    <Riga style={style} testo="Voto" type="numeric" value={voto} setValue={(v: string) => { setNumero(v, setVoto); setLode(false) }} />
                 </View>
                 {voto && !isNaN(voto) && parseInt(voto) == 30 ?
                     <View style={style.riga}>
@@ -292,55 +292,64 @@ const Esame = ({ navigation }: any) => {
                     : null
                 }
                 <View style={style.box}>
-                <Riga style={style} testo="CFU" type="numeric" value={cfu} setValue={(v: string) => setNumero(v, setCfu)} />
-                <Riga style={style} testo="Tipologia" type="default" value={tipologia} setValue={setTipologia} />
-                <Riga style={style} testo="Docente" type="default" value={docente} setValue={setDocente} />
-                <Riga style={style} testo="Luogo" type="default" value={luogo} setValue={(v: string) => setLuogo(v)} />
+                    <Riga style={style} testo="CFU" type="numeric" value={cfu} setValue={(v: string) => setNumero(v, setCfu)} />
+                    <Riga style={style} testo="Tipologia" type="default" value={tipologia} setValue={setTipologia} />
+                    <Riga style={style} testo="Docente" type="default" value={docente} setValue={setDocente} />
+                    <Riga style={style} testo="Luogo" type="default" value={luogo} setValue={(v: string) => setLuogo(v)} />
                 </View>
 
                 <View style={style.calendarContainer}>
-                    <TouchableOpacity onPress={handleOnPress}> 
-                        <Text style={style.text}>DATA</Text>
+                    <TouchableOpacity onPress={()=>setOpenCalendar(true)}>
+                        <Text style={style.dataora}>INSERISCI DATA & ORA</Text>
                     </TouchableOpacity>
-                    <Modal
+                </View>
+                <Modal
                     animationType='slide'
                     transparent={true}
-                    visible={open}
-                    >
-
-                        <View style={style.centeredView}>
-                            <View style={style.modalView}>
-
-                              <DatePicker
-                              mode='calendar'
-                              minimumDate={dataInizio}
-                              selected={date1}
-                              onDateChange={handleChange}
-                              />
-
-                               
-                                <TouchableOpacity onPress={handleOnPress}> 
-                                    <Text>Conferma</Text>
-                              </TouchableOpacity>
-                            </View>
-                        </View>
-
-                    </Modal>
-                </View>
-                <Text style={[style.text, { marginTop: "10%", marginBottom: orientamento==='portrait' ?"10%" : "5%"}]} >DIARIO</Text>
+                    visible={openCalendar}
+                    onRequestClose={() => setOpenCalendar(false)}
+                >
+                    <Pressable onPress={() => setOpenCalendar(false)} style={style.centeredView} android_disableSound={true} android_ripple={{ color: 'transparent' }}>
+                        <Pressable style={style.modalView} onPress={(e) => e.preventDefault()} android_disableSound={true} android_ripple={{ color: 'transparent' }}>
+                            <DatePicker
+                                mode='calendar'
+                                selected={data.toString()}
+                                onDateChange={()=>{setOpenCalendar(false);setOpenClock(true)}}
+                                options={{
+                                    backgroundColor: primary_color(tema),
+                                    textHeaderColor: secondary_color,
+                                    mainColor: secondary_color,
+                                    borderColor: secondary_color,
+                                    textDefaultColor: tertiary_color(tema),
+                                    textSecondaryColor: secondary_color,
+                                }}
+                            />
+                        </Pressable>
+                    </Pressable>
+                </Modal>
+                {openClock ?
+                    <TimePicker
+                        mode='time'
+                        value={ora}
+                        minuteInterval={5}
+                        onChange={(_, selectedDate) => {(selectedDate?setOra(selectedDate):null);setOpenClock(false)}}
+                        onError={()=>setOpenClock(false)}
+                    /> : null
+                }
+                <Text style={[style.text, { marginTop: "10%", marginBottom: orientamento === 'portrait' ? "10%" : "5%" }]} >DIARIO</Text>
                 <TextInput style={style.diary} numberOfLines={3} multiline={true} value={diario} onChangeText={setDiario} />
                 <View style={style.buttons}>
-                    <TouchableOpacity onPress={submit} style={[style.confirm, style.button]}>
+                    <TouchableOpacity onPress={submit} style={[style.confirm, style.button, { flex: 1 }]}>
                         <Text style={style.confirmText}>Conferma</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => navigation.goBack()} style={[style.deny, style.button]}>
+                    <TouchableOpacity onPress={() => navigation.goBack()} style={[style.deny, style.button, { flex: 1 }]}>
                         <Text style={style.denyText}>Annulla</Text>
                     </TouchableOpacity>
                 </View>
                 {err ? <Text style={style.errorMessage}>{err}</Text> : null}
                 <View style={{ height: "10%" }} />
             </ScrollView>
-            </View>
+        </View>
     )
 }
 
