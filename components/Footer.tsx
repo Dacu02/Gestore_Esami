@@ -33,7 +33,6 @@ const Footer = ( { navigation, ...props }: any) => {
         }
     })
 
-    console.log(props.scuro)
 
     const Tab = (props: any) => (
         <TouchableOpacity style={style.tab} onPress={() => { navigation.navigate(props.nav) }}>

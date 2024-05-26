@@ -1,9 +1,10 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { View, StyleSheet, Text, TextInput, Button, TouchableOpacity, ScrollView, Switch, Dimensions } from 'react-native'
-import Footer from './Footer'
 import { primary_color, secondary_color, tertiary_color } from '../global'
 import DatePicker from 'react-native-date-picker'
 import { DataBaseContext } from './DataBase'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import Header from './Header'
 /*  
     ! Ogni esame riporta differenti informazioni, esempio: nome, corso di studi,
     ! CFU, data, ora, luogo, tipologia d’esame, docente, voto
@@ -26,7 +27,7 @@ const Riga = (props: any) => {
 }
 
 
-const Esame = ({ navigation, route }: any) => {
+const Esame = ({ navigation }: any) => {
 
 
       
@@ -37,8 +38,8 @@ const Esame = ({ navigation, route }: any) => {
             :
             "portrait"
     )
-
     const [orientamento, setOrientamento] = useState(getOrientamento())
+    Dimensions.addEventListener("change", () => setOrientamento(getOrientamento()))
 
 
     const [nome, setNome] = useState("")
@@ -54,6 +55,15 @@ const Esame = ({ navigation, route }: any) => {
     const [err, setErr] = useState("")
     const [viewDTP, setViewDTP] = useState(false)
 
+    const getTema = async () => 
+        (await AsyncStorage.getItem('tema') === 'dark')
+
+    const [tema, setTema] = useState(true)
+
+    useEffect(()=> {
+        getTema().then(value => setTema(value))
+    }, [])
+
     const style = StyleSheet.create({
         riga: {
             display: "flex",
@@ -64,19 +74,19 @@ const Esame = ({ navigation, route }: any) => {
             margin: 'auto',
         },
         text: {
-            color: tertiary_color(route.params.temaScuro),
+            color: tertiary_color(tema),
             flex: 1,
             fontSize: 20,
             maxWidth: orientamento==='portrait'?"40%":"auto",
             textAlign: "center",
         },
         textfield: {
-            color: tertiary_color(route.params.temaScuro),
+            color: tertiary_color(tema),
             fontSize: 20,
             borderColor: secondary_color,
             borderWidth: 2,
             borderRadius: 40,
-            backgroundColor: primary_color(route.params.temaScuro),
+            backgroundColor: primary_color(tema),
             padding: 10,
             flex: 1,
             textAlign: "center",
@@ -94,32 +104,32 @@ const Esame = ({ navigation, route }: any) => {
             flexDirection: "row",
             marginLeft: 30,
             marginRight: 30,
-            marginTop: 30,
+            marginTop: 40,
         },
         confirm: {
-            backgroundColor: route.params.temaScuro ? primary_color(true) : "lightgreen",
+            backgroundColor: tema ? primary_color(true) : "lightgreen",
             padding: 10,
             borderRadius: 40,
             margin: 10,
             borderWidth: 2,
-            borderColor: route.params.temaScuro ? "lightgreen" : tertiary_color(false),
+            borderColor: tema ? "lightgreen" : tertiary_color(false),
         },
         deny: {
-            backgroundColor: route.params.temaScuro ? primary_color(true) : "red",
+            backgroundColor: tema ? primary_color(true) : "red",
             padding: 10,
             borderRadius: 40,
             margin: 10,
-            borderColor: route.params.temaScuro ? "red" : tertiary_color(false),
+            borderColor: tema ? "red" : tertiary_color(false),
         },
         confirmText: {
-            color: tertiary_color(route.params.temaScuro),
+            color: tertiary_color(tema),
             textAlign: "center",
             fontSize: 20,
         },
         denyText: {
             textAlign: "center",
             fontSize: 20,
-            color: tertiary_color(route.params.temaScuro),
+            color: tertiary_color(tema),
         },
         button: {
             flex: 1,
@@ -131,15 +141,14 @@ const Esame = ({ navigation, route }: any) => {
             textAlign: "center",
             fontSize: 20,
             marginTop: 20,
-            backgroundColor: route.params.temaScuro ? primary_color(true) : "#fdd",
+            backgroundColor: tema ? primary_color(true) : "#fdd",
             margin: 20,
             marginLeft: "25%",
             marginRight: "25%",
-            paddingTop: "3%",
-            paddingBottom: "3%",
+            paddingTop: "2%",
             borderRadius: 25,
             borderWidth: 1,
-            borderColor: route.params.temaScuro ? "red" : "transparent",
+            borderColor: tema ? "red" : "transparent",
         },
         diary: {
             width: "75%",
@@ -151,7 +160,7 @@ const Esame = ({ navigation, route }: any) => {
             fontSize: 20,
         }, 
         container: {
-            backgroundColor: primary_color(route.params.temaScuro),
+            backgroundColor: primary_color(tema),
         },
         box: orientamento==='portrait'?{}:{
             display: "flex",
@@ -230,6 +239,8 @@ const Esame = ({ navigation, route }: any) => {
     }
 
     return (
+        <View style={{backgroundColor: primary_color(tema)}}>
+        <Header scuro={tema}/>
             <ScrollView contentContainerStyle={style.container}>
                 <View style={style.box}>
                 <Riga style={style} testo="Nome" type="default" value={nome} setValue={setNome} />
@@ -249,7 +260,7 @@ const Esame = ({ navigation, route }: any) => {
                 <Riga style={style} testo="Docente" type="default" value={docente} setValue={setDocente} />
                 <Riga style={style} testo="Luogo" type="default" value={luogo} setValue={(v: string) => setLuogo(v)} />
                 </View>
-                <View style={{ margin: "auto" }}>
+                <View style={{ margin: "auto", marginTop: 20 }}>
                     <DatePicker
                         date={dataOra}
                         onDateChange={setDataOra}
@@ -257,11 +268,11 @@ const Esame = ({ navigation, route }: any) => {
                         mode='datetime'
                         locale='it-IT'
                         modal={false}
-                        theme={route.params.temaScuro ? 'dark' : 'light'}
+                        theme={tema ? 'dark' : 'light'}
                     />
                 </View>
-                <Text style={[style.text, { marginTop: "10%" }]} >DIARIO</Text>
-                <TextInput style={style.diary} numberOfLines={4} multiline={true} value={diario} onChangeText={setDiario} />
+                <Text style={[style.text, { marginTop: "10%", marginBottom: orientamento==='portrait' ?"10%" : "5%"}]} >DIARIO</Text>
+                <TextInput style={style.diary} numberOfLines={3} multiline={true} value={diario} onChangeText={setDiario} />
                 <View style={style.buttons}>
                     <TouchableOpacity onPress={submit} style={[style.confirm, style.button]}>
                         <Text style={style.confirmText}>Conferma</Text>
@@ -271,8 +282,9 @@ const Esame = ({ navigation, route }: any) => {
                     </TouchableOpacity>
                 </View>
                 {err ? <Text style={style.errorMessage}>{err}</Text> : null}
-                {/* <View style={{ height: 50 }} /> */}
+                <View style={{ height: "10%" }} />
             </ScrollView>
+            </View>
     )
 }
 

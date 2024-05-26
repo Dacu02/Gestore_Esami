@@ -1,49 +1,40 @@
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import React, { useEffect } from 'react'
-import Home from './components/Home'
+import React from 'react'
 import Header from './components/Header'
 import AggiungiEsame from './components/AggiungiEsame'
-import type { PropsWithChildren } from 'react'
 
 import {
   StatusBar,
   StyleSheet,
-  Text,
   useColorScheme,
-  View,
-  TouchableOpacity,
 } from 'react-native'
 
-import {
-  Colors,
-  DebugInstructions,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen'
 import Esame from './components/Esame'
-import { openDatabase } from 'react-native-sqlite-storage'
 import { DataBase } from './components/DataBase'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const Stack = createNativeStackNavigator();
 function App(): React.JSX.Element {
-
-
-
-
-
-  const isDarkMode = useColorScheme() === 'dark';
+  
+  
+  
+  
+  
+  if(AsyncStorage.getItem('tema')===null)
+    AsyncStorage.setItem('tema', useColorScheme() ? 'dark' : 'light')
   return (
     <DataBase>
       <StatusBar />
       <NavigationContainer>
-        <Stack.Navigator initialRouteName='Esame' >
-          <Stack.Screen name="Esame" initialParams={{temaScuro:isDarkMode}} component={Esame} options={{ headerShown: false }} /*options={{ header: () => <Header title="Lista Esami" /> }}*/ />
-          <Stack.Screen name="AggiungiEsame" initialParams={{temaScuro:isDarkMode}} component={AggiungiEsame} options={{ header: () => <Header title="Inserisci esame" scuro={isDarkMode} /> }} />
+        <Stack.Navigator initialRouteName='Esame' screenOptions={{headerShown: false}} >
+          <Stack.Screen name="Esame" component={Esame}/>
+          <Stack.Screen name="AggiungiEsame" component={AggiungiEsame} />
         </Stack.Navigator>
       </NavigationContainer>
     </DataBase>
-  ) 
+  )
 
 
 }
