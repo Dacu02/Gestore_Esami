@@ -6,6 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import Header from './Header'
 import DatePicker from 'react-native-modern-datepicker'
 import { getToday,getFormatedDate } from 'react-native-modern-datepicker'
+import SQLite from 'react-native-sqlite-storage'
 /*  
     ! Ogni esame riporta differenti informazioni, esempio: nome, corso di studi,
     ! CFU, data, ora, luogo, tipologia d’esame, docente, voto
@@ -252,7 +253,7 @@ const Esame = ({ navigation }: any) => {
             return
         }
 
-        if (!(voto && !isNaN(voto) && voto > 17 && voto < 31)) {
+        if (voto== '' && !(voto && !isNaN(voto) && voto > 17 && voto < 31) && dataOra<d) {
             setErr("Inserisci un voto tra 18 e 30")
             return
         }
@@ -263,26 +264,20 @@ const Esame = ({ navigation }: any) => {
             return
         }
 
-        (db as any).executeSql('insert into esame (nome, corso, cfu, tipologia, docente, voto, lode, data, ora, luogo, diario) values (?,?,?,?,?,?,?,?,?,?,?)',
-            [nome, corso, cfu, tipologia, docente, voto, lode, dataOra.toLocaleDateString(), dataOra.toLocaleTimeString(), luogo, diario], (tx: any, res: any) => {
-                if (res.rowsAffected > 0) {
-                    navigation.goBack()
-                } else {
-                    setErr("Errore inserimento dati")
-                }
+        (db as SQLite.SQLiteDatabase).transaction((tx)=>{
+            tx.executeSql('insert into esame (nome, corso, cfu, tipologia, docente, voto, lode, data, ora, luogo, diario) values (?,?,?,?,?,?,?,?,?,?,?)',
+            [nome, corso, cfu, tipologia, docente, voto, lode, dataOra.toLocaleDateString(), dataOra.toLocaleTimeString(), luogo, diario], (_: any, res: any) => {
+                navigation.goBack()
             }, (err: any) => {
-                if (err.message.contains("UNIQUE constraint failed")) 
-                    setErr("Esame già presente")
-                else
-                    setErr(err.message)
-            }
-        )
+                setErr("Esame già presente o dati errati")
+            })
 
+        })
     }
 
     return (
         <View style={{backgroundColor: primary_color(tema)}}>
-        <Header scuro={tema}/>
+        <Header scuro={tema} title="Inserisci esame"/>
             <ScrollView contentContainerStyle={style.container}>
                 <View style={style.box}>
                 <Riga style={style} testo="Nome" type="default" value={nome} setValue={setNome} />

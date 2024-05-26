@@ -5,7 +5,7 @@ import { primary_color, secondary_color, tertiary_color } from '../global'
 import Header from "./Header"
 import { faCalendarDays, faGear } from "@fortawesome/free-solid-svg-icons"
 import { DataBase, DataBaseContext } from "./DataBase"
-import { openDatabase } from 'react-native-sqlite-storage'
+import SQLite from 'react-native-sqlite-storage'
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { SelectList } from "react-native-dropdown-select-list"
 import Promemoria from "./Promemoria"
@@ -21,6 +21,7 @@ const setCalendar = () => {
 const Esame = ({ navigation }: any) => {
 
 
+    const db = useContext(DataBaseContext)
     const [setting, setSetting] = useState(false)
     const [notifica, setNotifica] = useState('giorni')
     const [numNotifica, setNumNotifica] = useState('7')
@@ -63,7 +64,33 @@ const Esame = ({ navigation }: any) => {
             }
 
         }
+
+        let tempo:number
+
+        if (notifica.startsWith('giorn'))
+            tempo = parseInt(numNotifica)
+        else if (notifica.startsWith('settiman'))
+            tempo = parseInt(numNotifica)*7
+        else
+            tempo = parseInt(numNotifica)*31
+
+    const current_date = new Date()
+    const max_date = new Date()
+    max_date.setDate(current_date.getDate() + tempo)
+
+    console.log(current_date, max_date);
+
+        (db as SQLite.SQLiteDatabase).transaction((tx)=> {
+            tx.executeSql('select data from esame where data>=current_date order by data desc', [], (t, res)=>{
+                for(let i = 0;i<res.rows.length;i++)
+                    if(res.rows.item(i).data>=Date() && res.rows.item(i).data<=max_date)
+                        console.log(res.rows.item(i).data)
+            })
+            tx.executeSql('select * from esame where data>=current_date and data<=(select current_date + '+tempo+') order by data desc limit 3', [], (_, res) => console.log(res), (_, err)=>console.error(err.code))
+        })
     }
+
+    
 
     const getTema = async () =>
         (await AsyncStorage.getItem('tema') === 'dark')
@@ -238,7 +265,7 @@ const Esame = ({ navigation }: any) => {
                         <View style={style.modalRow}>
                             <Text style={style.modalRowText}>Notifica promemoria:</Text>
                             <TextInput style={style.modalNumInput} keyboardType="numeric" value={numNotifica} onChangeText={changeNotifica} />
-                            <SelectList inputStyles={style.textColor}   data={lista} search={false} placeholder={notifica} setSelected={setNotifica} />
+                            <SelectList inputStyles={style.textColor} data={lista} search={false} placeholder={notifica} setSelected={setNotifica} />
                         </View>
                     </Pressable>
                 </Pressable>
