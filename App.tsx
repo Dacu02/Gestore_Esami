@@ -3,7 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import React, { useEffect } from 'react'
 import Header from './components/Header'
 import AggiungiEsame from './components/AggiungiEsame'
-
+import ListaEsami from './components/ListaEsami'
 import {
   StatusBar,
   StyleSheet,
@@ -28,9 +28,10 @@ function App(): React.JSX.Element {
     <DataBase>
       <StatusBar />
       <NavigationContainer>
-        <Stack.Navigator initialRouteName='Esame' screenOptions={{headerShown: false}} >
+        <Stack.Navigator initialRouteName='ListaEsami' screenOptions={{headerShown: false}} >
           <Stack.Screen name="Esame" component={Esame}/>
           <Stack.Screen name="AggiungiEsame" component={AggiungiEsame} />
+          <Stack.Screen name="ListaEsami" component={ListaEsami} />
         </Stack.Navigator>
       </NavigationContainer>
     </DataBase>
