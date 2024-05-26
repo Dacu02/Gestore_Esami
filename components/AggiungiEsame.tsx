@@ -1,10 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { View, StyleSheet, Text, TextInput, Button, TouchableOpacity, ScrollView, Switch, Dimensions } from 'react-native'
+import { View, StyleSheet, Text, TextInput, Button, TouchableOpacity, ScrollView, Switch, Dimensions, Modal } from 'react-native'
 import { primary_color, secondary_color, tertiary_color } from '../global'
-import DatePicker from 'react-native-date-picker'
 import { DataBaseContext } from './DataBase'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import Header from './Header'
+import DatePicker from 'react-native-modern-datepicker'
+import { getToday,getFormatedDate } from 'react-native-modern-datepicker'
 /*  
     ! Ogni esame riporta differenti informazioni, esempio: nome, corso di studi,
     ! CFU, data, ora, luogo, tipologia d’esame, docente, voto
@@ -27,10 +28,26 @@ const Riga = (props: any) => {
 }
 
 
+
+
 const Esame = ({ navigation }: any) => {
 
+    const [open, setOpen] = useState(false) //per aprire il cazzo di calendario
+    const [date1, setDate1] = useState('12/12/2023') //per la variabile data
+    
+    const today= new Date();
+    today.setDate(today.getDate() + 1 );
 
-      
+    const dataInizio = getFormatedDate(today , 'YYYY/MM/DD');
+
+    function handleOnPress(){
+        setOpen(!open); 
+    }
+ 
+    function handleChange(propDate:any){
+        setDate1(propDate); 
+    }
+
 
     const getOrientamento = () => (
         (Dimensions.get("screen").width > Dimensions.get("screen").height) ?
@@ -49,10 +66,10 @@ const Esame = ({ navigation }: any) => {
     const [cfu, setCfu] = useState("")
     const [tipologia, setTipologia] = useState("")
     const [docente, setDocente] = useState("")
-    const [dataOra, setDataOra] = useState(new Date())
     const [luogo, setLuogo] = useState("")
     const [diario, setDiario] = useState("")
     const [err, setErr] = useState("")
+    const [dataOra, setDataOra] = useState(new Date())
     const [viewDTP, setViewDTP] = useState(false)
 
     const getTema = async () => 
@@ -152,7 +169,7 @@ const Esame = ({ navigation }: any) => {
         },
         diary: {
             width: "75%",
-            padding: 20,
+            padding: 0,
             borderWidth: 2,
             borderColor: secondary_color,
             borderRadius: 25,
@@ -165,6 +182,31 @@ const Esame = ({ navigation }: any) => {
         box: orientamento==='portrait'?{}:{
             display: "flex",
             flexDirection: "row",
+        },
+        centeredView:{
+            flex:1,
+            justifyContent:'center',
+            alignItems:'center',
+            marginTop:22,
+        },
+        modalView:{
+            margin:20,
+            backgroundColor:'white',
+            borderRadius:20,
+            width:'90%',
+            padding:15,
+            alignItems:'center',
+            shadowColor:'#000',
+            shadowOffset:{
+                width:0,
+                height:2,
+            },
+            shadowOpacity:0.25,
+            shadowRadius:4,
+            elevation:5,
+        },
+        calendarContainer:{
+           marginTop:20
         },
     })
 
@@ -260,16 +302,35 @@ const Esame = ({ navigation }: any) => {
                 <Riga style={style} testo="Docente" type="default" value={docente} setValue={setDocente} />
                 <Riga style={style} testo="Luogo" type="default" value={luogo} setValue={(v: string) => setLuogo(v)} />
                 </View>
-                <View style={{ margin: "auto", marginTop: 20 }}>
-                    <DatePicker
-                        date={dataOra}
-                        onDateChange={setDataOra}
-                        minuteInterval={15}
-                        mode='datetime'
-                        locale='it-IT'
-                        modal={false}
-                        theme={tema ? 'dark' : 'light'}
-                    />
+
+                <View style={style.calendarContainer}>
+                    <TouchableOpacity onPress={handleOnPress}> 
+                        <Text style={style.text}>DATA</Text>
+                    </TouchableOpacity>
+                    <Modal
+                    animationType='slide'
+                    transparent={true}
+                    visible={open}
+                    >
+
+                        <View style={style.centeredView}>
+                            <View style={style.modalView}>
+
+                              <DatePicker
+                              mode='calendar'
+                              minimumDate={dataInizio}
+                              selected={date1}
+                              onDateChange={handleChange}
+                              />
+
+                               
+                                <TouchableOpacity onPress={handleOnPress}> 
+                                    <Text>Conferma</Text>
+                              </TouchableOpacity>
+                            </View>
+                        </View>
+
+                    </Modal>
                 </View>
                 <Text style={[style.text, { marginTop: "10%", marginBottom: orientamento==='portrait' ?"10%" : "5%"}]} >DIARIO</Text>
                 <TextInput style={style.diary} numberOfLines={3} multiline={true} value={diario} onChangeText={setDiario} />
@@ -287,5 +348,8 @@ const Esame = ({ navigation }: any) => {
             </View>
     )
 }
+
+
+
 
 export default Esame;

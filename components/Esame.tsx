@@ -8,25 +8,9 @@ import { DataBase, DataBaseContext } from "./DataBase"
 import { openDatabase } from 'react-native-sqlite-storage'
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { SelectList } from "react-native-dropdown-select-list"
-const Promemoria = (props: any) => {
+import Promemoria from "./Promemoria"
 
-    return (
-        <View style={props.style.promemoria}>
-            <Text style={props.style.titoloPromemoria}>{props.nome}</Text>
-            <View style={props.style.contenutoPromemoria}>
-                {props.corso ? <Text style={props.style.testoPromemoria}>Corso: {props.corso}</Text> : null}
-                {props.cfu ? <Text style={props.style.testoPromemoria}>CFU: {props.cfu}</Text> : null}
-                {props.tipologia ? <Text style={props.style.testoPromemoria}>Tipologia: {props.tipologia}</Text> : null}
-                {props.docente ? <Text style={props.style.testoPromemoria}>Docente: {props.docente}</Text> : null}
-            </View>
-            <View>
 
-                {props.luogo ? <Text style={props.style.luogoPromemoria}>{props.luogo}</Text> : null}
-                <Text style={props.style.dataPromemoria}>{props.data} - {props.ora}</Text>
-            </View>
-        </View>
-    )
-}
 
 
 const setCalendar = () => {
@@ -35,8 +19,6 @@ const setCalendar = () => {
 
 
 const Esame = ({ navigation }: any) => {
-
-
 
 
     const [setting, setSetting] = useState(false)
@@ -168,12 +150,12 @@ const Esame = ({ navigation }: any) => {
             display: "flex",
             justifyContent: "center",
             backgroundColor: primary_color(tema),
-            opacity: 0.75,
+            opacity: 0.90,
         },
         modalTitle: {
             fontSize: 20,
             fontWeight: "bold",
-            color: "white",
+            color: tertiary_color(tema),
             textAlign: "center",
         },
         viewPromemoria: {
@@ -187,6 +169,7 @@ const Esame = ({ navigation }: any) => {
             borderRadius: 20,
             borderWidth: 2,
             borderColor: secondary_color,
+            opacity:5
         },
         modalRow: {
             display: "flex",
@@ -255,7 +238,7 @@ const Esame = ({ navigation }: any) => {
                         <View style={style.modalRow}>
                             <Text style={style.modalRowText}>Notifica promemoria:</Text>
                             <TextInput style={style.modalNumInput} keyboardType="numeric" value={numNotifica} onChangeText={changeNotifica} />
-                            <SelectList inputStyles={style.textColor}    data={lista} placeholder={notifica} setSelected={setNotifica} />
+                            <SelectList inputStyles={style.textColor}   data={lista} search={false} placeholder={notifica} setSelected={setNotifica} />
                         </View>
                     </Pressable>
                 </Pressable>
@@ -265,7 +248,6 @@ const Esame = ({ navigation }: any) => {
             <View style={style.viewPromemoria}>
                 {testData.map((esame, index) => <Promemoria key={index} {...esame} style={style} />)}
             </View>
-
             <Footer navigation={navigation} scuro={tema} />
         </View>
     )
