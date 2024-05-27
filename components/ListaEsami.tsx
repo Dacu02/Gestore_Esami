@@ -10,21 +10,21 @@ export default function ListaEsami() {
         //fixare le immagini
     {   id: 1, 
         name: 'Analisi I', 
-        image: require('../immaginiEsami/EsameSuperato.png'), 
+        image: require('../immaginiEsami/Esame.png'), 
         voto: "28", 
         CFU: 9, 
         dataSuperamento: '15/12/2024' ,
         profEsame:'Prof.De Risi'},
     {   id: 2, 
         name: 'Mobile Programming', 
-        image: require('../immaginiEsami/EsameSuperato.png'), 
+        image: require('../immaginiEsami/Esame.png'), 
         voto: "18", 
         CFU: 12, 
         dataSuperamento: '01/06/2024' ,
         profEsame:'Prof.Petrone'},
     {   id: 3, 
         name: 'Basi di dati', 
-        image: require('../immaginiEsami/EsameSuperato.png'), 
+        image: require('../immaginiEsami/Esame.png'), 
         voto: "25", 
         CFU: 6, 
         dataSuperamento: '08/10/2024' ,
@@ -93,10 +93,11 @@ export default function ListaEsami() {
         <View>
             <FlatList
                 ListHeaderComponentStyle={styles.listHeader}
-                ListHeaderComponent={Header}
+                ListHeaderComponent={headerComponent}
                 data={esame}
                 renderItem={singoloEsame}
                 ItemSeparatorComponent={itemSeparator}
+                
             />
         </View>
     );
@@ -130,6 +131,7 @@ const styles = StyleSheet.create({
     immagine: {
         height: 55,
         width: 55,
+        borderRadius:8
     },
     name: {
         fontWeight: '600',
@@ -139,12 +141,11 @@ const styles = StyleSheet.create({
     infoContainer: {
         marginLeft: 13,
         flex: 1,
-       
+        height:100
     },
     details: {
         fontSize: 14,
         color: '#666',
-      
     },
     separator: {
         height: 1,
@@ -159,8 +160,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         borderRadius: 17,
         position: 'absolute',
-        top: 17,
+        top: 15,
         right: 15,
+    
     },
     votoText: {
         color: 'white',
