@@ -1,15 +1,20 @@
-import React, { useContext } from "react";
-import { StyleSheet, Text, Image, View, FlatList, ScrollView, TouchableOpacity } from "react-native";
+import React, { useContext,useState } from "react";
+import { StyleSheet, Text, Image, View, FlatList, ScrollView, TouchableOpacity, Modal, Button, TextInput} from "react-native";
 import { DataBaseContext } from "./DataBase";
 import Header from "./Header";
 import { useNavigation } from "@react-navigation/native"; 
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'; 
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 export default function ListaEsami() {
     const db = useContext(DataBaseContext);
     const navigation = useNavigation(); 
+    const [note, setNote] = useState('');
 
+    const [modalVisible, setModalVisible] = useState(false);
+    const toggleModal = () => {
+        setModalVisible(!modalVisible);
+    }
     const esame = [
         //cambiare il nome dell'esame passando gli esami sul database
         //fixare le immagini
@@ -93,6 +98,12 @@ export default function ListaEsami() {
         <View style={styles.item}>
             <View style={styles.immagineContainer}>
                 <Image source={item.image} style={styles.immagine} />
+                <TouchableOpacity onPress={toggleModal}>
+                    <View  style={[styles.diario, {borderColor: item.voto ? "#4c74dc" : "#f0b904"}]}>
+                    <Text style={styles.diarioText}>Diario</Text>
+                    </View>
+                    
+                </TouchableOpacity>
             </View>
             <View style={[styles.progressoEsame, { backgroundColor: item.voto ? "#019d3a" : "#f0b904" }]}>
                 <Text style={styles.votoText}>
@@ -141,6 +152,31 @@ export default function ListaEsami() {
                 renderItem={singoloEsame}
                 ItemSeparatorComponent={itemSeparator}
             />
+            <Modal
+            
+            animationType="slide"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => {
+                setModalVisible(!modalVisible)
+            }}>
+                <View style={styles.modalContainer}>
+                    <View style={styles.modalContent}>
+                        <Text style={styles.modalTitle}>Diario</Text>
+                        <TouchableOpacity style={styles.closeButton} onPress={toggleModal}>
+                            <FontAwesomeIcon icon={faTimes} style={styles.closeButtonIcon} />
+                        </TouchableOpacity>
+                        <TextInput
+                            style={styles.textInput}
+                            multiline
+                            numberOfLines={4}
+                            onChangeText={text => setNote(text)}
+                            value={note}
+                            placeholder="Scrivi qui le tue note..."
+                        />
+                    </View>
+                </View>
+            </Modal>
         </View>
     );
 }
@@ -174,9 +210,28 @@ const styles = StyleSheet.create({
     },
     immagineContainer: {
         borderRadius: 100,
-        height: 130,
+        height: 150,
         width: 89,
         alignItems: 'center',
+    },
+    diario:{
+        marginTop:5,
+        borderWidth:2,
+        textAlign:'center',
+        justifyContent:'center',
+        borderRadius:30,
+        borderColor:'#4c74dc',
+        width:60,
+        height:30,
+        
+    },
+    diarioText:{
+        textAlign:'center',
+        justifyContent:'center',
+        fontSize:14,
+        padding:3,
+        fontWeight:'600',
+        color:'black'
     },
     immagine: {
         height: 55,
@@ -216,5 +271,51 @@ const styles = StyleSheet.create({
     votoText: {
         color: 'white',
         textAlign: 'center',
+    },
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    modalContent: {
+        backgroundColor: 'white',
+        padding: 20,
+        borderRadius: 10,
+        elevation: 5,
+    },
+    modalTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color:'black',
+        position:'absolute',
+        top: 10,
+        left: 10,
+
+    },
+    textInput: {
+        marginTop:25,
+        width: '100%',
+        height: 100,
+        borderColor: '#ccc',
+        borderWidth: 1,
+        borderRadius: 5,
+        padding: 10,
+        marginBottom: 10,
+        textAlignVertical: 'top', // Aligns text to the top in multiline TextInput
+    },
+    closeButton: {
+        position: 'absolute',
+        top: 10,
+        right: 10,
+        width: 25,
+        height: 25,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor:'red',
+        borderRadius:100,
+    },
+    closeButtonIcon: {
+        color:'white',
+        fontSize: 24,
     },
 });
