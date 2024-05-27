@@ -213,9 +213,8 @@ const Esame = ({ navigation }: any) => {
             textAlign: 'center',
             borderRadius: 10,
             borderWidth: 2,
-            padding: 15,
+            padding: 10,
             fontSize: 20,
-            color: tertiary_color(tema),
             borderColor: secondary_color,
         }
     })
@@ -339,7 +338,6 @@ const Esame = ({ navigation }: any) => {
                 </Modal>
                 {openClock ?
                     <TimePicker
-                        themeVariant={tema ? 'dark' : 'light'}
                         mode='time'
                         value={ora}
                         minuteInterval={5}
@@ -358,7 +356,7 @@ const Esame = ({ navigation }: any) => {
                     </TouchableOpacity>
                 </View>
                 {err ? <Text style={style.errorMessage}>{err}</Text> : null}
-                <View style={{ height: orientamento==='portrait' ? "12%" : "20%" }} />
+                <View style={{ height: "10%" }} />
             </ScrollView>
         </View>
     )
