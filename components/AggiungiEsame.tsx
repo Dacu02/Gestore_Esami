@@ -7,6 +7,7 @@ import Header from './Header'
 import DatePicker, { getToday, getFormatedDate } from 'react-native-modern-datepicker'
 import TimePicker from '@react-native-community/datetimepicker'
 import SQLite from 'react-native-sqlite-storage'
+
 /*  
     ! Ogni esame riporta differenti informazioni, esempio: nome, corso di studi,
     ! CFU, data, ora, luogo, tipologia d’esame, docente, voto
@@ -82,6 +83,7 @@ const Esame = ({ navigation }: any) => {
             margin: 'auto',
         },
         text: {
+            fontWeight: 'bold',
             color: tertiary_color(tema),
             flex: 1,
             fontSize: 20,
@@ -93,7 +95,7 @@ const Esame = ({ navigation }: any) => {
             fontSize: 20,
             borderColor: secondary_color,
             borderWidth: 2,
-            borderRadius: 40,
+            borderRadius: 10,
             backgroundColor: primary_color(tema),
             padding: 10,
             flex: 1,
@@ -115,22 +117,21 @@ const Esame = ({ navigation }: any) => {
             marginTop: 40,
         },
         confirm: {
-            backgroundColor: tema ? primary_color(true) : "lightgreen",
+            backgroundColor: tema ? primary_color(true) : "#3762a3",
             padding: 10,
             borderRadius: 40,
             margin: 10,
-            borderWidth: 2,
             borderColor: tema ? "lightgreen" : tertiary_color(false),
         },
         deny: {
-            backgroundColor: tema ? primary_color(true) : "red",
+            backgroundColor: tema ? primary_color(true) : "#e1dee3",
             padding: 10,
             borderRadius: 40,
             margin: 10,
             borderColor: tema ? "red" : tertiary_color(false),
         },
         confirmText: {
-            color: tertiary_color(tema),
+            color: primary_color(tema),
             textAlign: "center",
             fontSize: 20,
         },
@@ -140,8 +141,16 @@ const Esame = ({ navigation }: any) => {
             color: tertiary_color(tema),
         },
         button: {
-            borderRadius: 40,
-            borderWidth: 2
+            borderRadius: 10,
+            shadowColor: "#000",
+            shadowOffset: {
+                width: 0,
+                height: 5,
+            },
+            shadowOpacity: 0.34,
+            shadowRadius: 6.27,
+            
+            elevation: 10,
         },
         errorMessage: {
             color: "red",
@@ -162,7 +171,7 @@ const Esame = ({ navigation }: any) => {
             padding: 0,
             borderWidth: 2,
             borderColor: secondary_color,
-            borderRadius: 25,
+            borderRadius: 10,
             margin: "auto",
             fontSize: 20,
         },
@@ -202,7 +211,7 @@ const Esame = ({ navigation }: any) => {
         },
         dataora: {
             textAlign: 'center',
-            borderRadius: 40,
+            borderRadius: 10,
             borderWidth: 2,
             padding: 10,
             fontSize: 20,
