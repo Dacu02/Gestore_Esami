@@ -46,7 +46,7 @@ const Footer = ( { navigation, ...props }: any) => {
                 <Tab icon={faHouse}  />
                 <Tab icon={faPlus} nav="AggiungiEsame"/>
                 <Tab icon={faUser} />
-                <Tab icon={faList}/>
+                <Tab icon={faList}  nav="ListaEsami"/>
             </View>
         </View>
     )

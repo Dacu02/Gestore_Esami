@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
-import { StyleSheet, Text, Image, View, FlatList } from "react-native";
+import { StyleSheet, Text, Image, View, FlatList, ScrollView } from "react-native";
 import { DataBaseContext } from "./DataBase";
-
+import Header from "./Header";
 export default function ListaEsami() {
     const db = useContext(DataBaseContext);
 
@@ -93,7 +93,7 @@ export default function ListaEsami() {
         <View>
             <FlatList
                 ListHeaderComponentStyle={styles.listHeader}
-                ListHeaderComponent={headerComponent}
+                ListHeaderComponent={Header}
                 data={esame}
                 renderItem={singoloEsame}
                 ItemSeparatorComponent={itemSeparator}
