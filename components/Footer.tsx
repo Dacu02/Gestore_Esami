@@ -1,4 +1,4 @@
-import { faHouse, faPlus, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faHouse, faList, faPlus, faUser } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
@@ -43,9 +43,10 @@ const Footer = ( { navigation, ...props }: any) => {
     return (
         <View style={style.footerContainer}>
             <View style={style.footer}>
-                <Tab icon={faHouse} nav="AggiungiEsame" />
-                <Tab icon={faPlus} />
+                <Tab icon={faHouse}  />
+                <Tab icon={faPlus} nav="AggiungiEsame"/>
                 <Tab icon={faUser} />
+                <Tab icon={faList}/>
             </View>
         </View>
     )
