@@ -28,7 +28,7 @@ function App(): React.JSX.Element {
     <DataBase>
       <StatusBar />
       <NavigationContainer>
-        <Stack.Navigator initialRouteName='ListaEsami' screenOptions={{headerShown: false}} >
+        <Stack.Navigator initialRouteName='Esame' screenOptions={{headerShown: false}} >
           <Stack.Screen name="Esame" component={Esame}/>
           <Stack.Screen name="AggiungiEsame" component={AggiungiEsame} />
           <Stack.Screen name="ListaEsami" component={ListaEsami} />
@@ -37,7 +37,7 @@ function App(): React.JSX.Element {
     </DataBase>
   )
 
-
+ 
 }
 
 const styles = StyleSheet.create({
