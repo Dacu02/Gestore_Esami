@@ -270,7 +270,7 @@ const Esame = ({ navigation }: any) => {
                     </Pressable>
                 </Pressable>
             </Modal>
-            <Header title="Lista esami" leftIcon={faGear} onPressLeft={() => setSetting(true)} rightIcon={faCalendarDays} onPressRight={setCalendar} scuro={tema} />
+            <Header icon={true} title="Lista esami" leftIcon={faGear} onPressLeft={() => setSetting(true)} rightIcon={faCalendarDays} onPressRight={setCalendar} scuro={tema} />
 
             <View style={style.viewPromemoria}>
                 {testData.map((esame, index) => <Promemoria key={index} {...esame} style={style} />)}
