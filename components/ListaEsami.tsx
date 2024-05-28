@@ -1,85 +1,68 @@
-import React, { useContext,useState } from "react";
-import { StyleSheet, Text, Image, View, FlatList, ScrollView, TouchableOpacity, Modal, Button, TextInput} from "react-native";
+
+import React, { useContext, useState , useEffect } from "react";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { StyleSheet, Text, Image, View, FlatList, TouchableOpacity, Modal, TextInput } from "react-native";
 import { DataBaseContext } from "./DataBase";
-import Header from "./Header";
-import { useNavigation } from "@react-navigation/native"; 
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'; 
+import { useNavigation } from "@react-navigation/native";
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faArrowLeft, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 export default function ListaEsami() {
-    const db = useContext(DataBaseContext);
-    const navigation = useNavigation(); 
-    const [note, setNote] = useState('');
 
-    const [modalVisible, setModalVisible] = useState(false);
-    const toggleModal = () => {
-        setModalVisible(!modalVisible);
-    }
     const esame = [
-        //cambiare il nome dell'esame passando gli esami sul database
-        //fixare le immagini
-    {   id: 1, 
-        name: 'Analisi I', 
-        corso:'Ingegneria Informatica',
-        image: require('../immaginiEsami/Esame.png'), 
-        voto: "28", 
-        CFU: 9, 
-        dataSuperamento: '15/12/2024' ,
-        profEsame:'Prof.De Risi', 
-        ora: '10:00',
-        luogo:'Aula 21',
-        tipologia:'Scritto'},
-
-    {   id: 2, 
-        name: 'Mobile Programming', 
-        corso:'Ingegneria Informatica',
-        image: require('../immaginiEsami/Esame.png'), 
-        voto: "18", 
-        CFU: 12, 
-        dataSuperamento: '01/06/2024' ,
-        profEsame:'Prof.Petrone', 
-        ora: '10:00',
-        luogo:'Aula 21',
-        tipologia:'Scritto'},
-
-    {   id: 3, 
-        name: 'Basi di dati', 
-        corso:'Ingegneria Informatica',
-        image: require('../immaginiEsami/Esame.png'), 
-        voto: "25", 
-        CFU: 6, 
-        dataSuperamento: '08/10/2024' ,
-        profEsame:'Prof.Carosetti', 
-        ora: '10:00',
-        luogo:'Aula 21',
-        tipologia:'Scritto'},
-
-    {   id: 4, 
-        name: 'Programmazione ad oggetti', 
-        corso:'Ingegneria Informatica',
-        image: require('../immaginiEsami/EsameInAttesa.png'), 
-        voto: null, 
-        CFU: 6, 
-        dataSuperamento: null ,
-        profEsame:'Prof.Bianchi', 
-        ora: null,
-        luogo:null,
-        tipologia:'Scritto'},
-
-    {   id: 5, 
-        name: 'Fisica II', 
-        corso:'Ingegneria Informatica',
-        image: require('../immaginiEsami/EsameInAttesa.png'), 
-        voto: null, 
-        CFU: 9, 
-        dataSuperamento: null ,
-        profEsame:'Prof.Rossi', 
-        ora: null,
-        luogo:null,
-        tipologia:'Scritto'},
+        { id: 1, name: 'Analisi I', corso: 'Ingegneria Informatica', image: require('../immaginiEsami/Esame.png'), voto: "28", CFU: 9, dataSuperamento: '15/12/2024', profEsame: 'Prof.De Risi', ora: '10:00', luogo: 'Aula 21', tipologia: 'Scritto', noteId:1 },
+        { id: 2, name: 'Mobile Programming', corso: 'Ingegneria Informatica', image: require('../immaginiEsami/Esame.png'), voto: "18", CFU: 12, dataSuperamento: '01/06/2024', profEsame: 'Prof.Petrone', ora: '10:00', luogo: 'Aula 21', tipologia: 'Scritto', noteId:2 },
+        { id: 3, name: 'Basi di dati', corso: 'Ingegneria Informatica', image: require('../immaginiEsami/Esame.png'), voto: "25", CFU: 6, dataSuperamento: '08/10/2024', profEsame: 'Prof.Carosetti', ora: '10:00', luogo: 'Aula 21', tipologia: 'Scritto', noteId:3 },
+        { id: 4, name: 'Programmazione ad oggetti', corso: 'Ingegneria Informatica', image: require('../immaginiEsami/EsameInAttesa.png'), voto: null, CFU: 6, dataSuperamento: null, profEsame: 'Prof.Bianchi', ora: null, luogo: null, tipologia: 'Scritto', noteId:4 },
+        { id: 5, name: 'Fisica II', corso: 'Ingegneria Informatica', image: require('../immaginiEsami/EsameInAttesa.png'), voto: null, CFU: 9, dataSuperamento: null, profEsame: 'Prof.Rossi', ora: null, luogo: null, tipologia: 'Scritto' , noteId:5},
     ];
 
-    //interfaccia per i tipi di Esame altrimenti abbiamo difficoltà con tsx
+    const db = useContext(DataBaseContext);
+    const navigation = useNavigation();
+    const [notes, setNotes] = useState({});
+    const [modalVisible, setModalVisible] = useState(false);
+    const [currentNoteId, setCurrentNoteId] = useState();
+
+    const toggleModal = (noteId:any) => {
+        setModalVisible(!modalVisible);
+        setCurrentNoteId(noteId);
+    };
+
+    useEffect(() => {
+        // Carica le note salvate da AsyncStorage 
+        loadNotes();
+    }, []);
+
+    const loadNotes = async () => {
+        try {
+            // Carica le note salvate da AsyncStorage
+            const savedNotes = await AsyncStorage.getItem('notes');
+            if (savedNotes !== null) {
+                // Se ci sono note salvate aggiorna lo stato 
+                setNotes(JSON.parse(savedNotes));
+            }
+        } catch (error) {
+            console.error('Errore durante il caricamento delle note:', error);
+        }
+    };
+
+    const saveNotes = async (updatedNotes:any) => {
+        try {
+            // Salva le note aggiornate in AsyncStorage
+            await AsyncStorage.setItem('notes', JSON.stringify(updatedNotes));
+        } catch (error) {
+            console.error('Errore durante il salvataggio delle note:', error);
+        }
+    };
+    const handleNoteChange = (text:any) => {
+        const updateNotes = {
+            ...notes, [Number(currentNoteId)]: text
+        };
+            setNotes(updateNotes);
+            saveNotes(updateNotes);
+    };
+
+    //interfaccia per gli item altrimenti typescript da problemi
     interface EsameItem {
         id: number,
         name: string,
@@ -92,86 +75,73 @@ export default function ListaEsami() {
         profEsame:string | null,
         ora: string | null,
         luogo:string | null,
+        noteId:number| null ,
     }
-
-    const singoloEsame = ({ item }: { item: EsameItem }) => (
+    
+    const singoloEsame = ({ item }:{item:EsameItem}) => (
         <View style={styles.item}>
             <View style={styles.immagineContainer}>
                 <Image source={item.image} style={styles.immagine} />
-                <TouchableOpacity onPress={toggleModal}>
-                    <View  style={[styles.diario, {borderColor: item.voto ? "#4c74dc" : "#f0b904"}]}>
-                    <Text style={styles.diarioText}>Diario</Text>
+                <TouchableOpacity onPress={() => toggleModal(item.noteId)}>
+                    <View style={[styles.diario, { borderColor: item.voto ? "#4c74dc" : "#f0b904" }]}>
+                        <Text style={styles.diarioText}>Diario</Text>
                     </View>
-                    
                 </TouchableOpacity>
             </View>
             <View style={[styles.progressoEsame, { backgroundColor: item.voto ? "#019d3a" : "#f0b904" }]}>
-                <Text style={styles.votoText}>
-                {item.voto ? item.voto : 'N/A'}    
-                </Text>
+                <Text style={styles.votoText}>{item.voto ? item.voto : 'N/A'}</Text>
             </View>
             <View style={styles.infoContainer}>
                 <Text style={styles.name}>{item.name}</Text>
                 <Text style={styles.details}>{item.corso}</Text>
                 <Text style={styles.details}>CFU: {item.CFU}</Text>
-                <Text style={styles.details}>
-                    {item.dataSuperamento ? `Data di Superamento: ${item.dataSuperamento}` : 'Esame non ancora superato'}
-                </Text>
-                <Text style={[styles.details, !item.ora && {display: 'none'}]}>{item.ora ? `Orario: ${item.ora}` : null}</Text>
-                <Text style={[styles.details, !item.luogo && {display: 'none'}]}>Luogo: {item.luogo}</Text>
+                <Text style={styles.details}>{item.dataSuperamento ? `Data di Superamento: ${item.dataSuperamento}` : 'Esame non ancora superato'}</Text>
+                {item.ora && <Text style={styles.details}>Orario: {item.ora}</Text>}
+                {item.luogo && <Text style={styles.details}>Luogo: {item.luogo}</Text>}
                 <Text style={styles.details}>Tipologia: {item.tipologia}</Text>
-                <Text style={styles.details}>
-                    {item.profEsame}
-                </Text>
+                <Text style={styles.details}>{item.profEsame}</Text>
             </View>
         </View>
     );
 
-    const headerComponent = () => {
-        return (
-            <View style={styles.header}>
-                <TouchableOpacity onPress={() => navigation.goBack()}>
-                    <FontAwesomeIcon icon={faArrowLeft} style={styles.backIcon} />
-                </TouchableOpacity>
-                <Text style={styles.listHeadline}> Lista Esami </Text>
-                
-            </View>
-        );
-    };
+    const headerComponent = () => (
+        <View style={styles.header}>
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+                <FontAwesomeIcon icon={faArrowLeft} style={styles.backIcon} />
+            </TouchableOpacity>
+            <Text style={styles.listHeadline}>Lista Esami</Text>
+        </View>
+    );
 
-    const itemSeparator = () => {
-        return <View style={styles.separator}></View>;
-    };
+    const itemSeparator = () => <View style={styles.separator}></View>;
 
     return (
-        <View>
+        <View style={styles.container}>
             <FlatList
-                
                 ListHeaderComponent={headerComponent}
                 data={esame}
                 renderItem={singoloEsame}
                 ItemSeparatorComponent={itemSeparator}
+                keyExtractor={(item) => item.id.toString()}
             />
             <Modal
-            
-            animationType="slide"
-            transparent={true}
-            visible={modalVisible}
-            onRequestClose={() => {
-                setModalVisible(!modalVisible)
-            }}>
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => setModalVisible(!modalVisible)}
+            >
                 <View style={styles.modalContainer}>
                     <View style={styles.modalContent}>
                         <Text style={styles.modalTitle}>Diario</Text>
-                        <TouchableOpacity style={styles.closeButton} onPress={toggleModal}>
+                        <TouchableOpacity style={styles.closeButton} onPress={() => toggleModal(null)}>
                             <FontAwesomeIcon icon={faTimes} style={styles.closeButtonIcon} />
                         </TouchableOpacity>
                         <TextInput
                             style={styles.textInput}
                             multiline
                             numberOfLines={4}
-                            onChangeText={text => setNote(text)}
-                            value={note}
+                            onChangeText={handleNoteChange}
+                            value={currentNoteId ? notes[currentNoteId] || '' : ''}
                             placeholder="Scrivi qui le tue note..."
                         />
                     </View>
@@ -182,71 +152,82 @@ export default function ListaEsami() {
 }
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#f9f9f9',
+    },
     header: {
         flexDirection: 'row',
         alignItems: 'center',
-        height:60
+        height: 60,
+        backgroundColor: '#fff',
+        paddingHorizontal: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: '#ccc',
     },
     backIcon: {
-        width: 30,
-        height: 30,
-        marginLeft: 10,
+        color: 'black',
         marginRight: 20,
-        color: 'black', // colore dell'icona
     },
     listHeadline: {
-        color: '#333',
         fontSize: 22,
         fontWeight: 'bold',
-        flex:1,
-        textAlign:'center',
-        paddingRight:55,
+        color: '#333',
+        flex: 1,
+        textAlign: 'center',
     },
     item: {
-        flex: 1,
         flexDirection: 'row',
-        alignItems: 'center',
-        paddingVertical: 17,
+        paddingVertical: 15,
+        paddingHorizontal: 10,
+        backgroundColor: '#fff',
     },
     immagineContainer: {
-        borderRadius: 100,
-        height: 150,
-        width: 89,
         alignItems: 'center',
-    },
-    diario:{
-        marginTop:5,
-        borderWidth:2,
-        textAlign:'center',
-        justifyContent:'center',
-        borderRadius:30,
-        borderColor:'#4c74dc',
-        width:60,
-        height:30,
-        
-    },
-    diarioText:{
-        textAlign:'center',
-        justifyContent:'center',
-        fontSize:14,
-        padding:3,
-        fontWeight:'600',
-        color:'black'
+        marginRight: 10,
+        marginTop: 5,
     },
     immagine: {
         height: 55,
         width: 55,
-        borderRadius:8
+        borderRadius: 8,
+    },
+    diario: {
+        marginTop: 5,
+        borderWidth: 2,
+        borderRadius: 30,
+        width: 60,
+        height: 30,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    diarioText: {
+        fontSize: 14,
+        fontWeight: '600',
+        color: 'black',
+    },
+    progressoEsame: {
+        height: 34,
+        width: 34,
+        borderRadius: 17,
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: 'absolute',
+        top: 20,
+        right: 15,
+    },
+    votoText: {
+        color: 'white',
+        textAlign: 'center',
+    },
+    infoContainer: {
+        flex: 1,
+        marginLeft: 10,
     },
     name: {
         fontWeight: '600',
         fontSize: 16,
-        color:'black'
-    },
-    infoContainer: {
-        marginLeft: 13,
-        flex: 1,
-        height:'auto'
+        color: 'black',
     },
     details: {
         fontSize: 14,
@@ -256,21 +237,6 @@ const styles = StyleSheet.create({
         height: 1,
         width: '100%',
         backgroundColor: '#CCC',
-    },
-    progressoEsame: {
-        height: 34,
-        width: 34,
-        backgroundColor: "#019d3a",
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: 17,
-        position: 'absolute',
-        top: 20,
-        right: 15,
-    },
-    votoText: {
-        color: 'white',
-        textAlign: 'center',
     },
     modalContainer: {
         flex: 1,
@@ -282,26 +248,27 @@ const styles = StyleSheet.create({
         padding: 20,
         borderRadius: 10,
         elevation: 5,
+        maxWidth:250
     },
     modalTitle: {
         fontSize: 18,
         fontWeight: 'bold',
-        color:'black',
-        position:'absolute',
+        color: 'black',
+        position: 'absolute',
         top: 10,
         left: 10,
-
     },
     textInput: {
-        marginTop:25,
+        marginTop: 25,
         width: '100%',
+        maxWidth:200,
         height: 100,
         borderColor: '#ccc',
         borderWidth: 1,
         borderRadius: 5,
         padding: 10,
         marginBottom: 10,
-        textAlignVertical: 'top', // Aligns text to the top in multiline TextInput
+        textAlignVertical: 'top',
     },
     closeButton: {
         position: 'absolute',
@@ -311,11 +278,10 @@ const styles = StyleSheet.create({
         height: 25,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor:'red',
-        borderRadius:100,
+        backgroundColor: 'red',
+        borderRadius: 100,
     },
     closeButtonIcon: {
-        color:'white',
-        fontSize: 24,
+        color: 'white',
     },
 });
