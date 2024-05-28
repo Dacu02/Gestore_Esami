@@ -115,11 +115,11 @@ const Esame = ({ navigation }: any) => {
             marginLeft: 30,
             marginRight: 30,
             marginTop: 40,
+            justifyContent: 'space-evenly'
         },
         confirm: {
             backgroundColor: tema ? primary_color(true) : "#3762a3",
             padding: 10,
-            borderRadius: 40,
             margin: 10,
             borderColor: tema ? "lightgreen" : tertiary_color(false),
         },
@@ -131,7 +131,7 @@ const Esame = ({ navigation }: any) => {
             borderColor: tema ? "red" : tertiary_color(false),
         },
         confirmText: {
-            color: primary_color(tema),
+            color: tertiary_color(tema),
             textAlign: "center",
             fontSize: 20,
         },
@@ -149,22 +149,22 @@ const Esame = ({ navigation }: any) => {
             },
             shadowOpacity: 0.34,
             shadowRadius: 6.27,
-            
             elevation: 10,
+            borderWidth: 1,
         },
         errorMessage: {
             color: "red",
             textAlign: "center",
             fontSize: 20,
-            marginTop: 20,
             backgroundColor: tema ? primary_color(true) : "#fdd",
-            margin: 20,
-            marginLeft: "25%",
-            marginRight: "25%",
-            paddingTop: "2%",
+            paddingTop: 3,
+            margin: 'auto',
+            marginTop: 20,
             borderRadius: 25,
             borderWidth: 1,
             borderColor: tema ? "red" : "transparent",
+            marginBottom: 15,
+            paddingHorizontal: 15
         },
         diary: {
             width: "75%",
@@ -181,6 +181,8 @@ const Esame = ({ navigation }: any) => {
         box: orientamento === 'portrait' ? {} : {
             display: "flex",
             flexDirection: "row",
+            justifyContent: "space-evenly",
+            flexWrap: "wrap",
         },
         centeredView: {
             flex: 1,
@@ -348,10 +350,10 @@ const Esame = ({ navigation }: any) => {
                 <Text style={[style.text, { marginTop: "10%", marginBottom: orientamento === 'portrait' ? "10%" : "5%" }]} >DIARIO</Text>
                 <TextInput style={style.diary} numberOfLines={3} multiline={true} value={diario} onChangeText={setDiario} />
                 <View style={style.buttons}>
-                    <TouchableOpacity onPress={submit} style={[style.confirm, style.button, { flex: 1 }]}>
+                    <TouchableOpacity onPress={submit} style={[style.confirm, style.button, {width: "33%"}]}>
                         <Text style={style.confirmText}>Conferma</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => navigation.goBack()} style={[style.deny, style.button, { flex: 1 }]}>
+                    <TouchableOpacity onPress={() => navigation.goBack()} style={[style.deny, style.button,{width: "33%"}]}>
                         <Text style={style.denyText}>Annulla</Text>
                     </TouchableOpacity>
                 </View>

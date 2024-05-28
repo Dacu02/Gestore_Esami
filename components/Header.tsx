@@ -39,7 +39,10 @@ const style = StyleSheet.create({
 
     return (
         <View style={style.header}>
-            <FontAwesomeIcon size={60} icon={faGraduationCap} color={secondary_color} />
+            {
+                props.icon && props.icon==true ? 
+                <FontAwesomeIcon size={60} icon={faGraduationCap} color={secondary_color} /> : null
+            }
             <View style={style.headerInside}>
                 {props.leftIcon ? <TouchableOpacity onPress={props.onPressLeft}>
                     <FontAwesomeIcon size={30} icon={props.leftIcon} color={secondary_color} style={style.icon} />
