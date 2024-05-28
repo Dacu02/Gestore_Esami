@@ -13,6 +13,7 @@ import {
 import Esame from './components/Esame'
 import { DataBase } from './components/DataBase'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Input from './components/Input'
 import Statistiche from './components/Statistiche'
 
 
@@ -32,8 +33,8 @@ function App(): React.JSX.Element {
         <Stack.Navigator initialRouteName='Esame' screenOptions={{headerShown: false}} >
           <Stack.Screen name="Esame" component={Esame}/>
           <Stack.Screen name="ListaEsami" component={ListaEsami} />
-          <Stack.Screen name="AggiungiEsame" component={AggiungiEsame} />
           <Stack.Screen name="Statistiche" component={Statistiche} />
+          <Stack.Screen name="Input" component={Input} />
         </Stack.Navigator>
       </NavigationContainer>
     </DataBase>
