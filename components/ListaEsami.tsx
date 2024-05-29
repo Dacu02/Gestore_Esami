@@ -1,5 +1,6 @@
 
 import React, { useContext, useState , useEffect } from "react";
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StyleSheet, Text, Image, View, FlatList, TouchableOpacity, Modal, TextInput } from "react-native";
 import { DataBaseContext } from "./DataBase";
@@ -83,8 +84,8 @@ export default function ListaEsami() {
             <View style={styles.immagineContainer}>
                 <Image source={item.image} style={styles.immagine} />
                 <TouchableOpacity onPress={() => toggleModal(item.noteId)}>
-                    <View style={[styles.diario, { borderColor: item.voto ? "#4c74dc" : "#f0b904" }]}>
-                        <Text style={styles.diarioText}>Diario</Text>
+                    <View style={[styles.diario, { backgroundColor: item.voto ? "#bacdff" : "#ffe491" }]}>
+                        <Text style={[styles.diarioText, {color:item.voto ? "#4c74dc":"#ffa600"}]}>Diario</Text>
                     </View>
                 </TouchableOpacity>
             </View>
@@ -194,7 +195,7 @@ const styles = StyleSheet.create({
     },
     diario: {
         marginTop: 5,
-        borderWidth: 2,
+       
         borderRadius: 30,
         width: 60,
         height: 30,
@@ -204,7 +205,8 @@ const styles = StyleSheet.create({
     diarioText: {
         fontSize: 14,
         fontWeight: '600',
-        color: 'black',
+        color: '#4c74dc',
+
     },
     progressoEsame: {
         height: 34,
