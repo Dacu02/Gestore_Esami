@@ -29,7 +29,6 @@ const Input = ({ navigation }: any) => {
     const [data, setData] = useState(new Date())
     const [dataoraInputted, setDataoraInputted] = useState(false)
 
-
     const getTema = async () =>
         (await AsyncStorage.getItem('tema') === 'dark')
 
@@ -125,6 +124,11 @@ const Input = ({ navigation }: any) => {
                     <Campo tema={tema} nome='Docente' value={docente} onChange={setDocente} />
                     <Campo tema={tema} nome='Luogo' value={luogo} onChange={setLuogo} />
 
+                    <View style = {style.diario}>
+                    <Text style={[style.text]} >DIARIO</Text>
+                    <TextInput style={style.diary} placeholder='Inserisci Informazioni Esame' placeholderTextColor="#888" numberOfLines={3} multiline={true} value={diario} onChangeText={setDiario} />
+                    </View>
+
 
                     <Modal
                         animationType='slide'
@@ -177,6 +181,7 @@ const Input = ({ navigation }: any) => {
                             <Text onPress={() => navigation.goBack()} style={style.denyText}>ANNULLA</Text>
                         </TouchableOpacity>
                     </View>
+
                 </View>
                 {err ? <Text style={style.errorMessage}>{err}</Text> : null}
             </ImageBackground>
@@ -202,7 +207,7 @@ const style = StyleSheet.create({
     },
 
     confirm: {
-        backgroundColor: 'green',
+        backgroundColor: '#355181',
         borderRadius: 5,
         margin: 20,
         padding: 10,
@@ -301,18 +306,47 @@ const style = StyleSheet.create({
         shadowRadius: 4,
         elevation: 5,
     },
+
+    diario: {
+        width: '90%'
+    },
+
+    text: {
+        fontSize: 15,
+        color: 'white',
+        fontWeight: 'bold',
+        marginBottom: 10,
+        marginLeft: 25
+    },
+
+    diary: {
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+        width: "90%",
+        padding: 0,
+        borderRadius: 15,
+        margin: "auto",
+        fontSize: 15,
+        backgroundColor: 'white'
+    },
+
     errorMessage: {
-        color: "red",
+        color: "#CC3337",
+        fontWeight: 'bold',
         textAlign: "center",
         paddingTop: 3,
         margin: 'auto',
-        marginTop: 20,
-        borderRadius: 25,
-        borderWidth: 1,
+        marginTop: 10,
         fontSize: 20,
         backgroundColor: 'transparent',
         borderColor: "red",
-        marginBottom: 15,
+        marginBottom: 10,
         paddingHorizontal: 15
     },
 })
