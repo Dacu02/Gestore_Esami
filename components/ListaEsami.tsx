@@ -1,14 +1,13 @@
-
 import React, { useContext, useState , useEffect } from "react";
-
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StyleSheet, Text, Image, View, FlatList, TouchableOpacity, Modal, TextInput } from "react-native";
 import { DataBaseContext } from "./DataBase";
 import { useNavigation } from "@react-navigation/native";
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faArrowLeft, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { primary_color, secondary_color, tertiary_color } from "../global";
 
-export default function ListaEsami() {
+const ListaEsami = () => {
 
     const esame = [
         { id: 1, name: 'Analisi I', corso: 'Ingegneria Informatica', image: require('../immaginiEsami/Esame.png'), voto: "28", CFU: 9, dataSuperamento: '15/12/2024', profEsame: 'Prof.De Risi', ora: '10:00', luogo: 'Aula 21', tipologia: 'Scritto', noteId:1 },
@@ -33,6 +32,24 @@ export default function ListaEsami() {
         // Carica le note salvate da AsyncStorage 
         loadNotes();
     }, []);
+
+    const getTema = async () =>
+        (await AsyncStorage.getItem('tema') === 'dark')
+
+    const [tema, setTema] = useState(true)
+
+    useEffect(() => {
+        getTema().then(value => setTema(value))
+    }, [])
+
+    const temaStyle = StyleSheet.create({
+        color: {
+            color: tertiary_color(tema),
+        },
+        backgroundColor: {
+            backgroundColor: primary_color(tema),
+        },
+    })
 
     const loadNotes = async () => {
         try {
@@ -79,8 +96,8 @@ export default function ListaEsami() {
         noteId:number| null ,
     }
     
-    const singoloEsame = ({ item }:{item:EsameItem}) => (
-        <View style={styles.item}>
+    const singoloEsame = ({ item }:{item:EsameItem}, props:any) => (
+        <View style={[styles.item, {backgroundColor: primary_color(props.tema)}]}>
             <View style={styles.immagineContainer}>
                 <Image source={item.image} style={styles.immagine} />
                 <TouchableOpacity onPress={() => toggleModal(item.noteId)}>
@@ -287,3 +304,6 @@ const styles = StyleSheet.create({
         color: 'white',
     },
 });
+
+
+export default ListaEsami
