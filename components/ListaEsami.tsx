@@ -1,21 +1,39 @@
-import React, { useContext, useState , useEffect } from "react";
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { StyleSheet, Text, Image, View, FlatList, TouchableOpacity, Modal, TextInput, Pressable } from "react-native";
-import { DataBaseContext } from "./DataBase";
-import { useNavigation } from "@react-navigation/native";
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faArrowLeft, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { primary_color, secondary_color, tertiary_color } from "../global";
-
+import React, { useContext, useState , useEffect } from "react"
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { StyleSheet, Text, Image, View, FlatList, TouchableOpacity, Modal, TextInput, Pressable } from "react-native"
+import { DataBaseContext } from "./DataBase"
+import { useNavigation } from "@react-navigation/native"
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
+import { faArrowLeft, faTimes } from '@fortawesome/free-solid-svg-icons'
+import { primary_color, secondary_color, tertiary_color } from "../global"
+import SQLite from 'react-native-sqlite-storage'
+import { getFormatedDate } from "react-native-modern-datepicker"
 const ListaEsami = () => {
 
-    const esame = [
-        { id: 1, name: 'Analisi I', corso: 'Ingegneria Informatica', image: require('../immaginiEsami/Esame.png'), voto: "28", CFU: 9, dataSuperamento: '15/12/2024', profEsame: 'Prof.De Risi', ora: '10:00', luogo: 'Aula 21', tipologia: 'Scritto', noteId:1 },
-        { id: 2, name: 'Mobile Programming', corso: 'Ingegneria Informatica', image: require('../immaginiEsami/Esame.png'), voto: "18", CFU: 12, dataSuperamento: '01/06/2024', profEsame: 'Prof.Petrone', ora: '10:00', luogo: 'Aula 21', tipologia: 'Scritto', noteId:2 },
-        { id: 3, name: 'Basi di dati', corso: 'Ingegneria Informatica', image: require('../immaginiEsami/Esame.png'), voto: "25", CFU: 6, dataSuperamento: '08/10/2024', profEsame: 'Prof.Carosetti', ora: '10:00', luogo: 'Aula 21', tipologia: 'Scritto', noteId:3 },
-        { id: 4, name: 'Programmazione ad oggetti', corso: 'Ingegneria Informatica', image: require('../immaginiEsami/EsameInAttesa.png'), voto: null, CFU: 6, dataSuperamento: null, profEsame: 'Prof.Bianchi', ora: null, luogo: null, tipologia: 'Scritto', noteId:4 },
-        { id: 5, name: 'Fisica II', corso: 'Ingegneria Informatica', image: require('../immaginiEsami/EsameInAttesa.png'), voto: null, CFU: 9, dataSuperamento: null, profEsame: 'Prof.Rossi', ora: null, luogo: null, tipologia: 'Scritto' , noteId:5},
-    ];
+    /*const esame = [
+        { id: 1, name: 'Analisi I', corso: 'Ingegneria Informatica', image: require('../immaginiEsami/Esame.png'), voto: "28", CFU: 9, dataSuperamento: '15/12/2024', profEsame: 'Prof.De Risi', ora: '10:00', luogo: 'Aula 21', tipologia: 'Scritto', diario:1 },
+        { id: 2, name: 'Mobile Programming', corso: 'Ingegneria Informatica', image: require('../immaginiEsami/Esame.png'), voto: "18", CFU: 12, dataSuperamento: '01/06/2024', profEsame: 'Prof.Petrone', ora: '10:00', luogo: 'Aula 21', tipologia: 'Scritto', diario:2 },
+        { id: 3, name: 'Basi di dati', corso: 'Ingegneria Informatica', image: require('../immaginiEsami/Esame.png'), voto: "25", CFU: 6, dataSuperamento: '08/10/2024', profEsame: 'Prof.Carosetti', ora: '10:00', luogo: 'Aula 21', tipologia: 'Scritto', diario:3 },
+        { id: 4, name: 'Programmazione ad oggetti', corso: 'Ingegneria Informatica', image: require('../immaginiEsami/EsameInAttesa.png'), voto: null, CFU: 6, dataSuperamento: null, profEsame: 'Prof.Bianchi', ora: null, luogo: null, tipologia: 'Scritto', diario:4 },
+        { id: 5, name: 'Fisica II', corso: 'Ingegneria Informatica', image: require('../immaginiEsami/EsameInAttesa.png'), voto: null, CFU: 9, dataSuperamento: null, profEsame: 'Prof.Rossi', ora: null, luogo: null, tipologia: 'Scritto' , diario:5},
+    ];*/
+
+     //interfaccia per gli item altrimenti typescript da problemi
+     interface EsameItem {
+        name: string,
+        corso:string,
+        tipologia:string,
+        image: any,
+        voto: string | null,
+        CFU: number,
+        dataSuperamento: string | null,
+        profEsame:string | null,
+        ora: string | null,
+        luogo:string | null,
+        diario:number| null ,
+    }
+
+    const [esame, setEsame] = useState<EsameItem[]>([])
 
     const db = useContext(DataBaseContext);
     const navigation = useNavigation();
@@ -23,22 +41,45 @@ const ListaEsami = () => {
     const [modalVisible, setModalVisible] = useState(false);
     const [currentNoteId, setCurrentNoteId] = useState();
 
-    const toggleModal = (noteId:any) => {
+    const toggleModal = (diario:any) => {
         setModalVisible(!modalVisible);
-        setCurrentNoteId(noteId);
+        setCurrentNoteId(diario);
     };
 
-    useEffect(() => {
-        // Carica le note salvate da AsyncStorage 
-        loadNotes();
-    }, []);
 
+    const loadData = () => {
+        const data: EsameItem[] = [];
+        (db as SQLite.SQLiteDatabase).transaction((tx) => {
+            tx.executeSql('select * from esame', [], (tx, results) => {
+                for (let i = 0; i < results.rows.length; i++) {
+                    const esame = {
+                        name: results.rows.item(i).nome,
+                        corso: results.rows.item(i).corso,
+                        tipologia: results.rows.item(i).tipologia,
+                        voto: results.rows.item(i).voto,
+                        CFU: results.rows.item(i).cfu,
+                        dataSuperamento: results.rows.item(i).data.split('/').reverse().join('/'),
+                        profEsame: results.rows.item(i).docente,
+                        ora: results.rows.item(i).ora,
+                        luogo: results.rows.item(i).luogo,
+                        diario: results.rows.item(i).diario,
+                        image: results.rows.item(i).data < getFormatedDate(new Date(), 'YYY/MM/DD') ? require('../immaginiEsami/Esame.png') : require('../immaginiEsami/EsameInAttesa.png')
+                    }
+                    data.push(esame);
+                }
+            });
+            setEsame(data);
+            console.log('end')
+        });
+    }
     const getTema = async () =>
         (await AsyncStorage.getItem('tema') === 'dark')
 
     const [tema, setTema] = useState(true)
 
     useEffect(() => {
+        loadData()
+        console.log('useEffect')
         getTema().then(value => setTema(value))
     }, [])
 
@@ -72,21 +113,7 @@ const ListaEsami = () => {
             saveNotes(updateNotes);
     };
 
-    //interfaccia per gli item altrimenti typescript da problemi
-    interface EsameItem {
-        id: number,
-        name: string,
-        corso:string,
-        tipologia:string,
-        image: any,
-        voto: string | null,
-        CFU: number,
-        dataSuperamento: string | null,
-        profEsame:string | null,
-        ora: string | null,
-        luogo:string | null,
-        noteId:number| null ,
-    }
+   
 
     style.details = {
         ...style.details,
@@ -97,7 +124,7 @@ const ListaEsami = () => {
         <View style={[style.item, {backgroundColor: primary_color(tema)}]}>
             <View style={style.immagineContainer}>
                 <Image source={item.image} style={style.immagine} />
-                <TouchableOpacity onPress={() => toggleModal(item.noteId)}>
+                <TouchableOpacity onPress={() => toggleModal(item.diario)}>
                     <View style={[style.diario,  !tema ? {backgroundColor: item.voto ? "#bacdff" : "#ffe491"} : {borderColor: item.voto ? "#bacdff" : "#ffe491", borderWidth: 2, borderRadius: 25}]}>
                         <Text style={[style.diarioText, {color:item.voto ? "#4c74dc":"#ffa600"}]}>Diario</Text>
                     </View>
@@ -137,7 +164,7 @@ const ListaEsami = () => {
                 data={esame}
                 renderItem={singoloEsame}
                 ItemSeparatorComponent={itemSeparator}
-                keyExtractor={(item) => item.id.toString()}
+                keyExtractor={(_, i) => i.toString()}
             />
             <Modal
                 animationType="fade"
