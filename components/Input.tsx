@@ -1,13 +1,13 @@
-import React, { useContext ,useEffect, createContext, useState } from 'react';
+import React, { useEffect, createContext, useState, useContext } from 'react';
 import { primary_color, secondary_color, tertiary_color } from '../global'
 import { View, StyleSheet, Text, TextInput, Button, TouchableOpacity, ScrollView, Switch, Dimensions, Modal, Pressable } from 'react-native'
 import { ImageBackground } from 'react-native';
 import DatePicker, { getToday, getFormatedDate } from 'react-native-modern-datepicker'
 import TimePicker from '@react-native-community/datetimepicker'
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Campo from './Campo';
-import SQLite from 'react-native-sqlite-storage'
+import Campo from './Campo'
 import { DataBaseContext } from './DataBase'
+import SQLite from 'react-native-sqlite-storage'
 
 
 
@@ -18,7 +18,7 @@ const Input = ({ navigation }: any) => {
 
     const [nome, setNome] = useState("")
     const [corso, setCorso] = useState("")
-    const [voto, setVoto] = useState()
+    const [voto, setVoto] = useState("")
     const [lode, setLode] = useState(false)
     const [cfu, setCfu] = useState("")
     const [tipologia, setTipologia] = useState("")
@@ -27,7 +27,7 @@ const Input = ({ navigation }: any) => {
     const [diario, setDiario] = useState("")
     const [err, setErr] = useState("")
     const [data, setData] = useState(new Date())
-    const [ora, setOra] = useState(new Date())
+    const [dataoraInputted, setDataoraInputted] = useState(false)
 
 
     const getTema = async () =>
@@ -39,71 +39,74 @@ const Input = ({ navigation }: any) => {
         getTema().then(value => setTema(value))
     }, [])
 
+    const timeInput = (v: Date|undefined) => {
+        if (v) {
+            setData(v)
+            setDataoraInputted(true)
+        } 
+        setOpenClock(false)
+    }
 
-    const temaStyle = StyleSheet.create({
-        color: {
-            color: tertiary_color(tema),
-        },
-        backgroundColor: {
-            backgroundColor: primary_color(tema),
-        },
-        appColor: {
-            color: secondary_color,
-        }
-    })
 
     const formatData = (d: String) => {
         const [yyyy, mm, dd] = d.split('/')
-        setData(new Date(parseInt(yyyy), parseInt(mm) - 1, parseInt(dd), 2 )) //Todo sostituire 2 con fuso orario locale
+        setData(new Date(parseInt(yyyy, 10), parseInt(mm, 10) - 1, parseInt(dd, 10)))
     }
-
-    const formatTime = (d: Date) => {
-        setOra(d) //todo Errore di fuso orario, non setta la data
-    }
-
-    console.log(data)
 
     const db = useContext(DataBaseContext)
 
-    const submit = () => {
-        if (nome == "") {
-            setErr("Inserisci il nome dell'esame")
+    const submit = async () => {
+        if(nome === '') {
+            setErr('Nome non può essere vuoto')
             return
         }
-        if (corso == "") {
-            setErr("Inserisci il corso di studi")
+        if (corso === '') {
+            setErr('Corso non può essere vuoto')
             return
         }
-        if (cfu == "") {
-            setErr("Inserisci i CFU")
+        if (cfu === '') {
+            setErr('CFU non può essere vuoto')
             return
         }
-        const d = new Date()
-        if (voto == "" && data < d) {
-            setErr("Inserisci una data futura per un esame non ancora sostenuto")
+        if (parseInt(cfu, 10) < 1) {
+            setErr('CFU deve essere maggiore di 0')
             return
         }
-
-        if (voto == '' && !(voto && !isNaN(voto) && voto > 17 && voto < 31) && data < d) {
-            setErr("Inserisci un voto tra 18 e 30")
+        if (tipologia === '') {
+            setErr('Tipologia non può essere vuota')
             return
         }
-
-
-        if (Object.keys(db).length === 0) { // Se il database è stato inizializzato
-            setErr("Errore interno")
+        if (docente === '') {
+            setErr('Docente non può essere vuoto')
             return
         }
 
         (db as SQLite.SQLiteDatabase).transaction((tx) => {
-            tx.executeSql('insert into esame (nome, corso, cfu, tipologia, docente, voto, lode, data, ora, luogo, diario) values (?,?,?,?,?,?,?,?,?,?,?)',
-                [nome, corso, cfu, tipologia, docente, voto, lode, data.toLocaleDateString(), data.toLocaleTimeString(), luogo, diario], (_: any, res: any) => {
-                    navigation.goBack()
-                }, (err: any) => {
-                    setErr("Esame già presente o dati errati")
-                })
+            let v, lg, ld
+            if (voto === '' || parseInt(voto, 10) < 18 || parseInt(voto, 10) > 30) {
+                    v = 'null'
+                    ld = 'null'
+            }
+            else {
+                v = parseInt(voto, 10)
+                ld = lode
+            }
 
+            if (luogo === '') 
+                lg = 'null'
+            else
+                lg = luogo
+
+            
+            tx.executeSql('insert into esame values(?,?,?,?,?,?,?,?,?,?,?,?,?)', [nome, corso, cfu, tipologia, docente, v, ld, getFormatedDate(data, 'YYYY/MM/DD'), getFormatedDate(data, 'HH:mm'), lg, diario], (tx, res) => {
+                console.log('Valore inserito correttamente')
+                console.log(res)
+            }, (tx, err) => {
+                console.log(err)
+            })
         })
+
+
     }
 
     return (
@@ -152,8 +155,8 @@ const Input = ({ navigation }: any) => {
                         <TimePicker
                             mode='time'
                             minuteInterval={5}
-                            value={ora}
-                            onChange={(_, selectedDate) => { (selectedDate ? formatTime(selectedDate) : null); setOpenClock(false) }}
+                            value={data}
+                            onChange={(_, selectedDate) => timeInput(selectedDate)}
                             onError={() => setOpenClock(false)}
                         /> : null
                     }
@@ -161,9 +164,7 @@ const Input = ({ navigation }: any) => {
                     <View style={style.calendarContainer}>
                         <TouchableOpacity onPress={() => setOpenCalendar(true)}>
                             <Text style={style.dataora}>
-                                {getFormatedDate(data, "YYYY/MM/DD")
-                                ? `Data & Ora: ${getFormatedDate(data, "YYYY/MM/DD")} ${ora} `
-                                : 'INSERISCI DATA & ORA'}
+                                {!dataoraInputted ? 'Inserisci Data & Ora' : getFormatedDate(data, "DD/MM/YYYY HH:MM")}
                             </Text>
                         </TouchableOpacity>
                     </View>
@@ -177,6 +178,7 @@ const Input = ({ navigation }: any) => {
                         </TouchableOpacity>
                     </View>
                 </View>
+                {err ? <Text style={style.errorMessage}>{err}</Text> : null}
             </ImageBackground>
         </ScrollView>
     )
@@ -193,9 +195,6 @@ const style = StyleSheet.create({
         alignItems: 'center',
         paddingTop: 10
     },
-
-
-
 
     buttons: {
         display: 'flex',
@@ -301,7 +300,21 @@ const style = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 4,
         elevation: 5,
-    }
+    },
+    errorMessage: {
+        color: "red",
+        textAlign: "center",
+        paddingTop: 3,
+        margin: 'auto',
+        marginTop: 20,
+        borderRadius: 25,
+        borderWidth: 1,
+        fontSize: 20,
+        backgroundColor: 'transparent',
+        borderColor: "red",
+        marginBottom: 15,
+        paddingHorizontal: 15
+    },
 })
 
 export default Input;
