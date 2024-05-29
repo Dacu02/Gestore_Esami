@@ -195,7 +195,6 @@ const styles = StyleSheet.create({
     },
     diario: {
         marginTop: 5,
-       
         borderRadius: 30,
         width: 60,
         height: 30,
