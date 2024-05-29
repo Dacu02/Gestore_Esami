@@ -176,8 +176,7 @@ const Esame = ({ navigation }: any) => {
             height: "100%",
             display: "flex",
             justifyContent: "center",
-            backgroundColor: primary_color(tema),
-            opacity: 0.90,
+            backgroundColor: primary_color(tema)+'d0',
         },
         modalTitle: {
             fontSize: 20,
@@ -190,7 +189,7 @@ const Esame = ({ navigation }: any) => {
             flexDirection: orientamento === 'portrait' ? "column" : "row",
         },
         modalView: {
-            backgroundColor: 'primary_color(tema)',
+            backgroundColor: primary_color(tema),
             margin: "auto",
             padding: 20,
             borderRadius: 20,
