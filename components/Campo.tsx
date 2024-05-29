@@ -4,11 +4,11 @@ import { primary_color, tertiary_color } from '../global';
 
 const Campo = (props: any) => (
     <View style={style.row}>
-        <Text style={[style.text, {color: tertiary_color(props.tema)}]}>{props.nome.toUpperCase()}</Text>
+        <Text style={[style.text, {color: primary_color(props.tema)}]}>{props.nome.toUpperCase()}</Text>
         <TextInput 
             placeholder={"Inserisci " + props.nome}
             placeholderTextColor="#888" 
-            keyboardType={props.tipo ? 'default' : props.tipo} 
+            keyboardType={props.tipo ? props.tipo : 'default'} 
             style={[style.textinput, {backgroundColor: primary_color(props.tema)}]} 
             value={props.value} 
             onChangeText={props.onChange} />

@@ -287,80 +287,80 @@ const Esame = ({ navigation }: any) => {
     }
 
     return (
-        <View style={{ backgroundColor: primary_color(tema) }}>
-            <Header scuro={tema} title="Inserisci esame" />
-            <ScrollView contentContainerStyle={style.container}>
-                <View style={style.box}>
-                    <Riga style={style} testo="Nome" type="default" value={nome} setValue={setNome} />
-                    <Riga style={style} testo="Corso" type="default" value={corso} setValue={setCorso} />
-                    <Riga style={style} testo="Voto" type="numeric" value={voto} setValue={(v: string) => { setNumero(v, setVoto); setLode(false) }} />
-                </View>
-                {voto && !isNaN(voto) && parseInt(voto) == 30 ?
-                    <View style={style.riga}>
-                        <Text style={style.text}>LODE</Text>
-                        <Switch style={style.switch} thumbColor={secondary_color} value={lode} onValueChange={setLode} />
+            <View style={{ backgroundColor: primary_color(tema) }}>
+                <Header scuro={tema} title="Inserisci esame" />
+                <ScrollView contentContainerStyle={style.container}>
+                    <View style={style.box}>
+                        <Riga style={style} testo="Nome" type="default" value={nome} setValue={setNome} />
+                        <Riga style={style} testo="Corso" type="default" value={corso} setValue={setCorso} />
+                        <Riga style={style} testo="Voto" type="numeric" value={voto} setValue={(v: string) => { setNumero(v, setVoto); setLode(false) }} />
                     </View>
-                    : null
-                }
-                <View style={style.box}>
-                    <Riga style={style} testo="CFU" type="numeric" value={cfu} setValue={(v: string) => setNumero(v, setCfu)} />
-                    <Riga style={style} testo="Tipologia" type="default" value={tipologia} setValue={setTipologia} />
-                    <Riga style={style} testo="Docente" type="default" value={docente} setValue={setDocente} />
-                    <Riga style={style} testo="Luogo" type="default" value={luogo} setValue={(v: string) => setLuogo(v)} />
-                </View>
+                    {voto && !isNaN(voto) && parseInt(voto) == 30 ?
+                        <View style={style.riga}>
+                            <Text style={style.text}>LODE</Text>
+                            <Switch style={style.switch} thumbColor={secondary_color} value={lode} onValueChange={setLode} />
+                        </View>
+                        : null
+                    }
+                    <View style={style.box}>
+                        <Riga style={style} testo="CFU" type="numeric" value={cfu} setValue={(v: string) => setNumero(v, setCfu)} />
+                        <Riga style={style} testo="Tipologia" type="default" value={tipologia} setValue={setTipologia} />
+                        <Riga style={style} testo="Docente" type="default" value={docente} setValue={setDocente} />
+                        <Riga style={style} testo="Luogo" type="default" value={luogo} setValue={(v: string) => setLuogo(v)} />
+                    </View>
 
-                <View style={style.calendarContainer}>
-                    <TouchableOpacity onPress={()=>setOpenCalendar(true)}>
-                        <Text style={style.dataora}>INSERISCI DATA & ORA</Text>
-                    </TouchableOpacity>
-                </View>
-                <Modal
-                    animationType='slide'
-                    transparent={true}
-                    visible={openCalendar}
-                    onRequestClose={() => setOpenCalendar(false)}
-                >
-                    <Pressable onPress={() => setOpenCalendar(false)} style={style.centeredView} android_disableSound={true} android_ripple={{ color: 'transparent' }}>
-                        <Pressable style={style.modalView} onPress={(e) => e.preventDefault()} android_disableSound={true} android_ripple={{ color: 'transparent' }}>
-                            <DatePicker
-                                mode='calendar'
-                                selected={data.toString()}
-                                onDateChange={()=>{setOpenCalendar(false);setOpenClock(true)}}
-                                options={{
-                                    backgroundColor: primary_color(tema),
-                                    textHeaderColor: secondary_color,
-                                    mainColor: secondary_color,
-                                    borderColor: secondary_color,
-                                    textDefaultColor: tertiary_color(tema),
-                                    textSecondaryColor: secondary_color,
-                                }}
-                            />
+                    <View style={style.calendarContainer}>
+                        <TouchableOpacity onPress={()=>setOpenCalendar(true)}>
+                            <Text style={style.dataora}>INSERISCI DATA & ORA</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <Modal
+                        animationType='slide'
+                        transparent={true}
+                        visible={openCalendar}
+                        onRequestClose={() => setOpenCalendar(false)}
+                    >
+                        <Pressable onPress={() => setOpenCalendar(false)} style={style.centeredView} android_disableSound={true} android_ripple={{ color: 'transparent' }}>
+                            <Pressable style={style.modalView} onPress={(e) => e.preventDefault()} android_disableSound={true} android_ripple={{ color: 'transparent' }}>
+                                <DatePicker
+                                    mode='calendar'
+                                    selected={data.toString()}
+                                    onDateChange={()=>{setOpenCalendar(false);setOpenClock(true)}}
+                                    options={{
+                                        backgroundColor: primary_color(tema),
+                                        textHeaderColor: secondary_color,
+                                        mainColor: secondary_color,
+                                        borderColor: secondary_color,
+                                        textDefaultColor: tertiary_color(tema),
+                                        textSecondaryColor: secondary_color,
+                                    }}
+                                />
+                            </Pressable>
                         </Pressable>
-                    </Pressable>
-                </Modal>
-                {openClock ?
-                    <TimePicker
-                        mode='time'
-                        value={ora}
-                        minuteInterval={5}
-                        onChange={(_, selectedDate) => {(selectedDate?setOra(selectedDate):null);setOpenClock(false)}}
-                        onError={()=>setOpenClock(false)}
-                    /> : null
-                }
-                <Text style={[style.text, { marginTop: "10%", marginBottom: orientamento === 'portrait' ? "10%" : "5%" }]} >DIARIO</Text>
-                <TextInput style={style.diary} numberOfLines={3} multiline={true} value={diario} onChangeText={setDiario} />
-                <View style={style.buttons}>
-                    <TouchableOpacity onPress={submit} style={[style.confirm, style.button, {width: "33%"}]}>
-                        <Text style={style.confirmText}>Conferma</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => navigation.goBack()} style={[style.deny, style.button,{width: "33%"}]}>
-                        <Text style={style.denyText}>Annulla</Text>
-                    </TouchableOpacity>
-                </View>
-                {err ? <Text style={style.errorMessage}>{err}</Text> : null}
-                <View style={{ height: "10%" }} />
-            </ScrollView>
-        </View>
+                    </Modal>
+                    {openClock ?
+                        <TimePicker
+                            mode='time'
+                            value={ora}
+                            minuteInterval={5}
+                            onChange={(_, selectedDate) => {(selectedDate?setOra(selectedDate):null);setOpenClock(false)}}
+                            onError={()=>setOpenClock(false)}
+                        /> : null
+                    }
+                    <Text style={[style.text, { marginTop: "10%", marginBottom: orientamento === 'portrait' ? "10%" : "5%" }]} >DIARIO</Text>
+                    <TextInput style={style.diary} numberOfLines={3} multiline={true} value={diario} onChangeText={setDiario} />
+                    <View style={style.buttons}>
+                        <TouchableOpacity onPress={submit} style={[style.confirm, style.button, {width: "33%"}]}>
+                            <Text style={style.confirmText}>Conferma</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => navigation.goBack()} style={[style.deny, style.button,{width: "33%"}]}>
+                            <Text style={style.denyText}>Annulla</Text>
+                        </TouchableOpacity>
+                    </View>
+                    {err ? <Text style={style.errorMessage}>{err}</Text> : null}
+                    <View style={{ height: "10%" }} />
+                </ScrollView>
+            </View>
     )
 }
 

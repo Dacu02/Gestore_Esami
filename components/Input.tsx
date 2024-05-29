@@ -1,4 +1,4 @@
-import React, { useEffect, createContext, useState } from 'react';
+import React, { useContext ,useEffect, createContext, useState } from 'react';
 import { primary_color, secondary_color, tertiary_color } from '../global'
 import { View, StyleSheet, Text, TextInput, Button, TouchableOpacity, ScrollView, Switch, Dimensions, Modal, Pressable } from 'react-native'
 import { ImageBackground } from 'react-native';
@@ -6,6 +6,8 @@ import DatePicker, { getToday, getFormatedDate } from 'react-native-modern-datep
 import TimePicker from '@react-native-community/datetimepicker'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Campo from './Campo';
+import SQLite from 'react-native-sqlite-storage'
+import { DataBaseContext } from './DataBase'
 
 
 
@@ -61,6 +63,49 @@ const Input = ({ navigation }: any) => {
 
     console.log(data)
 
+    const db = useContext(DataBaseContext)
+
+    const submit = () => {
+        if (nome == "") {
+            setErr("Inserisci il nome dell'esame")
+            return
+        }
+        if (corso == "") {
+            setErr("Inserisci il corso di studi")
+            return
+        }
+        if (cfu == "") {
+            setErr("Inserisci i CFU")
+            return
+        }
+        const d = new Date()
+        if (voto == "" && data < d) {
+            setErr("Inserisci una data futura per un esame non ancora sostenuto")
+            return
+        }
+
+        if (voto == '' && !(voto && !isNaN(voto) && voto > 17 && voto < 31) && data < d) {
+            setErr("Inserisci un voto tra 18 e 30")
+            return
+        }
+
+
+        if (Object.keys(db).length === 0) { // Se il database è stato inizializzato
+            setErr("Errore interno")
+            return
+        }
+
+        (db as SQLite.SQLiteDatabase).transaction((tx) => {
+            tx.executeSql('insert into esame (nome, corso, cfu, tipologia, docente, voto, lode, data, ora, luogo, diario) values (?,?,?,?,?,?,?,?,?,?,?)',
+                [nome, corso, cfu, tipologia, docente, voto, lode, data.toLocaleDateString(), data.toLocaleTimeString(), luogo, diario], (_: any, res: any) => {
+                    navigation.goBack()
+                }, (err: any) => {
+                    setErr("Esame già presente o dati errati")
+                })
+
+        })
+    }
+
     return (
 
         <ScrollView style={style.ex}>
@@ -76,11 +121,7 @@ const Input = ({ navigation }: any) => {
                     <Campo tema={tema} nome='Tipologia' value={tipologia} onChange={setTipologia} />
                     <Campo tema={tema} nome='Docente' value={docente} onChange={setDocente} />
                     <Campo tema={tema} nome='Luogo' value={luogo} onChange={setLuogo} />
-                    <View style={style.calendarContainer}>
-                        <TouchableOpacity onPress={() => setOpenCalendar(true)}>
-                            <Text style={style.dataora}>INSERISCI DATA & ORA</Text>
-                        </TouchableOpacity>
-                    </View>
+
 
                     <Modal
                         animationType='slide'
@@ -111,15 +152,25 @@ const Input = ({ navigation }: any) => {
                         <TimePicker
                             mode='time'
                             minuteInterval={5}
-                            value={data}
+                            value={ora}
                             onChange={(_, selectedDate) => { (selectedDate ? formatTime(selectedDate) : null); setOpenClock(false) }}
                             onError={() => setOpenClock(false)}
                         /> : null
                     }
 
+                    <View style={style.calendarContainer}>
+                        <TouchableOpacity onPress={() => setOpenCalendar(true)}>
+                            <Text style={style.dataora}>
+                                {getFormatedDate(data, "YYYY/MM/DD")
+                                ? `Data & Ora: ${getFormatedDate(data, "YYYY/MM/DD")} ${ora} `
+                                : 'INSERISCI DATA & ORA'}
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+
                     <View style={style.buttons}>
                         <TouchableOpacity style={style.confirm}>
-                            <Text style={style.confirmText}>CONFERMA</Text>
+                            <Text onPress={submit} style={style.confirmText}>CONFERMA</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={style.deny}>
                             <Text onPress={() => navigation.goBack()} style={style.denyText}>ANNULLA</Text>
