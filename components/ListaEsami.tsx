@@ -1,14 +1,13 @@
-
 import React, { useContext, useState , useEffect } from "react";
-
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { StyleSheet, Text, Image, View, FlatList, TouchableOpacity, Modal, TextInput } from "react-native";
+import { StyleSheet, Text, Image, View, FlatList, TouchableOpacity, Modal, TextInput, Pressable } from "react-native";
 import { DataBaseContext } from "./DataBase";
 import { useNavigation } from "@react-navigation/native";
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faArrowLeft, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { primary_color, secondary_color, tertiary_color } from "../global";
 
-export default function ListaEsami() {
+const ListaEsami = () => {
 
     const esame = [
         { id: 1, name: 'Analisi I', corso: 'Ingegneria Informatica', image: require('../immaginiEsami/Esame.png'), voto: "28", CFU: 9, dataSuperamento: '15/12/2024', profEsame: 'Prof.De Risi', ora: '10:00', luogo: 'Aula 21', tipologia: 'Scritto', noteId:1 },
@@ -33,6 +32,16 @@ export default function ListaEsami() {
         // Carica le note salvate da AsyncStorage 
         loadNotes();
     }, []);
+
+    const getTema = async () =>
+        (await AsyncStorage.getItem('tema') === 'dark')
+
+    const [tema, setTema] = useState(true)
+
+    useEffect(() => {
+        getTema().then(value => setTema(value))
+    }, [])
+
 
     const loadNotes = async () => {
         try {
@@ -78,46 +87,51 @@ export default function ListaEsami() {
         luogo:string | null,
         noteId:number| null ,
     }
-    
+
+    style.details = {
+        ...style.details,
+        color: tema ? tertiary_color(tema) : '#666',
+    }
+
     const singoloEsame = ({ item }:{item:EsameItem}) => (
-        <View style={styles.item}>
-            <View style={styles.immagineContainer}>
-                <Image source={item.image} style={styles.immagine} />
+        <View style={[style.item, {backgroundColor: primary_color(tema)}]}>
+            <View style={style.immagineContainer}>
+                <Image source={item.image} style={style.immagine} />
                 <TouchableOpacity onPress={() => toggleModal(item.noteId)}>
-                    <View style={[styles.diario, { backgroundColor: item.voto ? "#bacdff" : "#ffe491" }]}>
-                        <Text style={[styles.diarioText, {color:item.voto ? "#4c74dc":"#ffa600"}]}>Diario</Text>
+                    <View style={[style.diario,  !tema ? {backgroundColor: item.voto ? "#bacdff" : "#ffe491"} : {borderColor: item.voto ? "#bacdff" : "#ffe491", borderWidth: 2, borderRadius: 25}]}>
+                        <Text style={[style.diarioText, {color:item.voto ? "#4c74dc":"#ffa600"}]}>Diario</Text>
                     </View>
                 </TouchableOpacity>
             </View>
-            <View style={[styles.progressoEsame, { backgroundColor: item.voto ? "#019d3a" : "#f0b904" }]}>
-                <Text style={styles.votoText}>{item.voto ? item.voto : 'N/A'}</Text>
+            <View style={[style.progressoEsame, !tema ? {backgroundColor: item.voto ? "#019d3a" : "#f0b904"} :{borderColor: item.voto ? "#019d3a" : "#f0b904", borderWidth: 2, borderRadius: 25}]}>
+                <Text style={[style.votoText, tema ? {color: item.voto ? "#019d3a" : "#f0b904"} : {}]}>{item.voto ? item.voto : 'N/A'}</Text>
             </View>
-            <View style={styles.infoContainer}>
-                <Text style={styles.name}>{item.name}</Text>
-                <Text style={styles.details}>{item.corso}</Text>
-                <Text style={styles.details}>CFU: {item.CFU}</Text>
-                <Text style={styles.details}>{item.dataSuperamento ? `Data di Superamento: ${item.dataSuperamento}` : 'Esame non ancora superato'}</Text>
-                {item.ora && <Text style={styles.details}>Orario: {item.ora}</Text>}
-                {item.luogo && <Text style={styles.details}>Luogo: {item.luogo}</Text>}
-                <Text style={styles.details}>Tipologia: {item.tipologia}</Text>
-                <Text style={styles.details}>{item.profEsame}</Text>
+            <View style={style.infoContainer}>
+                <Text style={[style.name, tema ? {color:'white'} : {}]}>{item.name}</Text>
+                <Text style={style.details}>{item.corso}</Text>
+                <Text style={style.details}>CFU: {item.CFU}</Text>
+                <Text style={style.details}>{item.dataSuperamento ? `Data di Superamento: ${item.dataSuperamento}` : 'Esame non ancora superato'}</Text>
+                {item.ora && <Text style={style.details}>Orario: {item.ora}</Text>}
+                {item.luogo && <Text style={style.details}>Luogo: {item.luogo}</Text>}
+                <Text style={style.details}>Tipologia: {item.tipologia}</Text>
+                <Text style={style.details}>{item.profEsame}</Text>
             </View>
         </View>
     );
 
     const headerComponent = () => (
-        <View style={styles.header}>
+        <View style={style.header}>
             <TouchableOpacity onPress={() => navigation.goBack()}>
-                <FontAwesomeIcon icon={faArrowLeft} style={styles.backIcon} />
+                <FontAwesomeIcon icon={faArrowLeft} style={style.backIcon} />
             </TouchableOpacity>
-            <Text style={styles.listHeadline}>Lista Esami</Text>
+            <Text style={style.listHeadline}>Lista Esami</Text>
         </View>
     );
 
-    const itemSeparator = () => <View style={styles.separator}></View>;
+    const itemSeparator = () => <View style={style.separator}></View>;
 
     return (
-        <View style={styles.container}>
+        <View style={[style.container, {backgroundColor: primary_color(tema)}]}>
             <FlatList
                 ListHeaderComponent={headerComponent}
                 data={esame}
@@ -126,36 +140,36 @@ export default function ListaEsami() {
                 keyExtractor={(item) => item.id.toString()}
             />
             <Modal
-                animationType="slide"
+                animationType="fade"
                 transparent={true}
                 visible={modalVisible}
                 onRequestClose={() => setModalVisible(!modalVisible)}
             >
-                <View style={styles.modalContainer}>
-                    <View style={styles.modalContent}>
-                        <Text style={styles.modalTitle}>Diario</Text>
-                        <TouchableOpacity style={styles.closeButton} onPress={() => toggleModal(null)}>
-                            <FontAwesomeIcon icon={faTimes} style={styles.closeButtonIcon} />
+                <Pressable android_disableSound={true} android_ripple={{ color: 'transparent' }} onPress={toggleModal} style={[style.modalContainer, {backgroundColor: primary_color(tema)+'d0'}]}>
+                    <Pressable style={[style.modalContent, {backgroundColor: primary_color(tema)}]}>
+                        <Text style={[style.modalTitle, {color: tema?'white':'black'}]}>Diario</Text>
+                        <TouchableOpacity style={[style.closeButton, tema ? {borderColor: 'red', borderWidth: 2}: {backgroundColor: 'red'}]} onPress={toggleModal}>
+                            <FontAwesomeIcon icon={faTimes} style={{color: tema ? 'red' : 'white'}} />
                         </TouchableOpacity>
                         <TextInput
-                            style={styles.textInput}
+                            style={[style.textInput, {color: tertiary_color(tema)}]}
                             multiline
+                            placeholderTextColor={tertiary_color(tema)+'70'}
                             numberOfLines={4}
                             onChangeText={handleNoteChange}
                             value={currentNoteId ? notes[currentNoteId] || '' : ''}
                             placeholder="Scrivi qui le tue note..."
                         />
-                    </View>
-                </View>
+                    </Pressable>
+                </Pressable>
             </Modal>
         </View>
     );
 }
 
-const styles = StyleSheet.create({
+const style = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#f9f9f9',
     },
     header: {
         flexDirection: 'row',
@@ -181,7 +195,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         paddingVertical: 15,
         paddingHorizontal: 10,
-        backgroundColor: '#fff',
     },
     immagineContainer: {
         alignItems: 'center',
@@ -232,12 +245,13 @@ const styles = StyleSheet.create({
     },
     details: {
         fontSize: 14,
-        color: '#666',
+        color: '#666'
     },
     separator: {
         height: 1,
         width: '100%',
-        backgroundColor: '#CCC',
+        backgroundColor: secondary_color,
+
     },
     modalContainer: {
         flex: 1,
@@ -254,7 +268,6 @@ const styles = StyleSheet.create({
     modalTitle: {
         fontSize: 18,
         fontWeight: 'bold',
-        color: 'black',
         position: 'absolute',
         top: 10,
         left: 10,
@@ -264,7 +277,7 @@ const styles = StyleSheet.create({
         width: '100%',
         maxWidth:200,
         height: 100,
-        borderColor: '#ccc',
+        borderColor: secondary_color,
         borderWidth: 1,
         borderRadius: 5,
         padding: 10,
@@ -279,10 +292,9 @@ const styles = StyleSheet.create({
         height: 25,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: 'red',
         borderRadius: 100,
     },
-    closeButtonIcon: {
-        color: 'white',
-    },
 });
+
+
+export default ListaEsami
