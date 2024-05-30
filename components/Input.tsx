@@ -96,8 +96,6 @@ const Input = ({ navigation }: any) => {
                 lg = 'null'
             else
                 lg = luogo
-
-            
             
             tx.executeSql('insert into esame values(?,?,?,?,?,?,?,?,?,?,?,?,?)', [nome, corso, cfu, tipologia, docente, v, ld, getFormatedDate(data, 'YYYY/MM/DD'), getFormatedDate(data, 'HH:mm'), lg, diario], (tx, res) => {
                 console.log('Valore inserito correttamente')

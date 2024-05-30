@@ -26,7 +26,9 @@ export const DataBase = ({ children }: any) => {
                     'luogo varchar(60),' + //luogo del'esame
                     'diario text,' + //note personali
                     'check ((lode and voto=30) or not lode));') //lode solo con 30
-                tx.executeSql("insert into esame values ('Analisi 1','Matematica','9','scritto','Prof. Rossi','30','1','2021/01/15','09:00','Aula 1', 'ciao');") //! DEBUG
+                tx.executeSql("insert into esame values ('Analisi 1','Matematica','9','scritto','Prof. Rossi','30','1','2021/01/15','19:00','Aula 1', 'ciao');") //! DEBUG
+                tx.executeSql("insert into esame values ('Analisi 2','Matematica','9','orale','Prof. Rossi', null,'1','2024/06/01','15:30','Aula 2', 'prossimo');") //! DEBUG
+                tx.executeSql("insert into esame values ('Fisica 1','Matematica','9','orale e scritto','Prof. De Risi', null,'1','2024/05/01','10:00','Aula 2', 'esempio esame non mantenuto aggiornato dall\'utente');") //! DEBUG
                 setDB(dbc);
             })
         }

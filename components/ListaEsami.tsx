@@ -11,11 +11,11 @@ import { getFormatedDate } from "react-native-modern-datepicker"
 const ListaEsami = () => {
 
     /*const esame = [
-        { id: 1, name: 'Analisi I', corso: 'Ingegneria Informatica', image: require('../immaginiEsami/Esame.png'), voto: "28", CFU: 9, dataSuperamento: '15/12/2024', profEsame: 'Prof.De Risi', ora: '10:00', luogo: 'Aula 21', tipologia: 'Scritto', diario:1 },
-        { id: 2, name: 'Mobile Programming', corso: 'Ingegneria Informatica', image: require('../immaginiEsami/Esame.png'), voto: "18", CFU: 12, dataSuperamento: '01/06/2024', profEsame: 'Prof.Petrone', ora: '10:00', luogo: 'Aula 21', tipologia: 'Scritto', diario:2 },
-        { id: 3, name: 'Basi di dati', corso: 'Ingegneria Informatica', image: require('../immaginiEsami/Esame.png'), voto: "25", CFU: 6, dataSuperamento: '08/10/2024', profEsame: 'Prof.Carosetti', ora: '10:00', luogo: 'Aula 21', tipologia: 'Scritto', diario:3 },
-        { id: 4, name: 'Programmazione ad oggetti', corso: 'Ingegneria Informatica', image: require('../immaginiEsami/EsameInAttesa.png'), voto: null, CFU: 6, dataSuperamento: null, profEsame: 'Prof.Bianchi', ora: null, luogo: null, tipologia: 'Scritto', diario:4 },
-        { id: 5, name: 'Fisica II', corso: 'Ingegneria Informatica', image: require('../immaginiEsami/EsameInAttesa.png'), voto: null, CFU: 9, dataSuperamento: null, profEsame: 'Prof.Rossi', ora: null, luogo: null, tipologia: 'Scritto' , diario:5},
+        { id: 1, name: 'Analisi I', corso: 'Ingegneria Informatica', image: require('../immaginiEsami/Esame.png'), voto: "28", CFU: 9, data: '15/12/2024', profEsame: 'Prof.De Risi', ora: '10:00', luogo: 'Aula 21', tipologia: 'Scritto', diario:1 },
+        { id: 2, name: 'Mobile Programming', corso: 'Ingegneria Informatica', image: require('../immaginiEsami/Esame.png'), voto: "18", CFU: 12, data: '01/06/2024', profEsame: 'Prof.Petrone', ora: '10:00', luogo: 'Aula 21', tipologia: 'Scritto', diario:2 },
+        { id: 3, name: 'Basi di dati', corso: 'Ingegneria Informatica', image: require('../immaginiEsami/Esame.png'), voto: "25", CFU: 6, data: '08/10/2024', profEsame: 'Prof.Carosetti', ora: '10:00', luogo: 'Aula 21', tipologia: 'Scritto', diario:3 },
+        { id: 4, name: 'Programmazione ad oggetti', corso: 'Ingegneria Informatica', image: require('../immaginiEsami/EsameInAttesa.png'), voto: null, CFU: 6, data: null, profEsame: 'Prof.Bianchi', ora: null, luogo: null, tipologia: 'Scritto', diario:4 },
+        { id: 5, name: 'Fisica II', corso: 'Ingegneria Informatica', image: require('../immaginiEsami/EsameInAttesa.png'), voto: null, CFU: 9, data: null, profEsame: 'Prof.Rossi', ora: null, luogo: null, tipologia: 'Scritto' , diario:5},
     ];*/
 
      //interfaccia per gli item altrimenti typescript da problemi
@@ -26,11 +26,11 @@ const ListaEsami = () => {
         image: any,
         voto: string | null,
         CFU: number,
-        dataSuperamento: string | null,
+        data: string
         profEsame:string | null,
         ora: string | null,
-        luogo:string | null,
-        diario:number| null ,
+        luogo:string,
+        diario: string | null,
     }
 
     const [esame, setEsame] = useState<EsameItem[]>([])
@@ -48,7 +48,7 @@ const ListaEsami = () => {
 
 
     const loadData = () => {
-        const data: EsameItem[] = [];
+        const dati: EsameItem[] = [];
         (db as SQLite.SQLiteDatabase).transaction((tx) => {
             tx.executeSql('select * from esame', [], (tx, results) => {
                 for (let i = 0; i < results.rows.length; i++) {
@@ -58,18 +58,17 @@ const ListaEsami = () => {
                         tipologia: results.rows.item(i).tipologia,
                         voto: results.rows.item(i).voto,
                         CFU: results.rows.item(i).cfu,
-                        dataSuperamento: results.rows.item(i).data.split('/').reverse().join('/'),
+                        data: results.rows.item(i).data.split('/').reverse().join('/'),
                         profEsame: results.rows.item(i).docente,
                         ora: results.rows.item(i).ora,
                         luogo: results.rows.item(i).luogo,
                         diario: results.rows.item(i).diario,
-                        image: results.rows.item(i).data < getFormatedDate(new Date(), 'YYY/MM/DD') ? require('../immaginiEsami/Esame.png') : require('../immaginiEsami/EsameInAttesa.png')
+                        image: results.rows.item(i).data < getFormatedDate(new Date(), 'YYYY/MM/DD') ? require('../immaginiEsami/Esame.png') : require('../immaginiEsami/EsameInAttesa.png')
                     }
-                    data.push(esame);
+                    dati.push(esame);
                 }
             });
-            setEsame(data);
-            console.log('end')
+            setEsame(dati);
         });
     }
     const getTema = async () =>
@@ -79,7 +78,6 @@ const ListaEsami = () => {
 
     useEffect(() => {
         loadData()
-        console.log('useEffect')
         getTema().then(value => setTema(value))
     }, [])
 
@@ -120,7 +118,14 @@ const ListaEsami = () => {
         color: tema ? tertiary_color(tema) : '#666',
     }
 
-    const singoloEsame = ({ item }:{item:EsameItem}) => (
+    const singoloEsame = ({ item }:{item:EsameItem}) => {
+        const stato = item.voto && parseInt(item.voto) >= 18 ? 1 : item.data.split('/').reverse().join('/') <= getFormatedDate(new Date(),'YYYY/MM/DD') ? 0 : -1
+        /*
+            1 superato con esito positivo
+            0 sostenuto ma non aggiornato
+            -1 non sostenuto ancora
+        */
+        return (
         <View style={[style.item, {backgroundColor: primary_color(tema)}]}>
             <View style={style.immagineContainer}>
                 <Image source={item.image} style={style.immagine} />
@@ -137,14 +142,14 @@ const ListaEsami = () => {
                 <Text style={[style.name, tema ? {color:'white'} : {}]}>{item.name}</Text>
                 <Text style={style.details}>{item.corso}</Text>
                 <Text style={style.details}>CFU: {item.CFU}</Text>
-                <Text style={style.details}>{item.dataSuperamento ? `Data di Superamento: ${item.dataSuperamento}` : 'Esame non ancora superato'}</Text>
+                <Text style={style.details}>{stato===1 ? 'Esame superato' : stato===0? 'Esame sostenuto' : 'Esame non ancora sostenuto'}</Text>
                 {item.ora && <Text style={style.details}>Orario: {item.ora}</Text>}
                 {item.luogo && <Text style={style.details}>Luogo: {item.luogo}</Text>}
                 <Text style={style.details}>Tipologia: {item.tipologia}</Text>
                 <Text style={style.details}>{item.profEsame}</Text>
             </View>
         </View>
-    );
+    )};
 
     const headerComponent = () => (
         <View style={style.header}>

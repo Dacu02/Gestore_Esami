@@ -137,95 +137,6 @@ const Esame = ({ navigation }: any) => {
 
     const [orientamento, setOrientamento] = useState(getOrientamento())
 
-    const style = StyleSheet.create({
-        promemoria: {
-            backgroundColor: tema ? "#222" : "#ddd",
-            padding: 10,
-            margin: 10,
-            borderRadius: 10,
-            borderWidth: 2,
-            borderColor: secondary_color,
-            flex: orientamento == 'portrait' ? undefined : 1,
-        },
-        titoloPromemoria: {
-            fontSize: 20,
-            fontWeight: "bold",
-            color: secondary_color,
-            textAlign: "center",
-        },
-        contenutoPromemoria: {
-            marginLeft: 10,
-        },
-        testoPromemoria: {
-            fontSize: 18,
-            color: tertiary_color(tema),
-        },
-        dataPromemoria: {
-            fontSize: 16,
-            color: secondary_color,
-            textAlign: "right",
-        },
-        luogoPromemoria: {
-            fontSize: 16,
-            color: secondary_color,
-            textAlign: "right",
-        },
-        modal: {
-            margin: "auto",
-            width: "100%",
-            height: "100%",
-            display: "flex",
-            justifyContent: "center",
-            backgroundColor: primary_color(tema)+'d0',
-        },
-        modalTitle: {
-            fontSize: 20,
-            fontWeight: "bold",
-            color: tertiary_color(tema),
-            textAlign: "center",
-        },
-        viewPromemoria: {
-            display: "flex",
-            flexDirection: orientamento === 'portrait' ? "column" : "row",
-        },
-        modalView: {
-            backgroundColor: primary_color(tema),
-            margin: "auto",
-            padding: 20,
-            borderRadius: 20,
-            borderWidth: 2,
-            borderColor: secondary_color,
-            opacity:5
-        },
-        modalRow: {
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginTop: 10,
-            marginBottom: 10,
-        },
-        modalRowText: {
-            color: tertiary_color(tema),
-            fontSize: 16,
-        },
-        modalNumInput: {
-            color: tertiary_color(tema),
-            width: 50,
-            textAlign: "center",
-            marginLeft: 5,
-            marginRight: 5,
-            borderRadius: 5,
-            borderWidth: 1,
-            borderColor: secondary_color,
-        },
-        textColor: {
-            color: tertiary_color(tema),
-        }
-
-    })
-
-
     const testData = [{
         nome: "Esame di Sistemi Operativi",
         corso: "Informatica",
@@ -254,29 +165,75 @@ const Esame = ({ navigation }: any) => {
     return (
         <View style={{ backgroundColor: primary_color(tema), minHeight: "100%" }}>
             <Modal transparent={true} visible={setting} animationType="fade" onRequestClose={chiudiSetting}>
-                <Pressable android_disableSound={true} android_ripple={{ color: 'transparent' }} onPress={chiudiSetting} style={style.modal}>
-                    <Pressable onPress={(e) => e.preventDefault()} style={style.modalView} android_disableSound={true} android_ripple={{ color: 'transparent' }} >
-                        <Text style={style.modalTitle}>Impostazioni</Text>
+                <Pressable android_disableSound={true} android_ripple={{ color: 'transparent' }} onPress={chiudiSetting} style={[style.modal, {backgroundColor: primary_color(tema)+'d0'}]}>
+                    <Pressable onPress={(e) => e.preventDefault()} style={[style.modalView, {backgroundColor: primary_color(tema)}]} android_disableSound={true} android_ripple={{ color: 'transparent' }} >
+                        <Text style={[style.modalTitle, {color: tertiary_color(tema)}]}>Impostazioni</Text>
                         <View style={style.modalRow} >
-                            <Text style={style.modalRowText}>Tema:</Text>
+                            <Text style={[style.modalRowText, {color: tertiary_color(tema)}]}>Tema:</Text>
                             <Switch thumbColor={secondary_color} value={tema} onValueChange={(v) => { setTema(v); AsyncStorage.setItem('tema', v ? 'dark' : 'light') }} trackColor={{ false: 'darkblue', true: 'lightyellow' }} />
                         </View>
                         <View style={style.modalRow}>
-                            <Text style={style.modalRowText}>Notifica promemoria:</Text>
-                            <TextInput style={style.modalNumInput} keyboardType="numeric" value={numNotifica} onChangeText={changeNotifica} />
-                            <SelectList inputStyles={style.textColor} data={lista} search={false} placeholder={notifica} setSelected={setNotifica} />
+                            <Text style={[style.modalRowText, {color: tertiary_color(tema)}]}>Notifica promemoria:</Text>
+                            <TextInput style={[style.modalNumInput, {color: tertiary_color(tema)}]} keyboardType="numeric" value={numNotifica} onChangeText={changeNotifica} />
+                            <SelectList inputStyles={{color: tertiary_color(tema)}} data={lista} search={false} placeholder={notifica} setSelected={setNotifica} />
                         </View>
                     </Pressable>
                 </Pressable>
             </Modal>
             <Header icon={true} title="Lista esami" leftIcon={faGear} onPressLeft={() => setSetting(true)} rightIcon={faCalendarDays} onPressRight={setCalendar} scuro={tema} />
-
-            <View style={style.viewPromemoria}>
+            <View style={[style.viewPromemoria, {flexDirection: orientamento === 'portrait' ? "column" : "row",}]}>
                 {testData.map((esame, index) => <Promemoria key={index} {...esame} style={style} />)}
             </View>
             <Footer navigation={navigation} scuro={tema} />
         </View>
     )
 }
+
+const style = StyleSheet.create({
+    modal: {
+        margin: "auto",
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        justifyContent: "center",
+    },
+    modalTitle: {
+        fontSize: 20,
+        fontWeight: "bold",
+        textAlign: "center",
+    },
+    viewPromemoria: {
+        display: "flex",
+    },
+    modalView: {
+        margin: "auto",
+        padding: 20,
+        borderRadius: 20,
+        borderWidth: 2,
+        borderColor: secondary_color,
+        opacity:5
+    },
+    modalRow: {
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginTop: 10,
+        marginBottom: 10,
+    },
+    modalRowText: {
+        fontSize: 16,
+    },
+    modalNumInput: {
+        width: 50,
+        textAlign: "center",
+        marginLeft: 5,
+        marginRight: 5,
+        borderRadius: 5,
+        borderWidth: 1,
+        borderColor: secondary_color,
+    },
+
+})
 
 export default Esame
