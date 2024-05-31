@@ -65,6 +65,7 @@ const ListaEsami = () => {
                         diario: results.rows.item(i).diario,
                         image: results.rows.item(i).data < getFormatedDate(new Date(), 'YYYY/MM/DD') ? require('../immaginiEsami/Esame.png') : require('../immaginiEsami/EsameInAttesa.png')
                     }
+                    // TODO Finsci il controllo per vedere se l'esame è stato superato
                     dati.push(esame);
                 }
             });
@@ -130,7 +131,7 @@ const ListaEsami = () => {
             <View style={style.immagineContainer}>
                 <Image source={item.image} style={style.immagine} />
                 <TouchableOpacity onPress={() => toggleModal(item.diario)}>
-                    <View style={[style.diario,  !tema ? {backgroundColor: item.voto ? "#bacdff" : "#ffe491"} : {borderColor: item.voto ? "#bacdff" : "#ffe491", borderWidth: 2, borderRadius: 25}]}>
+                    <View style={[style.diario,  {backgroundColor: item.voto ? "#bacdff" : "#ffe491"}]}>
                         <Text style={[style.diarioText, {color:item.voto ? "#4c74dc":"#ffa600"}]}>Diario</Text>
                     </View>
                 </TouchableOpacity>
@@ -143,7 +144,7 @@ const ListaEsami = () => {
                 <Text style={style.details}>{item.corso}</Text>
                 <Text style={style.details}>CFU: {item.CFU}</Text>
                 <Text style={style.details}>{stato===1 ? 'Esame superato' : stato===0? 'Esame sostenuto' : 'Esame non ancora sostenuto'}</Text>
-                {item.ora && <Text style={style.details}>Orario: {item.ora}</Text>}
+                {item.ora && <Text style={style.details}>{item.data} {item.ora}</Text>}
                 {item.luogo && <Text style={style.details}>Luogo: {item.luogo}</Text>}
                 <Text style={style.details}>Tipologia: {item.tipologia}</Text>
                 <Text style={style.details}>{item.profEsame}</Text>

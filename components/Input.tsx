@@ -185,7 +185,7 @@ const Input = ({ navigation }: any) => {
                     </Pressable>
                 </Pressable>
             </Modal>
-            <ImageBackground style={style.image} source={require('../immaginiEsami/Onda2.png')}>
+            <ImageBackground style={style.image} source={tema ? require('../immaginiEsami/OndaBlack2.png') : require('../immaginiEsami/Onda2.png')}>
                 <View style={style.container}>
                     <Campo tema={tema} nome='Nome' value={nome} onChange={setNome} icon={faUser}/>
                     <Campo tema={tema} nome='Corso' value={corso} onChange={setCorso} icon={faUsers}/>
@@ -296,7 +296,7 @@ const Input = ({ navigation }: any) => {
 
                     <View style={style.calendarContainer}>
                         <TouchableOpacity onPress={() => setOpenCalendar(true)}>
-                            <Text style={style.dataora}>
+                            <Text style={[style.dataora, {backgroundColor: primary_color(tema)}]}>
                                 {!dataoraInputted ? 'Inserisci Data & Ora' : getFormatedDate(data, "DD/MM/YYYY HH:mm")}
                             </Text>
                         </TouchableOpacity>
@@ -306,7 +306,7 @@ const Input = ({ navigation }: any) => {
                         <TouchableOpacity style={style.confirm}>
                             <Text onPress={submit} style={style.confirmText}>CONFERMA</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={style.deny}>
+                        <TouchableOpacity style={[style.deny]}>
                             <Text onPress={() => navigation.goBack()} style={style.denyText}>ANNULLA</Text>
                         </TouchableOpacity>
                     </View>
@@ -436,7 +436,6 @@ const style = StyleSheet.create({
         padding: 10,
         fontSize: 20,
         fontWeight: 'bold',
-        backgroundColor: 'white',
         shadowColor: '#000',
         shadowOffset: {
             width: 0,
