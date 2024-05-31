@@ -9,7 +9,7 @@ const Campo = (props: any) => (
          <FontAwesomeIcon
                             icon={props.icon}
                             size={16}
-                            style={[style.icona, {color: primary_color(props.tema)}]}
+                            style={{...style.icona, color: primary_color(props.tema)}}
                             />
         <Text style={[style.text, {color: primary_color(props.tema)}]}>{props.nome.toUpperCase()}</Text>
         </View>
