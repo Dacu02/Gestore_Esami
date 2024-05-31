@@ -198,7 +198,7 @@ const Input = ({ navigation }: any) => {
                         <FontAwesomeIcon
                                 icon={faFilter}
                                 size={16}
-                                style={[style.icona, {color: primary_color(tema)}]}
+                                style={{...style.icona, color: primary_color(tema)}}
                                 />
                         <Text style={[style.selectText, {color: primary_color(tema)}]}>TIPOLOGIA</Text>
                         </View>
@@ -219,7 +219,7 @@ const Input = ({ navigation }: any) => {
                         <FontAwesomeIcon
                             icon={faList}
                             size={16}
-                            style={[style.icona, {color: primary_color(tema)}]}
+                            style={{...style.icona, color: primary_color(tema)}}
                             />
                         <Text style={[style.selectText, {color: primary_color(tema)}]}>CATEGORIA</Text>
                         </View>
