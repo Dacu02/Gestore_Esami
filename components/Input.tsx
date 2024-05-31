@@ -1,18 +1,23 @@
-import React, { useEffect, createContext, useState, useContext } from 'react';
+import React, { useEffect, createContext, useState, useContext } from 'react'
 import { primary_color, secondary_color, tertiary_color } from '../global'
 import { View, StyleSheet, Text, TextInput, Button, TouchableOpacity, ScrollView, Switch, Dimensions, Modal, Pressable, BackHandler } from 'react-native'
 import { ImageBackground } from 'react-native';
 import DatePicker, { getToday, getFormatedDate } from 'react-native-modern-datepicker'
 import TimePicker from '@react-native-community/datetimepicker'
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import Campo from './Campo'
 import { DataBaseContext } from './DataBase'
 import SQLite from 'react-native-sqlite-storage'
 import { Checkbox } from 'react-native-paper';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faPlus,faBook,faUser, faPenNib, faSquarePollVertical,faUsers, faFilter, faUserTie, faLocationDot, faList} from '@fortawesome/free-solid-svg-icons';
-import { SelectList } from 'react-native-dropdown-select-list';
-import { Platform } from 'react-native';
+import { SelectList } from 'react-native-dropdown-select-list'
+import  { MultiSelect }  from 'react-native-element-dropdown'
+import { ColorPicker, fromHsv } from 'react-native-color-picker'
+import Slider from '@react-native-community/slider'
+
+
+import { Platform } from 'react-native'
 
 
 
@@ -38,6 +43,7 @@ const Input = ({ navigation }: any) => {
     const [dataoraInputted, setDataoraInputted] = useState(false)
     const [modalCategory, setModalCategory] = useState(false)
     const [creaCategoria, setCreaCategoria] = useState("")
+    const [color, setColor] = useState('#000000')
     
     const getTema = async () =>
         (await AsyncStorage.getItem('tema') === 'dark')
@@ -161,6 +167,25 @@ const Input = ({ navigation }: any) => {
 
     }
 
+
+    const onCreaCategoria = () => {
+        setModalCategory(false) 
+        setCreaCategoria("")
+        if (creaCategoria !== '' && !listaCategorie.includes(creaCategoria) && !categorieNuove.includes(creaCategoria)) 
+            setCategorieNuove([...categorieNuove, creaCategoria])
+    }
+
+    const getPlaceHolder = () => {
+        if (categoria.length === 0)
+            return 'Seleziona categoria'
+        let str = categoria[0]
+        for(let i = 1; i < categoria.length; i++) 
+            str += ', ' + categoria[i]
+        return str
+    }
+
+    console.log(categoria)
+
     return (
 <>
         <View style={style.header}>
@@ -177,9 +202,17 @@ const Input = ({ navigation }: any) => {
                 <Pressable android_disableSound={true} android_ripple={{ color: primary_color(tema)+'d0' }} onPress={()=>{setModalCategory(false); setCreaCategoria("")}} style={[style.modal, {backgroundColor: primary_color(tema)+'d0'}]}>
                     <Pressable onPress={(e) => e.preventDefault()} style={[style.modalView, {backgroundColor: primary_color(tema)}]} android_disableSound={true} android_ripple={{ color: primary_color(tema) }} >
                         <Text>Inserisci una categoria</Text>
-                        <TextInput value={creaCategoria} onChangeText={setCreaCategoria} style={[style.categoria, {backgroundColor: primary_color(!tema)+'22'}]} placeholderTextColor={primary_color(!tema)+'dd'} placeholder='Nome categoria' />
-                        {/* //TODO color picker */}
-                        <TouchableOpacity style={style.confirm} onPress={()=>{setModalCategory(false); setCreaCategoria(""); listaCategorie.includes(creaCategoria) || categorieNuove.includes(creaCategoria) ? null : setCategorieNuove([...categorieNuove, creaCategoria])}}>
+                        <TextInput 
+                            value={creaCategoria} 
+                            onChangeText={setCreaCategoria} 
+                            style={[style.categoria, {backgroundColor: primary_color(!tema)+'22'}]} 
+                            placeholderTextColor={primary_color(!tema)+'dd'} 
+                            placeholder='Nome categoria' />
+                        <ColorPicker
+                            onColorChange={(hsv)=>setColor(fromHsv(hsv).toString())}
+                            //TODO sliderComponent={<Slider /> }
+                        />
+                        <TouchableOpacity style={style.confirm} onPress={onCreaCategoria}>
                             <Text style={style.confirmText}>Conferma</Text>
                         </TouchableOpacity>
                     </Pressable>
@@ -204,10 +237,10 @@ const Input = ({ navigation }: any) => {
                         </View>
                         <View style={style.innerRow}>
                             <SelectList 
-                                boxStyles={ {backgroundColor: primary_color(tema),width:'100%'}} 
+                                boxStyles={ {borderWidth: 0, backgroundColor: primary_color(tema),width:'100%'}} 
                                 placeholder='Seleziona tipologia' 
                                 inputStyles={{...style.selectInput, color: tipologia !== '' ? tertiary_color(tema) : tertiary_color(tema)+'80'}} 
-                                dropdownStyles={{...style.selectDrop, backgroundColor: primary_color(tema)}} 
+                                dropdownStyles={{...style.selectDrop, backgroundColor: primary_color(tema), borderWidth: 0}} 
                                 setSelected={setTipologia} 
                                 data={['orale', 'scritto', 'scritto e orale']} 
                                 search={false}  
@@ -224,21 +257,53 @@ const Input = ({ navigation }: any) => {
                         <Text style={[style.selectText, {color: primary_color(tema)}]}>CATEGORIA</Text>
                         </View>
                         <View style={style.innerRow}>
-                            <SelectList 
-                                boxStyles={ {backgroundColor: primary_color(tema), width:'86%'}} 
-                                placeholder='Seleziona categoria' 
+                            {/* <MultipleSelectList
+                                boxStyles={{backgroundColor: primary_color(tema), maxWidth:'86%', minWidth: '86%', borderWidth:0}} 
+                                placeholder='Seleziona categoria'
                                 inputStyles={{...style.selectInput, color: categoria.length !== 0 ? tertiary_color(tema) : tertiary_color(tema)+'80' }} 
-                                dropdownStyles={{...style.selectDrop, backgroundColor: primary_color(tema)}} 
-                                setSelected={setCategoria} 
+                                dropdownStyles={{...style.selectDrop, borderWidth: 0, backgroundColor: primary_color(tema)}} 
+                                setSelected={(v:any) => v?setCategoria(v):null} 
                                 data={[...listaCategorie, ...categorieNuove]} 
-                                search={false} 
                                 save='value' 
+                                search={false}
+                                checkBoxStyles={{backgroundColor: primary_color(!tema)+'a0'}}
+                                badgeStyles={{display: 'none'}}
+                                dropdownTextStyles={{color: tertiary_color(tema)}}
+
                                 notFoundText='Nessuna categoria esistente'
-                                />
-                            
-                                <TouchableOpacity style={style.plusIcon} onPress={()=>setModalCategory(true)}>
+                                labelStyles={{display: 'none'}}
+                                maxHeight={120}
+                            /> */}
+                            <MultiSelect
+                                selectedTextStyle={{color: tertiary_color(tema)}}
+                                mode='auto'
+                                search={false}
+                                // data={[...listaCategorie, ...categorieNuove, ]} 
+                                data={[...listaCategorie, ...categorieNuove, 'a', 'b', 'c', 'd', 'e'].map((v) => ({value: v}))}
+                                placeholder={getPlaceHolder()}
+                                labelField={'value'}
+                                valueField={'value'}
+                                value={categoria}
+                                key={'value'}
+                                style={{backgroundColor: primary_color(tema), width: '80%', paddingLeft: 20, borderRadius: 10, marginRight: '7.5%'}}
+                                itemTextStyle={{color: tertiary_color(tema)}}
+                                placeholderStyle={{color: tertiary_color(tema)+'80'}}
+                                onChange={setCategoria}
+                                containerStyle={{backgroundColor: primary_color(tema), borderRadius: 10, borderWidth: 0}}
+                                itemContainerStyle={{backgroundColor: primary_color(tema), borderColor: secondary_color}}
+                                selectedStyle={{display: 'none'}}
+                                activeColor={secondary_color+'bb'}
+                                renderItem={(item, set) => (
+                                    <Text style={style.selectItem}>{item.value}</Text>
+                                )}
+                            />
+                            <View>
+                                {}
+                            </View>
+                                <TouchableOpacity style={[style.plusIcon, {backgroundColor: primary_color(tema)}]} onPress={()=>setModalCategory(true)}>
                                       <FontAwesomeIcon
                                          icon={faPlus}
+                                         color={tertiary_color(tema)}
                                          size={20}
                                       />
                             </TouchableOpacity>
@@ -520,8 +585,7 @@ const style = StyleSheet.create({
         width:20,
         alignItems:'center',
         justifyContent:'center',
-        backgroundColor:'white',
-        borderRadius:10,
+        borderRadius:25,
         padding:20
 
     },
@@ -537,6 +601,10 @@ const style = StyleSheet.create({
     dir: {
         display: 'flex', 
         flexDirection: 'row'
+    },
+    selectItem: {
+        padding: 10,
+        margin: 5,
     }
 })
 
