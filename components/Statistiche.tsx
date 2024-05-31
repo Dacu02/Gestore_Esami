@@ -61,43 +61,27 @@ const Statistiche = () => {
 
     <Text style={style.cardLabel}variant="bodyMedium">Grafico andamento esami</Text>
 
-    <Card.Cover style={style.Cover} source={{ uri: 'https://picsum.photos/700' }} />
-
-  </Card>
-  <Card style={style.Card}>
-    <Card.Content>
-      <Text variant="titleLarge">Analisi</Text>
-      <Text variant="bodyMedium">Andamento esami</Text>
-      <Text variant="titleLarge">Analisi</Text>
-      <Text variant="bodyMedium">Andamento esami</Text>
-      <Text variant="titleLarge">Analisi</Text>
-      <Text variant="bodyMedium">Andamento esami</Text>
-    </Card.Content>
- 
-  </Card>
-        </View>
-        <View>
-  <Text>Grafico degli esiti</Text>
-  <LineChart
+    <LineChart
     data={{
-      labels: ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno"],
+      labels: ["Gen", "Feb", "Mar", "Apr", "Mag", "Giu", "Lug", "Ago", "Set", "Ott", "Nov", "Dic"],
       datasets: [
         {
           data: [
-            Math.random() * 100,
-            Math.random() * 100,
-            Math.random() * 100,
-            Math.random() * 100,
-            Math.random() * 100,
-            Math.random() * 100
+            18,
+            20,
+            22,
+            24,
+            26,
+            28,
+            30
           ]
         }
       ]
     }}
     width={Dimensions.get("window").width} // from react-native
-    height={220}
-    yAxisLabel="$"
-    yAxisSuffix="k"
+    height={280}
+    yAxisLabel=""
+    yAxisSuffix=""
     yAxisInterval={1} // optional, defaults to 1
     chartConfig={{
       backgroundColor: "#e26a00",
@@ -107,7 +91,7 @@ const Statistiche = () => {
       color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
       labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
       style: {
-        borderRadius: 16
+        borderRadius: 16,
       },
       propsForDots: {
         r: "6",
@@ -118,9 +102,16 @@ const Statistiche = () => {
     bezier
     style={{
       marginVertical: 8,
-      borderRadius: 16
+      borderRadius: 16,
+      width:100
     }}
   />
+
+  </Card>
+
+        </View>
+        <View>
+
 </View>
   </ScrollView>
 );
