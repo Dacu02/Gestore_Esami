@@ -194,14 +194,14 @@ const Input = ({ navigation }: any) => {
                     {/* //TODO selettore tipologia orale, scritto, scritto e orale */}
 
                     <View style={style.selectRow}>
-                    
-                        <Text style={[style.selectText, {color: primary_color(tema)}]}>
+                        <View style= {style.dir}>
                         <FontAwesomeIcon
                                 icon={faFilter}
                                 size={16}
-                                style={style.icona}
-                                      />
-                            TIPOLOGIA</Text>
+                                style={[style.icona, {color: primary_color(tema)}]}
+                                />
+                        <Text style={[style.selectText, {color: primary_color(tema)}]}>TIPOLOGIA</Text>
+                        </View>
                         <View style={style.innerRow}>
                             <SelectList 
                                 boxStyles={ {backgroundColor: primary_color(tema),width:'100%'}} 
@@ -215,14 +215,14 @@ const Input = ({ navigation }: any) => {
                         </View>
                     </View>
                     <View style={style.selectRow}>
-                        <Text style={[style.selectText, {color: primary_color(tema)}]}>
-                            <FontAwesomeIcon
+                        <View style={style.dir}>
+                        <FontAwesomeIcon
                             icon={faList}
                             size={16}
-                            style={style.icona}
+                            style={[style.icona, {color: primary_color(tema)}]}
                             />
-                            CATEGORIA
-                            </Text>
+                        <Text style={[style.selectText, {color: primary_color(tema)}]}>CATEGORIA</Text>
+                        </View>
                         <View style={style.innerRow}>
                             <SelectList 
                                 boxStyles={ {backgroundColor: primary_color(tema), width:'86%'}} 
@@ -331,7 +331,6 @@ const style = StyleSheet.create({
     },
     icona:{
         marginRight:10,
-        color:'white'
     },
     modal: {
         margin: "auto",
@@ -533,6 +532,11 @@ const style = StyleSheet.create({
     innerRow: {
         display: 'flex',
         flexDirection: 'row',
+    },
+
+    dir: {
+        display: 'flex', 
+        flexDirection: 'row'
     }
 })
 
