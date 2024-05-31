@@ -248,16 +248,7 @@ const Input = ({ navigation }: any) => {
                     <Campo tema={tema} nome='Docente' value={docente} onChange={setDocente} icon={faUserTie} />
                     <Campo tema={tema} nome='Luogo' value={luogo} onChange={setLuogo} icon={faLocationDot}/>
 
-                    <View style = {style.diario}>
-                    <Text style={[style.text, {color: primary_color(tema)}]} >
-                    <FontAwesomeIcon
-                                 icon={faBook}
-                                 size={16}
-                                 style={style.icona}
-                                      />
-                        DIARIO</Text>
-                    <TextInput style={[style.diary, {backgroundColor: primary_color(tema)}]}  placeholder='Inserisci Informazioni Esame' placeholderTextColor={tertiary_color(tema)+'80'} numberOfLines={3} multiline={true} value={diario} onChangeText={setDiario} />
-                    </View>
+                    <Campo tema={tema} nome='Diario' value={diario} onChange={setDiario} icon={faBook}/>
 
 
                     <Modal
@@ -279,21 +270,27 @@ const Input = ({ navigation }: any) => {
                                         borderColor: secondary_color,
                                         textDefaultColor: tertiary_color(tema),
                                         textSecondaryColor: secondary_color,
+                                        
                                     }}
                                     
                                 />
                             </Pressable>
                         </Pressable>
                     </Modal>
+                    <View style={style.containerOra}>
                     {openClock ?
+                 
                         <TimePicker
                             mode='time'
                             value={data}
                             onChange={(_, selectedDate) => timeInput(selectedDate)}
                             onError={() => setOpenClock(false)}
-                        /> : null
+                            style={style.ora}
+                        /> 
+                        : null
+                        
                     }
-
+                    </View>
                     <View style={style.calendarContainer}>
                         <TouchableOpacity onPress={() => setOpenCalendar(true)}>
                             <Text style={[style.dataora, {backgroundColor: primary_color(tema)}]}>
@@ -320,7 +317,15 @@ const Input = ({ navigation }: any) => {
 }
 
 const style = StyleSheet.create({
-
+    containerOra:{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    ora:{
+        backgroundColor: 'white',
+        borderRadius: 5,      
+    },
     image: {
         flex: 1,
     },
@@ -387,7 +392,8 @@ const style = StyleSheet.create({
     },
 
     ex: {
-        flex: 1
+        flex: 1,
+        
     },
 
     header: {
@@ -427,7 +433,7 @@ const style = StyleSheet.create({
 
     calendarContainer: {
         marginTop: 20,
-        margin: 'auto'
+        margin: 'auto',
     },
     dataora: {
         textAlign: 'center',
@@ -444,12 +450,10 @@ const style = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 4,
         elevation: 5,
+
     },
 
-    diario: {
-        width: '90%',
-        
-    },
+ 
 
     text: {
         fontSize: 15,
