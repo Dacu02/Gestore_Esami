@@ -54,7 +54,8 @@ const Input = ({ navigation }: any) => {
 
     const db = useContext(DataBaseContext)
 
-    const submit = async () => {
+    const submit = () => {
+        setErr('')
         if(nome === '') {
             setErr('Nome non può essere vuoto')
             return
@@ -95,13 +96,12 @@ const Input = ({ navigation }: any) => {
                 lg = 'null'
             else
                 lg = luogo
-
             
             tx.executeSql('insert into esame values(?,?,?,?,?,?,?,?,?,?,?,?,?)', [nome, corso, cfu, tipologia, docente, v, ld, getFormatedDate(data, 'YYYY/MM/DD'), getFormatedDate(data, 'HH:mm'), lg, diario], (tx, res) => {
                 console.log('Valore inserito correttamente')
                 console.log(res)
             }, (tx, err) => {
-                console.log(err)
+                console.error('Errore: ', err.message)
             })
         })
 
@@ -125,8 +125,8 @@ const Input = ({ navigation }: any) => {
                     <Campo tema={tema} nome='Luogo' value={luogo} onChange={setLuogo} />
 
                     <View style = {style.diario}>
-                    <Text style={[style.text]} >DIARIO</Text>
-                    <TextInput style={style.diary} placeholder='Inserisci Informazioni Esame' placeholderTextColor="#888" numberOfLines={3} multiline={true} value={diario} onChangeText={setDiario} />
+                    <Text style={[style.text, {color: primary_color(tema)}]} >DIARIO</Text>
+                    <TextInput style={[style.diary, {backgroundColor: primary_color(tema)}]}  placeholder='Inserisci Informazioni Esame' placeholderTextColor="#888" numberOfLines={3} multiline={true} value={diario} onChangeText={setDiario} />
                     </View>
 
 
@@ -158,7 +158,6 @@ const Input = ({ navigation }: any) => {
                     {openClock ?
                         <TimePicker
                             mode='time'
-                            minuteInterval={5}
                             value={data}
                             onChange={(_, selectedDate) => timeInput(selectedDate)}
                             onError={() => setOpenClock(false)}
@@ -167,8 +166,8 @@ const Input = ({ navigation }: any) => {
 
                     <View style={style.calendarContainer}>
                         <TouchableOpacity onPress={() => setOpenCalendar(true)}>
-                            <Text style={style.dataora}>
-                                {!dataoraInputted ? 'Inserisci Data & Ora' : getFormatedDate(data, "DD/MM/YYYY HH:MM")}
+                            <Text style={[style.dataora, {backgroundColor: primary_color(tema)}]}>
+                                {!dataoraInputted ? 'Inserisci Data & Ora' : getFormatedDate(data, "DD/MM/YYYY HH:mm")}
                             </Text>
                         </TouchableOpacity>
                     </View>

@@ -9,6 +9,7 @@ import SQLite from 'react-native-sqlite-storage'
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { SelectList } from "react-native-dropdown-select-list"
 import Promemoria from "./Promemoria"
+import { getFormatedDate } from "react-native-modern-datepicker"
 
 
 
@@ -20,12 +21,23 @@ const setCalendar = () => {
 
 const Esame = ({ navigation }: any) => {
 
+    interface Notifica {
+        nome: string,
+        corso:string,
+        tipologia:string,
+        cfu: number,
+        data: string
+        docente:string | null,
+        ora: string | null,
+        luogo:string,
+    }
 
     const db = useContext(DataBaseContext)
     const [setting, setSetting] = useState(false)
     const [notifica, setNotifica] = useState('giorni')
     const [numNotifica, setNumNotifica] = useState('7')
     const [lista, setLista] = useState(['giorni', 'settimane', 'mesi'])
+    const [notifiche, setNotifiche] = useState<Notifica[]>([])
 
     const changeNotifica = (value: string) => {
         setNumNotifica(value)
@@ -65,29 +77,7 @@ const Esame = ({ navigation }: any) => {
 
         }
 
-        let tempo:number
-
-        if (notifica.startsWith('giorn'))
-            tempo = parseInt(numNotifica)
-        else if (notifica.startsWith('settiman'))
-            tempo = parseInt(numNotifica)*7
-        else
-            tempo = parseInt(numNotifica)*31
-
-    const current_date = new Date()
-    const max_date = new Date()
-    max_date.setDate(current_date.getDate() + tempo)
-
-    console.log(current_date, max_date);
-
-        (db as SQLite.SQLiteDatabase).transaction((tx)=> {
-            tx.executeSql('select data from esame where data>=current_date order by data desc', [], (t, res)=>{
-                for(let i = 0;i<res.rows.length;i++)
-                    if(res.rows.item(i).data>=Date() && res.rows.item(i).data<=max_date)
-                        console.log(res.rows.item(i).data)
-            })
-            tx.executeSql('select * from esame where data>=current_date and data<=(select current_date + '+tempo+') order by data desc limit 3', [], (_, res) => console.log(res), (_, err)=>console.error(err.code))
-        })
+        aggiornaPromemoria()
     }
 
     
@@ -126,8 +116,50 @@ const Esame = ({ navigation }: any) => {
                 setNotifica('giorni')
                 AsyncStorage.setItem('tipoNotifica', 'giorni')
             }
-        })
+        });
     }, [])
+
+    const aggiornaPromemoria = () => {
+        
+        let tempo:number
+        if (notifica.startsWith('giorn'))
+            tempo = parseInt(numNotifica)
+        else if (notifica.startsWith('settiman'))
+            tempo = parseInt(numNotifica)*7
+        else
+            tempo = parseInt(numNotifica)*31
+
+        const dataMax = new Date()
+        dataMax.setDate(dataMax.getDate() + tempo)
+        
+        console.log("SELECT * FROM esami where data>='" + getFormatedDate(new Date(), 'YYYY/MM/DD') +"' and data<'" + getFormatedDate(dataMax, 'YYYY/MM/DD') +"' order by data desc limit 3")
+        
+        ;(db as SQLite.SQLiteDatabase).transaction((tx) => {
+            const proms: Notifica[] = []
+            tx.executeSql("SELECT * FROM esame WHERE data>='" + getFormatedDate(new Date(), 'YYYY/MM/DD') +"' AND data<'" + getFormatedDate(dataMax, 'YYYY/MM/DD') +"' ORDER BY data DESC LIMIT 3", [], (tx, res) => {
+                for(let i = 0; i < res.rows.length; i++){
+                    const dati = {
+                        nome: res.rows.item(i).nome,
+                        corso: res.rows.item(i).corso,
+                        cfu: res.rows.item(i).cfu,
+                        tipologia: res.rows.item(i).tipologia,
+                        docente: res.rows.item(i).docente,
+                        ora: res.rows.item(i).ora,
+                        data: res.rows.item(i).data,
+                        luogo: res.rows.item(i).luogo,
+                    }
+                    proms.push(dati)
+                }
+                setNotifiche(proms)
+            })
+        })
+    }
+    console.log('Stato', notifiche)
+
+    useEffect(() => {
+        if (Object.keys(db).length > 0) // se il db è stato inizializzato
+            aggiornaPromemoria()
+    }, [db])
     const getOrientamento = () => (
         (Dimensions.get("screen").width > Dimensions.get("screen").height) ?
             "landscape"
@@ -137,146 +169,80 @@ const Esame = ({ navigation }: any) => {
 
     const [orientamento, setOrientamento] = useState(getOrientamento())
 
-    const style = StyleSheet.create({
-        promemoria: {
-            backgroundColor: tema ? "#222" : "#ddd",
-            padding: 10,
-            margin: 10,
-            borderRadius: 10,
-            borderWidth: 2,
-            borderColor: secondary_color,
-            flex: orientamento == 'portrait' ? undefined : 1,
-        },
-        titoloPromemoria: {
-            fontSize: 20,
-            fontWeight: "bold",
-            color: secondary_color,
-            textAlign: "center",
-        },
-        contenutoPromemoria: {
-            marginLeft: 10,
-        },
-        testoPromemoria: {
-            fontSize: 18,
-            color: tertiary_color(tema),
-        },
-        dataPromemoria: {
-            fontSize: 16,
-            color: secondary_color,
-            textAlign: "right",
-        },
-        luogoPromemoria: {
-            fontSize: 16,
-            color: secondary_color,
-            textAlign: "right",
-        },
-        modal: {
-            margin: "auto",
-            width: "100%",
-            height: "100%",
-            display: "flex",
-            justifyContent: "center",
-            backgroundColor: primary_color(tema)+'d0',
-        },
-        modalTitle: {
-            fontSize: 20,
-            fontWeight: "bold",
-            color: tertiary_color(tema),
-            textAlign: "center",
-        },
-        viewPromemoria: {
-            display: "flex",
-            flexDirection: orientamento === 'portrait' ? "column" : "row",
-        },
-        modalView: {
-            backgroundColor: primary_color(tema),
-            margin: "auto",
-            padding: 20,
-            borderRadius: 20,
-            borderWidth: 2,
-            borderColor: secondary_color,
-            opacity:5
-        },
-        modalRow: {
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginTop: 10,
-            marginBottom: 10,
-        },
-        modalRowText: {
-            color: tertiary_color(tema),
-            fontSize: 16,
-        },
-        modalNumInput: {
-            color: tertiary_color(tema),
-            width: 50,
-            textAlign: "center",
-            marginLeft: 5,
-            marginRight: 5,
-            borderRadius: 5,
-            borderWidth: 1,
-            borderColor: secondary_color,
-        },
-        textColor: {
-            color: tertiary_color(tema),
-        }
-
-    })
-
-
-    const testData = [{
-        nome: "Esame di Sistemi Operativi",
-        corso: "Informatica",
-        cfu: 9,
-        tipologia: "Scritto",
-        docente: "Prof. Mario Rossi",
-        voto: 30,
-        data: "22/06/2024",
-        ora: "14:30",
-        luogo: "Aula 1"
-    },
-    {
-        nome: "Esame di Analisi 1",
-        corso: "Matematica",
-        cfu: 9,
-        tipologia: "Scritto",
-        docente: "Prof Maria Bianchi",
-        voto: 30,
-        data: "22/06/2024",
-        ora: "15:30",
-        luogo: "Aula 2"
-    }]
-
     Dimensions.addEventListener("change", () => setOrientamento(getOrientamento()))
 
     return (
         <View style={{ backgroundColor: primary_color(tema), minHeight: "100%" }}>
             <Modal transparent={true} visible={setting} animationType="fade" onRequestClose={chiudiSetting}>
-                <Pressable android_disableSound={true} android_ripple={{ color: 'transparent' }} onPress={chiudiSetting} style={style.modal}>
-                    <Pressable onPress={(e) => e.preventDefault()} style={style.modalView} android_disableSound={true} android_ripple={{ color: 'transparent' }} >
-                        <Text style={style.modalTitle}>Impostazioni</Text>
+                <Pressable android_disableSound={true} android_ripple={{ color: 'transparent' }} onPress={chiudiSetting} style={[style.modal, {backgroundColor: primary_color(tema)+'d0'}]}>
+                    <Pressable onPress={(e) => e.preventDefault()} style={[style.modalView, {backgroundColor: primary_color(tema)}]} android_disableSound={true} android_ripple={{ color: 'transparent' }} >
+                        <Text style={[style.modalTitle, {color: tertiary_color(tema)}]}>Impostazioni</Text>
                         <View style={style.modalRow} >
-                            <Text style={style.modalRowText}>Tema:</Text>
+                            <Text style={[style.modalRowText, {color: tertiary_color(tema)}]}>Tema:</Text>
                             <Switch thumbColor={secondary_color} value={tema} onValueChange={(v) => { setTema(v); AsyncStorage.setItem('tema', v ? 'dark' : 'light') }} trackColor={{ false: 'darkblue', true: 'lightyellow' }} />
                         </View>
                         <View style={style.modalRow}>
-                            <Text style={style.modalRowText}>Notifica promemoria:</Text>
-                            <TextInput style={style.modalNumInput} keyboardType="numeric" value={numNotifica} onChangeText={changeNotifica} />
-                            <SelectList inputStyles={style.textColor} data={lista} search={false} placeholder={notifica} setSelected={setNotifica} />
+                            <Text style={[style.modalRowText, {color: tertiary_color(tema)}]}>Notifica promemoria:</Text>
+                            <TextInput style={[style.modalNumInput, {color: tertiary_color(tema)}]} keyboardType="numeric" value={numNotifica} onChangeText={changeNotifica} />
+                            <SelectList inputStyles={{color: tertiary_color(tema)}} data={lista} search={false} placeholder={notifica} setSelected={setNotifica} />
                         </View>
                     </Pressable>
                 </Pressable>
             </Modal>
             <Header icon={true} title="Lista esami" leftIcon={faGear} onPressLeft={() => setSetting(true)} rightIcon={faCalendarDays} onPressRight={setCalendar} scuro={tema} />
-
-            <View style={style.viewPromemoria}>
-                {testData.map((esame, index) => <Promemoria key={index} {...esame} style={style} />)}
+            <View style={[style.viewPromemoria, {flexDirection: orientamento === 'portrait' ? "column" : "row",}]}>
+                {notifiche.map((esame, index) => <Promemoria key={index} {...esame} style={style} />)}
             </View>
             <Footer navigation={navigation} scuro={tema} />
         </View>
     )
 }
+
+const style = StyleSheet.create({
+    modal: {
+        margin: "auto",
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        justifyContent: "center",
+    },
+    modalTitle: {
+        fontSize: 20,
+        fontWeight: "bold",
+        textAlign: "center",
+    },
+    viewPromemoria: {
+        display: "flex",
+    },
+    modalView: {
+        margin: "auto",
+        padding: 20,
+        borderRadius: 20,
+        borderWidth: 2,
+        borderColor: secondary_color,
+        opacity:5
+    },
+    modalRow: {
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginTop: 10,
+        marginBottom: 10,
+    },
+    modalRowText: {
+        fontSize: 16,
+    },
+    modalNumInput: {
+        width: 50,
+        textAlign: "center",
+        marginLeft: 5,
+        marginRight: 5,
+        borderRadius: 5,
+        borderWidth: 1,
+        borderColor: secondary_color,
+    },
+
+})
 
 export default Esame
