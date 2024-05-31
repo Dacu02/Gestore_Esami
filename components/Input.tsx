@@ -12,6 +12,7 @@ import { Checkbox } from 'react-native-paper';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { SelectList } from 'react-native-dropdown-select-list';
+import { Platform } from 'react-native';
 
 
 
@@ -417,7 +418,8 @@ const style = StyleSheet.create({
     },
 
     diario: {
-        width: '90%'
+        width: '90%',
+        
     },
 
     text: {
@@ -442,7 +444,12 @@ const style = StyleSheet.create({
         borderRadius: 15,
         margin: "auto",
         fontSize: 15,
-        backgroundColor: 'white'
+        backgroundColor: 'white',
+        ...Platform.select({
+            ios:{
+        padding:15
+            }
+        })
     },
 
     errorMessage: {

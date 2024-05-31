@@ -11,13 +11,15 @@ const Campo = (props: any) => (
             keyboardType={props.tipo ? props.tipo : 'default'} 
             style={[style.textinput, {backgroundColor: primary_color(props.tema)}]} 
             value={props.value} 
-            onChangeText={props.onChange} />
+            onChangeText={props.onChange} 
+            />
     </View>
 )
 
 
 const style = StyleSheet.create({
     textinput: {
+        padding:15,
         borderRadius: 15,
         shadowColor: '#000',
         shadowOffset: {
