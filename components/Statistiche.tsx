@@ -77,10 +77,10 @@ const Statistiche = () => {
   </Card>
         </View>
         <View>
-  <Text>Bezier Line Chart</Text>
+  <Text>Grafico degli esiti</Text>
   <LineChart
     data={{
-      labels: ["January", "February", "March", "April", "May", "June"],
+      labels: ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno"],
       datasets: [
         {
           data: [
