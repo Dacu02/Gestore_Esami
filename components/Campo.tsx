@@ -1,10 +1,18 @@
 import React from 'react';
 import { Text, TextInput, View, StyleSheet } from "react-native";
 import { primary_color, tertiary_color } from '../global';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 
 const Campo = (props: any) => (
     <View style={style.row}>
+        <View style={style.label}>
+         <FontAwesomeIcon
+                            icon={props.icon}
+                            size={16}
+                            style={style.icona}
+                            />
         <Text style={[style.text, {color: primary_color(props.tema)}]}>{props.nome.toUpperCase()}</Text>
+        </View>
         <TextInput 
             placeholder={"Inserisci " + props.nome}
             placeholderTextColor={tertiary_color(props.tema)+'80'} 
@@ -33,13 +41,21 @@ const style = StyleSheet.create({
     row: {
         marginBottom: 20, 
         width: '85%',
-        paddingLeft:10 
+        paddingLeft:10
     },
     text: {        
         fontFamily: 'Roboto-Italic',
         color: 'white',
         fontWeight: 'bold',
-        marginBottom: 10
+    },
+    icona:{
+        marginRight:10,
+        color:'white',
+    },
+    label:{
+        marginBottom: 10,
+        display:'flex',
+        flexDirection:'row'
     },
 
 })

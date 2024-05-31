@@ -10,7 +10,7 @@ import { DataBaseContext } from './DataBase'
 import SQLite from 'react-native-sqlite-storage'
 import { Checkbox } from 'react-native-paper';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faPlus,faBook,faUser, faPenNib, faSquarePollVertical,faUsers, faFilter, faUserTie, faLocationDot, faList} from '@fortawesome/free-solid-svg-icons';
 import { SelectList } from 'react-native-dropdown-select-list';
 import { Platform } from 'react-native';
 
@@ -187,14 +187,21 @@ const Input = ({ navigation }: any) => {
             </Modal>
             <ImageBackground style={style.image} source={require('../immaginiEsami/Onda2.png')}>
                 <View style={style.container}>
-                    <Campo tema={tema} nome='Nome' value={nome} onChange={setNome} />
-                    <Campo tema={tema} nome='Corso' value={corso} onChange={setCorso} />
-                    <Campo tema={tema} nome='Voto' value={voto} onChange={setVoto} tipo='numeric' />
-                    <Campo tema={tema} nome='CFU' value={cfu} onChange={setCfu} tipo='numeric' />
+                    <Campo tema={tema} nome='Nome' value={nome} onChange={setNome} icon={faUser}/>
+                    <Campo tema={tema} nome='Corso' value={corso} onChange={setCorso} icon={faUsers}/>
+                    <Campo tema={tema} nome='Voto' value={voto} onChange={setVoto} icon={faPenNib} tipo='numeric' />
+                    <Campo tema={tema} nome='CFU' value={cfu} onChange={setCfu} icon={faSquarePollVertical} tipo='numeric' />
                     {/* //TODO selettore tipologia orale, scritto, scritto e orale */}
 
                     <View style={style.selectRow}>
-                        <Text style={[style.selectText, {color: primary_color(tema)}]}>TIPOLOGIA</Text>
+                    
+                        <Text style={[style.selectText, {color: primary_color(tema)}]}>
+                        <FontAwesomeIcon
+                                icon={faFilter}
+                                size={16}
+                                style={style.icona}
+                                      />
+                            TIPOLOGIA</Text>
                         <View style={style.innerRow}>
                             <SelectList 
                                 boxStyles={ {backgroundColor: primary_color(tema),width:'100%'}} 
@@ -203,12 +210,19 @@ const Input = ({ navigation }: any) => {
                                 dropdownStyles={{...style.selectDrop, backgroundColor: primary_color(tema)}} 
                                 setSelected={setTipologia} 
                                 data={['orale', 'scritto', 'scritto e orale']} 
-                                search={false} 
+                                search={false}  
                                 save='value' />
                         </View>
                     </View>
                     <View style={style.selectRow}>
-                        <Text style={[style.selectText, {color: primary_color(tema)}]}>CATEGORIA</Text>
+                        <Text style={[style.selectText, {color: primary_color(tema)}]}>
+                            <FontAwesomeIcon
+                            icon={faList}
+                            size={16}
+                            style={style.icona}
+                            />
+                            CATEGORIA
+                            </Text>
                         <View style={style.innerRow}>
                             <SelectList 
                                 boxStyles={ {backgroundColor: primary_color(tema), width:'86%'}} 
@@ -231,11 +245,17 @@ const Input = ({ navigation }: any) => {
                             
                         </View>
                     </View>
-                    <Campo tema={tema} nome='Docente' value={docente} onChange={setDocente} />
-                    <Campo tema={tema} nome='Luogo' value={luogo} onChange={setLuogo} />
+                    <Campo tema={tema} nome='Docente' value={docente} onChange={setDocente} icon={faUserTie} />
+                    <Campo tema={tema} nome='Luogo' value={luogo} onChange={setLuogo} icon={faLocationDot}/>
 
                     <View style = {style.diario}>
-                    <Text style={[style.text, {color: primary_color(tema)}]} >DIARIO</Text>
+                    <Text style={[style.text, {color: primary_color(tema)}]} >
+                    <FontAwesomeIcon
+                                 icon={faBook}
+                                 size={16}
+                                 style={style.icona}
+                                      />
+                        DIARIO</Text>
                     <TextInput style={[style.diary, {backgroundColor: primary_color(tema)}]}  placeholder='Inserisci Informazioni Esame' placeholderTextColor={tertiary_color(tema)+'80'} numberOfLines={3} multiline={true} value={diario} onChangeText={setDiario} />
                     </View>
 
@@ -303,6 +323,10 @@ const style = StyleSheet.create({
 
     image: {
         flex: 1,
+    },
+    icona:{
+        marginRight:10,
+        color:'white'
     },
     modal: {
         margin: "auto",
