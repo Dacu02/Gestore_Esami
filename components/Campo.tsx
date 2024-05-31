@@ -7,18 +7,19 @@ const Campo = (props: any) => (
         <Text style={[style.text, {color: primary_color(props.tema)}]}>{props.nome.toUpperCase()}</Text>
         <TextInput 
             placeholder={"Inserisci " + props.nome}
-            placeholderTextColor="#888" 
+            placeholderTextColor={tertiary_color(props.tema)+'80'} 
             keyboardType={props.tipo ? props.tipo : 'default'} 
             style={[style.textinput, {backgroundColor: primary_color(props.tema), color: tertiary_color(props.tema)}]} 
             value={props.value} 
-            onChangeText={props.onChange} />
+            onChangeText={props.onChange} 
+            />
     </View>
 )
 
 
 const style = StyleSheet.create({
     textinput: {
-        backgroundColor: 'white',
+        padding:15,
         borderRadius: 15,
         shadowColor: '#000',
         shadowOffset: {
