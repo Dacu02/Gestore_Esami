@@ -32,7 +32,8 @@ const style = StyleSheet.create({
     },
     row: {
         marginBottom: 20, 
-        width: '80%' 
+        width: '85%',
+        paddingLeft:10 
     },
     text: {        
         fontFamily: 'Roboto-Italic',
