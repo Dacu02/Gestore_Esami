@@ -26,7 +26,7 @@ const Esame = ({ navigation }: any) => {
         corso:string,
         tipologia:string,
         cfu: number,
-        data: string
+        data: string,
         docente:string | null,
         ora: string | null,
         luogo:string,
@@ -132,7 +132,6 @@ const Esame = ({ navigation }: any) => {
         const dataMax = new Date()
         dataMax.setDate(dataMax.getDate() + tempo)
         
-        console.log("SELECT * FROM esami where data>='" + getFormatedDate(new Date(), 'YYYY/MM/DD') +"' and data<'" + getFormatedDate(dataMax, 'YYYY/MM/DD') +"' order by data desc limit 3")
         
         ;(db as SQLite.SQLiteDatabase).transaction((tx) => {
             const proms: Notifica[] = []
@@ -154,7 +153,6 @@ const Esame = ({ navigation }: any) => {
             })
         })
     }
-    console.log('Stato', notifiche)
 
     useEffect(() => {
         if (Object.keys(db).length > 0) // se il db è stato inizializzato
@@ -174,8 +172,8 @@ const Esame = ({ navigation }: any) => {
     return (
         <View style={{ backgroundColor: primary_color(tema), minHeight: "100%" }}>
             <Modal transparent={true} visible={setting} animationType="fade" onRequestClose={chiudiSetting}>
-                <Pressable android_disableSound={true} android_ripple={{ color: 'transparent' }} onPress={chiudiSetting} style={[style.modal, {backgroundColor: primary_color(tema)+'d0'}]}>
-                    <Pressable onPress={(e) => e.preventDefault()} style={[style.modalView, {backgroundColor: primary_color(tema)}]} android_disableSound={true} android_ripple={{ color: 'transparent' }} >
+                <Pressable android_disableSound={true} android_ripple={{ color: primary_color(tema)+'d0' }} onPress={chiudiSetting} style={[style.modal, {backgroundColor: primary_color(tema)+'d0'}]}>
+                    <Pressable onPress={(e) => e.preventDefault()} style={[style.modalView, {backgroundColor: primary_color(tema)}]} android_disableSound={true} android_ripple={{ color: primary_color(tema) }} >
                         <Text style={[style.modalTitle, {color: tertiary_color(tema)}]}>Impostazioni</Text>
                         <View style={style.modalRow} >
                             <Text style={[style.modalRowText, {color: tertiary_color(tema)}]}>Tema:</Text>
