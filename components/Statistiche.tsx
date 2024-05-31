@@ -56,9 +56,7 @@ const Statistiche = () => {
     <Text style={style.cardLabel}variant="bodyMedium">Grafico andamento esami</Text>
 
     <Card.Cover style={style.Cover} source={{ uri: 'https://picsum.photos/700' }} />
-    <Card.Actions>
-   
-    </Card.Actions>
+
   </Card>
   <Card style={style.Card}>
     <Card.Content>
@@ -69,9 +67,7 @@ const Statistiche = () => {
       <Text variant="titleLarge">Analisi</Text>
       <Text variant="bodyMedium">Andamento esami</Text>
     </Card.Content>
-    <Card.Actions>
-  
-    </Card.Actions>
+ 
   </Card>
         </View>
   </View>
