@@ -9,7 +9,7 @@ const Campo = (props: any) => (
             placeholder={"Inserisci " + props.nome}
             placeholderTextColor={tertiary_color(props.tema)+'80'} 
             keyboardType={props.tipo ? props.tipo : 'default'} 
-            style={[style.textinput, {backgroundColor: primary_color(props.tema)}]} 
+            style={[style.textinput, {backgroundColor: primary_color(props.tema), color: tertiary_color(props.tema)}]} 
             value={props.value} 
             onChangeText={props.onChange} 
             />
@@ -29,10 +29,12 @@ const style = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 4,
         elevation: 5,
+        color: 'black'
     },
     row: {
         marginBottom: 20, 
-        width: '80%' 
+        width: '85%',
+        paddingLeft:10 
     },
     text: {        
         fontFamily: 'Roboto-Italic',

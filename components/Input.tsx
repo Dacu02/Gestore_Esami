@@ -162,11 +162,12 @@ const Input = ({ navigation }: any) => {
     }
 
     return (
-
+<>
+        <View style={style.header}>
+        <Text style={style.listHeadline}>Nuovo Esame</Text>
+    </View>
+   
         <ScrollView style={style.ex}>
-            <View style={style.header}>
-                <Text style={style.listHeadline}>Nuovo Esame</Text>
-            </View>
             <Modal
                 animationType='fade'
                 transparent={true}
@@ -184,7 +185,7 @@ const Input = ({ navigation }: any) => {
                     </Pressable>
                 </Pressable>
             </Modal>
-            <ImageBackground style={style.image} source={require('../immaginiEsami/Onda2.png')}>
+            <ImageBackground style={style.image} source={tema ? require('../immaginiEsami/OndaBlack2.png') : require('../immaginiEsami/Onda2.png')}>
                 <View style={style.container}>
                     <Campo tema={tema} nome='Nome' value={nome} onChange={setNome} />
                     <Campo tema={tema} nome='Corso' value={corso} onChange={setCorso} />
@@ -196,10 +197,10 @@ const Input = ({ navigation }: any) => {
                         <Text style={[style.selectText, {color: primary_color(tema)}]}>TIPOLOGIA</Text>
                         <View style={style.innerRow}>
                             <SelectList 
-                                boxStyles={[style.selectBox, {backgroundColor: primary_color(tema)}]} 
+                                boxStyles={ {backgroundColor: primary_color(tema),width:'100%'}} 
                                 placeholder='Seleziona tipologia' 
-                                inputStyles={[style.selectInput, {color: tipologia !== '' ? tertiary_color(tema) : tertiary_color(tema)+'80'}]} 
-                                dropdownStyles={[style.selectDrop, {backgroundColor: primary_color(tema)}]} 
+                                inputStyles={{...style.selectInput, color: tipologia !== '' ? tertiary_color(tema) : tertiary_color(tema)+'80'}} 
+                                dropdownStyles={{...style.selectDrop, backgroundColor: primary_color(tema)}} 
                                 setSelected={setTipologia} 
                                 data={['orale', 'scritto', 'scritto e orale']} 
                                 search={false} 
@@ -210,20 +211,24 @@ const Input = ({ navigation }: any) => {
                         <Text style={[style.selectText, {color: primary_color(tema)}]}>CATEGORIA</Text>
                         <View style={style.innerRow}>
                             <SelectList 
-                                boxStyles={[style.selectBox, {backgroundColor: primary_color(tema)}]} 
+                                boxStyles={ {backgroundColor: primary_color(tema), width:'86%'}} 
                                 placeholder='Seleziona categoria' 
-                                inputStyles={[style.selectInput, {color: categoria.length !== 0 ? tertiary_color(tema) : tertiary_color(tema)+'80' }]} 
-                                dropdownStyles={[style.selectDrop, {backgroundColor: primary_color(tema)}]} 
+                                inputStyles={{...style.selectInput, color: categoria.length !== 0 ? tertiary_color(tema) : tertiary_color(tema)+'80' }} 
+                                dropdownStyles={{...style.selectDrop, backgroundColor: primary_color(tema)}} 
                                 setSelected={setCategoria} 
                                 data={[...listaCategorie, ...categorieNuove]} 
                                 search={false} 
-                                save='value' />
-                            <TouchableOpacity style={style.plusIcon} onPress={()=>setModalCategory(true)}>
-                                <FontAwesomeIcon
-                                    icon={faPlus}
-                                    size={20}
-                            />
+                                save='value' 
+                                notFoundText='Nessuna categoria esistente'
+                                />
+                            
+                                <TouchableOpacity style={style.plusIcon} onPress={()=>setModalCategory(true)}>
+                                      <FontAwesomeIcon
+                                         icon={faPlus}
+                                         size={20}
+                                      />
                             </TouchableOpacity>
+                            
                         </View>
                     </View>
                     <Campo tema={tema} nome='Docente' value={docente} onChange={setDocente} />
@@ -281,7 +286,7 @@ const Input = ({ navigation }: any) => {
                         <TouchableOpacity style={style.confirm}>
                             <Text onPress={submit} style={style.confirmText}>CONFERMA</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={style.deny}>
+                        <TouchableOpacity style={[style.deny]}>
                             <Text onPress={() => navigation.goBack()} style={style.denyText}>ANNULLA</Text>
                         </TouchableOpacity>
                     </View>
@@ -290,6 +295,7 @@ const Input = ({ navigation }: any) => {
                 {err ? <Text style={style.errorMessage}>{err}</Text> : null}
             </ImageBackground>
         </ScrollView>
+        </>
     )
 }
 
@@ -476,9 +482,7 @@ const style = StyleSheet.create({
         width: '80%',
         marginBottom: 20,
     },
-    selectBox: {
-        width: '95%',
-    },
+   
     selectInput: {
         width: '95%',
     },
@@ -486,9 +490,14 @@ const style = StyleSheet.create({
         width: '95%',
     },
     plusIcon: {
-        width: '5%',
-        position: 'relative',
-        top: 10,
+        height:20,
+        width:20,
+        alignItems:'center',
+        justifyContent:'center',
+        backgroundColor:'white',
+        borderRadius:10,
+        padding:20
+
     },
     selectText: {
         fontWeight: 'bold',
