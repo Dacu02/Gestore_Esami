@@ -276,7 +276,7 @@ const Input = ({ navigation }: any) => {
 
                     <View style={style.calendarContainer}>
                         <TouchableOpacity onPress={() => setOpenCalendar(true)}>
-                            <Text style={style.dataora}>
+                            <Text style={[style.dataora, {backgroundColor: primary_color(tema)}]}>
                                 {!dataoraInputted ? 'Inserisci Data & Ora' : getFormatedDate(data, "DD/MM/YYYY HH:mm")}
                             </Text>
                         </TouchableOpacity>
@@ -412,7 +412,6 @@ const style = StyleSheet.create({
         padding: 10,
         fontSize: 20,
         fontWeight: 'bold',
-        backgroundColor: 'white',
         shadowColor: '#000',
         shadowOffset: {
             width: 0,
