@@ -110,11 +110,11 @@ const Input = ({ navigation }: any) => {
 
     return (
 
-        <ScrollView style={style.ex}>
+        <ScrollView style={[style.ex, {backgroundColor: primary_color(tema)}]}>
             <View style={style.header}>
-                <Text style={style.listHeadline}>Nuovo Esame</Text>
+                <Text style={[style.listHeadline, {color: '#888'}]}>Nuovo Esame</Text>
             </View>
-            <ImageBackground style={style.image} source={require('../immaginiEsami/Onda2.png')}>
+            <ImageBackground style={style.image} source={tema ? require('../immaginiEsami/OndaBlack.png') : require('../immaginiEsami/Onda2.png')}>
                 <View style={style.container}>
                     <Campo tema={tema} nome='Nome' value={nome} onChange={setNome} />
                     <Campo tema={tema} nome='Corso' value={corso} onChange={setCorso} />
@@ -176,7 +176,7 @@ const Input = ({ navigation }: any) => {
                         <TouchableOpacity style={style.confirm}>
                             <Text onPress={submit} style={style.confirmText}>CONFERMA</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={style.deny}>
+                        <TouchableOpacity style={[style.deny]}>
                             <Text onPress={() => navigation.goBack()} style={style.denyText}>ANNULLA</Text>
                         </TouchableOpacity>
                     </View>
