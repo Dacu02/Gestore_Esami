@@ -19,10 +19,10 @@ export const DataBase = ({ children }: any) => {
                 // Tabella esame
                 tx.executeSql('create table if not exists esame (' +
                     'nome varchar(60) primary key,' + //nome esame
-                    'corso varchar(60),' + // nome corso di laurea
-                    'cfu integer check(cfu>0),' + // cfu
-                    'tipologia varchar(60) check(tipologia=\'scritto\' or tipologia=\'orale\' or tipologia=\'scritto e orale\' or tipologia=\'orale e scritto\'),' + // tipologia: scritto, orale, scritto e orale
-                    'docente varchar(60),' + // nome docente
+                    'corso varchar(60) not null,' + // nome corso di laurea
+                    'cfu integer check(cfu>0) not null,' + // cfu
+                    'tipologia varchar(60) check(tipologia=\'scritto\' or tipologia=\'orale\' or tipologia=\'scritto e orale\' or tipologia=\'orale e scritto\') not null,' + // tipologia: scritto, orale, scritto e orale
+                    'docente varchar(60) not null,' + // nome docente
                     'voto integer check(voto>17 and voto<31),' + // voto in trentesimi [18,30]
                     'lode boolean,' + //lode si no
                     'data char(10) not null,' + //data YYYY/MM/DD (sqlite non ha tipo data)
@@ -31,12 +31,12 @@ export const DataBase = ({ children }: any) => {
                     'diario text,' + //note personali
                     'check ((lode and voto=30) or not lode));') //lode solo con 30
 
-                    // Tabella categoria
+                // Tabella categoria
                 tx.executeSql('create table if not exists categoria (' +
                     'nome varchar(60) primary key,' + //nome categoria
                     'colore char(7) check(colore like \'#______\'));') //colore categoria
 
-                    // Tabella assocaizione esame-categoria
+                // Tabella assocaizione esame-categoria
                 tx.executeSql("create table if not exists appartiene (" +
                     "nomeEsame varchar(60) not null," +
                     "nomeCategoria varchar(60) not null," +
