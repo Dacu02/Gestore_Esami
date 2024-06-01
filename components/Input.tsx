@@ -1,4 +1,4 @@
-import React, { useEffect, createContext, useState, useContext } from 'react'
+import React, { useEffect, createContext, useState, useContext, Component } from 'react'
 import { primary_color, secondary_color, tertiary_color } from '../global'
 import { View, StyleSheet, Text, TextInput, Button, TouchableOpacity, ScrollView, Switch, Dimensions, Modal, Pressable, BackHandler } from 'react-native'
 import { ImageBackground } from 'react-native';
@@ -10,19 +10,14 @@ import { DataBaseContext } from './DataBase'
 import SQLite from 'react-native-sqlite-storage'
 import { Checkbox } from 'react-native-paper';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { faPlus,faBook,faUser, faPenNib, faSquarePollVertical,faUsers, faFilter, faUserTie, faLocationDot, faList} from '@fortawesome/free-solid-svg-icons';
+import { faPlus,faBook,faUser, faPenNib, faSquarePollVertical,faUsers, faFilter, faUserTie, faLocationDot, faList, faArrowLeft} from '@fortawesome/free-solid-svg-icons';
 import { SelectList } from 'react-native-dropdown-select-list'
 import  { MultiSelect }  from 'react-native-element-dropdown'
-import { ColorPicker, fromHsv } from 'react-native-color-picker'
-import Slider from '@react-native-community/slider'
-
 
 import { Platform } from 'react-native'
-
-
+import Header from './Header';
 
 const Input = ({ navigation }: any) => {
-
     const [openCalendar, setOpenCalendar] = useState(false)
     const [openClock, setOpenClock] = useState(false)
 
@@ -45,6 +40,7 @@ const Input = ({ navigation }: any) => {
     const [creaCategoria, setCreaCategoria] = useState("")
     const [color, setColor] = useState('#000000')
     
+    
     const getTema = async () =>
         (await AsyncStorage.getItem('tema') === 'dark')
 
@@ -52,16 +48,20 @@ const Input = ({ navigation }: any) => {
 
     useEffect(() => {
         getTema().then(value => setTema(value))
+    }, [])
 
+    const db = useContext(DataBaseContext)
+    useEffect(() => {
         ;(db as SQLite.SQLiteDatabase).transaction((tx) => {
             let temp: string[] = []
             tx.executeSql('select nome from categoria', [], (_, res) => {
                 for (let i = 0; i < res.rows.length; i++)
                     temp.push(res.rows.item(i).nome)
+                setListaCategorie(temp)
             })
-            setListaCategorie(temp)
         })
     }, [])
+
 
     const timeInput = (v: Date|undefined) => {
         if (v) {
@@ -77,7 +77,6 @@ const Input = ({ navigation }: any) => {
         setData(new Date(parseInt(yyyy, 10), parseInt(mm, 10) - 1, parseInt(dd, 10)))
     }
 
-    const db = useContext(DataBaseContext)
 
     const submit = () => {
         setErr('')
@@ -115,7 +114,7 @@ const Input = ({ navigation }: any) => {
             if (categoria.includes(v)){
                 (db as SQLite.SQLiteDatabase).transaction((tx) => {
                     console.log("Nuova cat:", v)
-                    tx.executeSql('insert into categoria (nome, colore) values (?, ?)', [v, '#000000'], (tx, res) => {
+                    tx.executeSql('insert into categoria values (?)', [v.trim()], (tx, res) => {
                         console.log('Categoria inserita correttamente')
                         console.log(res)
                     }, (tx, err) => {
@@ -155,7 +154,7 @@ const Input = ({ navigation }: any) => {
             })
 
             categoria.forEach((cat) => {
-                tx.executeSql('insert into appartiene (nomeEsame, nomeCategoria) values (?, ?)', [nome, cat], (tx, res) => {
+                tx.executeSql('insert into appartiene (nomeEsame, nomeCategoria) values (?, ?)', [nome.trim(), cat.trim()], (tx, res) => {
                     console.log('Categoria inserita correttamente')
                     console.log(res)
                 }, (tx, err) => {
@@ -184,14 +183,10 @@ const Input = ({ navigation }: any) => {
         return str
     }
 
-    console.log(categoria)
 
     return (
-<>
-        <View style={style.header}>
-        <Text style={style.listHeadline}>Nuovo Esame</Text>
-    </View>
-   
+    <>
+        <Header title="Inserimento esame" leftIcon={faArrowLeft} onPressLeft={()=>navigation.goBack()} scuro={tema} />
         <ScrollView style={style.ex}>
             <Modal
                 animationType='fade'
@@ -208,10 +203,6 @@ const Input = ({ navigation }: any) => {
                             style={[style.categoria, {backgroundColor: primary_color(!tema)+'22'}]} 
                             placeholderTextColor={primary_color(!tema)+'dd'} 
                             placeholder='Nome categoria' />
-                        <ColorPicker
-                            onColorChange={(hsv)=>setColor(fromHsv(hsv).toString())}
-                            //TODO sliderComponent={<Slider /> }
-                        />
                         <TouchableOpacity style={style.confirm} onPress={onCreaCategoria}>
                             <Text style={style.confirmText}>Conferma</Text>
                         </TouchableOpacity>
@@ -224,8 +215,6 @@ const Input = ({ navigation }: any) => {
                     <Campo tema={tema} nome='Corso' value={corso} onChange={setCorso} icon={faUsers}/>
                     <Campo tema={tema} nome='Voto' value={voto} onChange={setVoto} icon={faPenNib} tipo='numeric' />
                     <Campo tema={tema} nome='CFU' value={cfu} onChange={setCfu} icon={faSquarePollVertical} tipo='numeric' />
-                    {/* //TODO selettore tipologia orale, scritto, scritto e orale */}
-
                     <View style={style.selectRow}>
                         <View style= {style.dir}>
                         <FontAwesomeIcon
@@ -257,29 +246,11 @@ const Input = ({ navigation }: any) => {
                         <Text style={[style.selectText, {color: primary_color(tema)}]}>CATEGORIA</Text>
                         </View>
                         <View style={style.innerRow}>
-                            {/* <MultipleSelectList
-                                boxStyles={{backgroundColor: primary_color(tema), maxWidth:'86%', minWidth: '86%', borderWidth:0}} 
-                                placeholder='Seleziona categoria'
-                                inputStyles={{...style.selectInput, color: categoria.length !== 0 ? tertiary_color(tema) : tertiary_color(tema)+'80' }} 
-                                dropdownStyles={{...style.selectDrop, borderWidth: 0, backgroundColor: primary_color(tema)}} 
-                                setSelected={(v:any) => v?setCategoria(v):null} 
-                                data={[...listaCategorie, ...categorieNuove]} 
-                                save='value' 
-                                search={false}
-                                checkBoxStyles={{backgroundColor: primary_color(!tema)+'a0'}}
-                                badgeStyles={{display: 'none'}}
-                                dropdownTextStyles={{color: tertiary_color(tema)}}
-
-                                notFoundText='Nessuna categoria esistente'
-                                labelStyles={{display: 'none'}}
-                                maxHeight={120}
-                            /> */}
                             <MultiSelect
                                 selectedTextStyle={{color: tertiary_color(tema)}}
                                 mode='auto'
                                 search={false}
-                                // data={[...listaCategorie, ...categorieNuove, ]} 
-                                data={[...listaCategorie, ...categorieNuove, 'a', 'b', 'c', 'd', 'e'].map((v) => ({value: v}))}
+                                data={[...listaCategorie, ...categorieNuove].map((v) => ({value: v}))}
                                 placeholder={getPlaceHolder()}
                                 labelField={'value'}
                                 valueField={'value'}
@@ -458,20 +429,6 @@ const style = StyleSheet.create({
     ex: {
         flex: 1,
         
-    },
-
-    header: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        height: 60
-    },
-
-    listHeadline: {
-        color: '#333',
-        fontSize: 22,
-        fontWeight: 'bold',
-        flex: 1,
-        textAlign: 'center',
     },
 
     centeredView: {

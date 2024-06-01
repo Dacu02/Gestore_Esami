@@ -7,10 +7,10 @@ const Campo = (props: any) => (
     <View style={style.row}>
         <View style={style.label}>
          <FontAwesomeIcon
-                            icon={props.icon}
-                            size={16}
-                            style={{...style.icona, color: primary_color(props.tema)}}
-                            />
+            icon={props.icon}
+            size={16}
+            style={{...style.icona, color: primary_color(props.tema)}}
+        />
         <Text style={[style.text, {color: primary_color(props.tema)}]}>{props.nome.toUpperCase()}</Text>
         </View>
         <TextInput 

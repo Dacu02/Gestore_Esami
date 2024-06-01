@@ -1,6 +1,6 @@
-import React, { useContext, useState , useEffect } from "react"
+import React, { useContext, useState, useEffect } from "react"
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { StyleSheet, Text, Image, View, FlatList, TouchableOpacity, Modal, TextInput, Pressable } from "react-native"
+import { StyleSheet, Text, Image, View, FlatList, TouchableOpacity, Modal, Pressable } from "react-native"
 import { DataBaseContext } from "./DataBase"
 import { useNavigation } from "@react-navigation/native"
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
@@ -8,28 +8,21 @@ import { faArrowLeft, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { primary_color, secondary_color, tertiary_color } from "../global"
 import SQLite from 'react-native-sqlite-storage'
 import { getFormatedDate } from "react-native-modern-datepicker"
+import Header from "./Header"
 const ListaEsami = () => {
 
-    /*const esame = [
-        { id: 1, name: 'Analisi I', corso: 'Ingegneria Informatica', image: require('../immaginiEsami/Esame.png'), voto: "28", CFU: 9, data: '15/12/2024', profEsame: 'Prof.De Risi', ora: '10:00', luogo: 'Aula 21', tipologia: 'Scritto', diario:1 },
-        { id: 2, name: 'Mobile Programming', corso: 'Ingegneria Informatica', image: require('../immaginiEsami/Esame.png'), voto: "18", CFU: 12, data: '01/06/2024', profEsame: 'Prof.Petrone', ora: '10:00', luogo: 'Aula 21', tipologia: 'Scritto', diario:2 },
-        { id: 3, name: 'Basi di dati', corso: 'Ingegneria Informatica', image: require('../immaginiEsami/Esame.png'), voto: "25", CFU: 6, data: '08/10/2024', profEsame: 'Prof.Carosetti', ora: '10:00', luogo: 'Aula 21', tipologia: 'Scritto', diario:3 },
-        { id: 4, name: 'Programmazione ad oggetti', corso: 'Ingegneria Informatica', image: require('../immaginiEsami/EsameInAttesa.png'), voto: null, CFU: 6, data: null, profEsame: 'Prof.Bianchi', ora: null, luogo: null, tipologia: 'Scritto', diario:4 },
-        { id: 5, name: 'Fisica II', corso: 'Ingegneria Informatica', image: require('../immaginiEsami/EsameInAttesa.png'), voto: null, CFU: 9, data: null, profEsame: 'Prof.Rossi', ora: null, luogo: null, tipologia: 'Scritto' , diario:5},
-    ];*/
-
-     //interfaccia per gli item altrimenti typescript da problemi
-     interface EsameItem {
+    //interfaccia per gli item altrimenti typescript da problemi
+    interface EsameItem {
         name: string,
-        corso:string,
-        tipologia:string,
+        corso: string,
+        tipologia: string,
         image: any,
         voto: string | null,
         CFU: number,
         data: string
-        profEsame:string | null,
+        profEsame: string | null,
         ora: string | null,
-        luogo:string,
+        luogo: string,
         diario: string | null,
     }
 
@@ -37,14 +30,8 @@ const ListaEsami = () => {
 
     const db = useContext(DataBaseContext);
     const navigation = useNavigation();
-    const [notes, setNotes] = useState({});
-    const [modalVisible, setModalVisible] = useState(false);
-    const [currentNoteId, setCurrentNoteId] = useState();
+    const [modalVisible, setModalVisible] = useState("");
 
-    const toggleModal = (diario:any) => {
-        setModalVisible(!modalVisible);
-        setCurrentNoteId(diario);
-    };
 
 
     const loadData = () => {
@@ -83,127 +70,85 @@ const ListaEsami = () => {
     }, [])
 
 
-    const loadNotes = async () => {
-        try {
-            // Carica le note salvate da AsyncStorage
-            const savedNotes = await AsyncStorage.getItem('notes');
-            if (savedNotes !== null) {
-                // Se ci sono note salvate aggiorna lo stato 
-                setNotes(JSON.parse(savedNotes));
-            }
-        } catch (error) {
-            console.error('Errore durante il caricamento delle note:', error);
-        }
-    };
-
-    const saveNotes = async (updatedNotes:any) => {
-        try {
-            // Salva le note aggiornate in AsyncStorage
-            await AsyncStorage.setItem('notes', JSON.stringify(updatedNotes));
-        } catch (error) {
-            console.error('Errore durante il salvataggio delle note:', error);
-        }
-    };
-    const handleNoteChange = (text:any) => {
-        const updateNotes = {
-            ...notes, [Number(currentNoteId)]: text
-        };
-            setNotes(updateNotes);
-            saveNotes(updateNotes);
-    };
-
-   
 
     style.details = {
         ...style.details,
         color: tema ? tertiary_color(tema) : '#666',
     }
 
-    const singoloEsame = ({ item }:{item:EsameItem}) => {
-        const stato = item.voto && parseInt(item.voto) >= 18 ? 1 : item.data.split('/').reverse().join('/') <= getFormatedDate(new Date(),'YYYY/MM/DD') ? 0 : -1
+    const singoloEsame = ({ item }: { item: EsameItem }) => {
+        const stato = item.voto && parseInt(item.voto) >= 18 ? 1 : item.data.split('/').reverse().join('/') <= getFormatedDate(new Date(), 'YYYY/MM/DD') ? 0 : -1
         /*
             1 superato con esito positivo
             0 sostenuto ma non aggiornato
             -1 non sostenuto ancora
         */
         return (
-        <View style={[style.item, {backgroundColor: primary_color(tema)}]}>
-            <View style={style.immagineContainer}>
-                <Image source={item.image} style={style.immagine} />
-                <TouchableOpacity onPress={() => toggleModal(item.diario)}>
-                    <View style={[style.diario,  {backgroundColor: item.voto ? "#bacdff" : "#ffe491"}]}>
-                        <Text style={[style.diarioText, {color:item.voto ? "#4c74dc":"#ffa600"}]}>Diario</Text>
-                    </View>
-                </TouchableOpacity>
+            <View style={[style.item, { backgroundColor: primary_color(tema) }]}>
+                <View style={style.immagineContainer}>
+                    <Image source={item.image} style={style.immagine} />
+                    {item.diario && item.diario !== '' ?
+                        <TouchableOpacity onPress={()=>setModalVisible(item.diario?item.diario:'')}>
+                        <View style={[style.diario, { backgroundColor: item.voto ? "#bacdff" : "#ffe491" }]}>
+                            <Text style={[style.diarioText, { color: item.voto ? "#4c74dc" : "#ffa600" }]}>Diario</Text>
+                        </View>
+                    </TouchableOpacity>
+                    : null}
+                </View>
+                <View style={[style.progressoEsame, !tema ? { backgroundColor: item.voto ? "#019d3a" : "#f0b904" } : { borderColor: item.voto ? "#019d3a" : "#f0b904", borderWidth: 2, borderRadius: 25 }]}>
+                    <Text style={[style.votoText, tema ? { color: item.voto ? "#019d3a" : "#f0b904" } : {}]}>{item.voto ? item.voto : 'N/A'}</Text>
+                </View>
+                <View style={style.infoContainer}>
+                    <Text style={[style.name, tema ? { color: 'white' } : {}]}>{item.name}</Text>
+                    <Text style={style.details}>{item.corso}</Text>
+                    <Text style={style.details}>CFU: {item.CFU}</Text>
+                    <Text style={style.details}>{stato === 1 ? 'Esame superato' : stato === 0 ? 'Esame sostenuto' : 'Esame non ancora sostenuto'}</Text>
+                    {item.ora && <Text style={style.details}>{item.data} {item.ora}</Text>}
+                    {item.luogo && <Text style={style.details}>Luogo: {item.luogo}</Text>}
+                    <Text style={style.details}>Tipologia: {item.tipologia}</Text>
+                    <Text style={style.details}>{item.profEsame}</Text>
+                </View>
             </View>
-            <View style={[style.progressoEsame, !tema ? {backgroundColor: item.voto ? "#019d3a" : "#f0b904"} :{borderColor: item.voto ? "#019d3a" : "#f0b904", borderWidth: 2, borderRadius: 25}]}>
-                <Text style={[style.votoText, tema ? {color: item.voto ? "#019d3a" : "#f0b904"} : {}]}>{item.voto ? item.voto : 'N/A'}</Text>
-            </View>
-            <View style={style.infoContainer}>
-                <Text style={[style.name, tema ? {color:'white'} : {}]}>{item.name}</Text>
-                <Text style={style.details}>{item.corso}</Text>
-                <Text style={style.details}>CFU: {item.CFU}</Text>
-                <Text style={style.details}>{stato===1 ? 'Esame superato' : stato===0? 'Esame sostenuto' : 'Esame non ancora sostenuto'}</Text>
-                {item.ora && <Text style={style.details}>{item.data} {item.ora}</Text>}
-                {item.luogo && <Text style={style.details}>Luogo: {item.luogo}</Text>}
-                <Text style={style.details}>Tipologia: {item.tipologia}</Text>
-                <Text style={style.details}>{item.profEsame}</Text>
-            </View>
-        </View>
-    )};
+        )
+    };
 
-    const headerComponent = () => (
-        <View style={style.header}>
-            <TouchableOpacity onPress={() => navigation.goBack()}>
-                <FontAwesomeIcon icon={faArrowLeft} style={style.backIcon} />
-            </TouchableOpacity>
-            <Text style={style.listHeadline}>Lista Esami</Text>
-        </View>
-    );
 
-    const itemSeparator = () => <View style={style.separator}></View>;
+        const itemSeparator = () => <View style={style.separator}></View>;
 
     return (
-        <View style={[style.container, {backgroundColor: primary_color(tema)}]}>
-            <FlatList
-                ListHeaderComponent={headerComponent}
-                data={esame}
-                renderItem={singoloEsame}
-                ItemSeparatorComponent={itemSeparator}
-                keyExtractor={(_, i) => i.toString()}
-            />
-            <Modal
-                animationType="fade"
-                transparent={true}
-                visible={modalVisible}
-                onRequestClose={() => setModalVisible(!modalVisible)}
-            >
-                <Pressable android_disableSound={true} android_ripple={{ color: 'transparent' }} onPress={toggleModal} style={[style.modalContainer, {backgroundColor: primary_color(tema)+'d0'}]}>
-                    <Pressable style={[style.modalContent, {backgroundColor: primary_color(tema)}]}>
-                        <Text style={[style.modalTitle, {color: tema?'white':'black'}]}>Diario</Text>
-                        <TouchableOpacity style={[style.closeButton, tema ? {borderColor: 'red', borderWidth: 2}: {backgroundColor: 'red'}]} onPress={toggleModal}>
-                            <FontAwesomeIcon icon={faTimes} style={{color: tema ? 'red' : 'white'}} />
-                        </TouchableOpacity>
-                        <TextInput
-                            style={[style.textInput, {color: tertiary_color(tema)}]}
-                            multiline
-                            placeholderTextColor={tertiary_color(tema)+'70'}
-                            numberOfLines={4}
-                            onChangeText={handleNoteChange}
-                            value={currentNoteId ? notes[currentNoteId] || '' : ''}
-                            placeholder="Scrivi qui le tue note..."
-                        />
+        <>
+            <Header title="Lista Esami" leftIcon={faArrowLeft} onPressLeft={()=>navigation.goBack()} scuro={tema} />
+            <View style={{ backgroundColor: primary_color(tema)}}>
+                <FlatList
+                    data={esame}
+                    renderItem={singoloEsame}
+                    ItemSeparatorComponent={itemSeparator}
+                    keyExtractor={(_, i) => i.toString()}
+                />
+                <Modal
+                    animationType="fade"
+                    transparent={true}
+                    visible={modalVisible!==''}
+                    onRequestClose={()=>setModalVisible('')}
+                >
+                    <Pressable android_disableSound={true} android_ripple={{ color: 'transparent' }} onPress={()=>setModalVisible('')} style={[style.modalContainer, { backgroundColor: primary_color(tema) + 'd0' }]}>
+                        <Pressable style={[style.modalContent, { backgroundColor: primary_color(tema) }]}>
+                            <Text style={[style.modalTitle, { color: tema ? 'white' : 'black' }]}>Diario</Text>
+                            <TouchableOpacity style={[style.closeButton, tema ? { borderColor: 'red', borderWidth: 2 } : { backgroundColor: 'red' }]} onPress={()=>setModalVisible('')}>
+                                <FontAwesomeIcon icon={faTimes} style={{ color: tema ? 'red' : 'white' }} />
+                            </TouchableOpacity>
+                            <Text
+                                style={[style.textInput, { color: tertiary_color(tema) }]}
+                            >{modalVisible}</Text>
+                        </Pressable>
                     </Pressable>
-                </Pressable>
-            </Modal>
-        </View>
+                </Modal>
+            </View>
+        </>
     );
 }
 
 const style = StyleSheet.create({
-    container: {
-        flex: 1,
-    },
     header: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -296,7 +241,8 @@ const style = StyleSheet.create({
         padding: 20,
         borderRadius: 10,
         elevation: 5,
-        maxWidth:250
+        maxWidth: 250,
+        width: '80%'
     },
     modalTitle: {
         fontSize: 18,
@@ -308,7 +254,7 @@ const style = StyleSheet.create({
     textInput: {
         marginTop: 25,
         width: '100%',
-        maxWidth:200,
+        maxWidth: 200,
         height: 100,
         borderColor: secondary_color,
         borderWidth: 1,
