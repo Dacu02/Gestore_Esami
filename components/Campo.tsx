@@ -2,6 +2,7 @@ import React from 'react';
 import { Text, TextInput, View, StyleSheet } from "react-native";
 import { primary_color, tertiary_color } from '../global';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { getOrientamento, rapportoOrizzontale, rapportoVerticale, scala } from '../global';
 
 const Campo = (props: any) => (
     <View style={style.row}>
@@ -27,7 +28,7 @@ const Campo = (props: any) => (
 
 const style = StyleSheet.create({
     textinput: {
-        padding:15,
+        padding: rapportoOrizzontale(15),
         borderRadius: 15,
         shadowColor: '#000',
         shadowOffset: {
@@ -40,9 +41,9 @@ const style = StyleSheet.create({
         color: 'black'
     },
     row: {
-        marginBottom: 20, 
+        marginBottom: rapportoVerticale(20), 
         width: '85%',
-        paddingLeft:10
+        paddingLeft: rapportoOrizzontale(10)
     },
     text: {        
         fontFamily: 'Roboto-Italic',
@@ -50,10 +51,10 @@ const style = StyleSheet.create({
         fontWeight: 'bold',
     },
     icona:{
-        marginRight:10,
+        marginRight: rapportoOrizzontale(10),
     },
     label:{
-        marginBottom: 10,
+        marginBottom: rapportoVerticale(10),
         display:'flex',
         flexDirection:'row'
     },

@@ -68,7 +68,7 @@ const style = StyleSheet.create({
         textAlign: "center",
     },
     contenutoPromemoria: {
-        marginLeft: 10,
+        marginLeft: rapportoOrizzontale(10),
     },
     dataPromemoria: {
         fontSize: 16,

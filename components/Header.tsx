@@ -4,15 +4,16 @@ import { faGraduationCap } from '@fortawesome/free-solid-svg-icons'
 import React from "react"
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { primary_color, secondary_color, tertiary_color } from "../global"
+import { rapportoOrizzontale, rapportoVerticale, scala, getOrientamento } from "../global"
 const Header = (props: any) => {
 
     const style = StyleSheet.create({
         header: {
             backgroundColor: primary_color(props.scuro),
             alignItems: 'center',
-            paddingTop: 10,
+            paddingTop: rapportoVerticale(10),
             borderBottomWidth: 3,
-            paddingBottom: 5,
+            paddingBottom: rapportoVerticale(5),
             borderColor: secondary_color,
             display: "flex",
             flexDirection: "column",
@@ -20,7 +21,7 @@ const Header = (props: any) => {
         },
         testo: {
             fontSize: 22,
-            marginTop: 5,
+            marginTop: rapportoVerticale(5),
             color: tertiary_color(props.scuro),
             textAlign: "center",
         },
@@ -31,7 +32,7 @@ const Header = (props: any) => {
             width: '100%',
             alignItems: 'center',
             justifyContent: 'space-between',
-            paddingHorizontal: 20,
+            paddingHorizontal: rapportoOrizzontale(20),
         }
     })
 

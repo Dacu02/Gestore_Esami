@@ -180,7 +180,7 @@ const ModificaEsame = ({ navigation, route }: any) => {
             >
                 <Pressable android_disableSound={true} android_ripple={{ color: primary_color(tema)+'d0' }} onPress={()=>{setModalCategory(false); setCreaCategoria("")}} style={[style.modal, {backgroundColor: primary_color(tema)+'d0'}]}>
                     <Pressable onPress={(e) => e.preventDefault()} style={[style.modalView, {backgroundColor: primary_color(tema)}]} android_disableSound={true} android_ripple={{ color: primary_color(tema) }} >
-                        <Text>Inserisci una categoria</Text>
+                        <Text style={{color: tertiary_color(tema)}}>Inserisci una categoria</Text>
                         <TextInput 
                             value={creaCategoria} 
                             onChangeText={setCreaCategoria} 
@@ -504,7 +504,7 @@ const style = StyleSheet.create({
     },
     categoria: {
         width: '80%',
-        height: rapportoVerticale(40),
+        height: rapportoVerticale(60),
         borderRadius: 10,
         margin: rapportoOrizzontale(10),
         padding: rapportoOrizzontale(10),

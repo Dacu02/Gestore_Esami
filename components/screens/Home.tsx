@@ -10,6 +10,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage"
 import { SelectList } from "react-native-dropdown-select-list"
 import Promemoria from "../Promemoria"
 import { getFormatedDate } from "react-native-modern-datepicker"
+import { rapportoVerticale, scala } from "../../global"
 
 
 
@@ -208,7 +209,7 @@ const style = StyleSheet.create({
     },
     modalView: {
         margin: "auto",
-        padding: 20,
+        padding: rapportoOrizzontale(20),
         borderRadius: 20,
         borderWidth: 2,
         borderColor: secondary_color,
@@ -219,8 +220,8 @@ const style = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        marginTop: 10,
-        marginBottom: 10,
+        marginTop: rapportoVerticale(10),
+        marginBottom: rapportoVerticale(10),
     },
     modalRowText: {
         fontSize: 16,
@@ -228,8 +229,8 @@ const style = StyleSheet.create({
     modalNumInput: {
         width: 50,
         textAlign: "center",
-        marginLeft: 5,
-        marginRight: 5,
+        marginLeft: rapportoOrizzontale(5),
+        marginRight: rapportoOrizzontale(5),
         borderRadius: 5,
         borderWidth: 1,
         borderColor: secondary_color,

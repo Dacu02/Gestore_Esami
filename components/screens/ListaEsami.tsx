@@ -8,6 +8,8 @@ import { primary_color, secondary_color, tertiary_color } from "../../global"
 import SQLite from 'react-native-sqlite-storage'
 import { getFormatedDate } from "react-native-modern-datepicker"
 import Header from "../Header"
+import { getOrientamento, rapportoOrizzontale, rapportoVerticale, scala } from "../../global"
+
 const ListaEsami = ({ navigation }: any) => {
 
     //interfaccia per gli item altrimenti typescript da problemi
@@ -114,7 +116,7 @@ const ListaEsami = ({ navigation }: any) => {
     const itemSeparator = () => <View style={style.separator}></View>;
 
     return (
-        <View style={{ backgroundColor: primary_color(tema) }}>
+        <View style={{ backgroundColor: primary_color(tema), height: '100%' }}>
             <Header title="Lista Esami" leftIcon={faArrowLeft} onPressLeft={() => navigation.goBack()} scuro={tema} />
             <FlatList
                 data={esame}
@@ -146,18 +148,10 @@ const ListaEsami = ({ navigation }: any) => {
 }
 
 const style = StyleSheet.create({
-    header: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        height: 60,
-        backgroundColor: '#fff',
-        paddingHorizontal: 10,
-        borderBottomWidth: 1,
-        borderBottomColor: '#ccc',
-    },
+    
     backIcon: {
         color: 'black',
-        marginRight: 20,
+        marginRight: rapportoOrizzontale(20),
     },
     listHeadline: {
         fontSize: 22,
@@ -168,8 +162,8 @@ const style = StyleSheet.create({
     },
     item: {
         flexDirection: 'row',
-        paddingVertical: 15,
-        paddingHorizontal: 10,
+        paddingVertical: rapportoVerticale(15),
+        paddingHorizontal: rapportoOrizzontale(10),
     },
     immagineContainer: {
         alignItems: 'center',
@@ -196,8 +190,8 @@ const style = StyleSheet.create({
 
     },
     progressoEsame: {
-        height: 34,
-        width: 34,
+        height: rapportoOrizzontale(34),
+        width: rapportoOrizzontale(34),
         borderRadius: 17,
         alignItems: 'center',
         justifyContent: 'center',
@@ -211,7 +205,7 @@ const style = StyleSheet.create({
     },
     infoContainer: {
         flex: 1,
-        marginLeft: 10,
+        marginLeft: rapportoOrizzontale(10),
     },
     nome: {
         fontWeight: '600',
@@ -245,33 +239,33 @@ const style = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
         position: 'absolute',
-        top: 10,
-        left: 10,
+        top: rapportoVerticale(10),
+        left: rapportoOrizzontale(10),
     },
     textInput: {
-        marginTop: 25,
+        marginTop: rapportoVerticale(25),
         width: '100%',
-        maxWidth: 200,
-        height: 100,
+        maxWidth: rapportoOrizzontale(200),
+        height: rapportoVerticale(100),
         borderColor: secondary_color,
         borderWidth: 1,
         borderRadius: 5,
-        padding: 10,
-        marginBottom: 10,
+        padding: rapportoOrizzontale(10),
+        marginBottom: rapportoVerticale(10),
         textAlignVertical: 'top',
     },
     closeButton: {
         position: 'absolute',
-        top: 10,
-        right: 10,
-        width: 25,
-        height: 25,
+        top: rapportoVerticale(10),
+        right: rapportoOrizzontale(10),
+        width: rapportoOrizzontale(25),
+        height: rapportoOrizzontale(25),
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 100,
     },
     lista: {
-        marginBottom: 60,
+        marginBottom: rapportoOrizzontale(60),
     }
 });
 

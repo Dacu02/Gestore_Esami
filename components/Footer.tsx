@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { primary_color, secondary_color, tertiary_color } from '../global';
+import { rapportoOrizzontale, rapportoVerticale, scala, getOrientamento } from '../global';
 
 const Footer = ( { navigation, ...props }: any) => {
 
@@ -22,8 +23,8 @@ const Footer = ( { navigation, ...props }: any) => {
         tab: {
             flex: 1,
             alignItems: 'center',
-            paddingTop: 10,
-            paddingBottom: 10,
+            paddingTop: rapportoVerticale(10),
+            paddingBottom: rapportoVerticale(10),
         },
         
         footerContainer: {
