@@ -114,17 +114,10 @@ const ModificaEsame = ({ navigation, route }: any) => {
         }
 
         categorieNuove.forEach((v) => {
-            if (categoria.includes(v)){
-                (db as SQLite.SQLiteDatabase).transaction((tx) => {
-                    console.log("Nuova cat:", v)
-                    tx.executeSql('insert into categoria values (?)', [v.trim()], (tx, res) => {
-                        console.log('Categoria inserita correttamente')
-                        console.log(res)
-                    }, (tx, err) => {
-                        console.error('Errore insert categoria: ', err)
-                    })
-                })
-            }
+            if (categoria.includes(v))
+                (db as SQLite.SQLiteDatabase).transaction((tx) => 
+                    tx.executeSql('insert into categoria values (?)', [v.trim()])
+            )
         })
 
         ;(db as SQLite.SQLiteDatabase).transaction((tx) => {
@@ -148,24 +141,12 @@ const ModificaEsame = ({ navigation, route }: any) => {
             else
                 dr = diario
                 
-            console.log('nome:', nome.trim(), '\ncorso:',corso.trim(), '\ncfu', cfu, '\ntipoolgia:', tipologia, '\ndocente:', docente.trim(), '\nvoto:', v, '\nlode:', ld, '\ndata:', getFormatedDate(data, 'YYYY/MM/DD'), '\nora:', getFormatedDate(data, 'HH:mm'), '\nluogo:', lg?lg.trim():lg, '\ndiario:', dr?dr.trim():dr)
-            tx.executeSql('insert into esame (nome, corso, cfu, tipologia, docente, voto, lode, data, ora, luogo, diario) values (?,?,?,?,?,?,?,?,?,?,?)', [nome, corso, cfu, tipologia, docente, v, ld, getFormatedDate(data, 'YYYY/MM/DD'), getFormatedDate(data, 'HH:mm'), lg, diario], (tx, res) => {
-                console.log('Valore inserito correttamente')
-                console.log(res)
-            }, (tx, err) => {
-                console.error('Errore insert esame: ', err)
-            })
-
-            categoria.forEach((cat) => {
-                tx.executeSql('insert into appartiene (nomeEsame, nomeCategoria) values (?, ?)', [nome.trim(), cat.trim()], (tx, res) => {
-                    console.log('Categoria inserita correttamente')
-                    console.log(res)
-                }, (tx, err) => {
-                    console.error('Errore insert appartiene: ', err)
-                })
-            })
+            tx.executeSql('insert into esame (nome, corso, cfu, tipologia, docente, voto, lode, data, ora, luogo, diario) values (?,?,?,?,?,?,?,?,?,?,?)', [nome, corso, cfu, tipologia, docente, v, ld, getFormatedDate(data, 'YYYY/MM/DD'), getFormatedDate(data, 'HH:mm'), lg, diario])
+            categoria.forEach((cat) => tx.executeSql('insert into appartiene (nomeEsame, nomeCategoria) values (?, ?)', [nome.trim(), cat.trim()]))
         })
 
+        navigation.goBack()
+        navigation.navigate('ListaEsami')
 
     }
 
@@ -229,15 +210,16 @@ const ModificaEsame = ({ navigation, route }: any) => {
                         </View>
                         <View style={style.innerRow}>
                             <SelectList 
-                                boxStyles={ {borderWidth: 0, backgroundColor: primary_color(tema),width:'100%'}} 
+                                boxStyles={{borderWidth: 0, backgroundColor: primary_color(tema),width:'100%'}} 
                                 placeholder='Seleziona tipologia' 
                                 inputStyles={{...style.selectInput, color: tipologia !== '' ? tertiary_color(tema) : tertiary_color(tema)+'80'}} 
                                 dropdownStyles={{...style.selectDrop, backgroundColor: primary_color(tema), borderWidth: 0}} 
-                                setSelected={setTipologia} 
+                                setSelected={setTipologia}
                                 data={['orale', 'scritto', 'scritto e orale']} 
-                                search={false} 
-                                dropdownTextStyles={{color: tertiary_color(tema)}} 
-                                save='value' />
+                                search={false}  
+                                save='value'
+                                dropdownTextStyles={{color: tertiary_color(tema)}}
+                                />
                         </View>
                     </View>
                     <View style={style.selectRow}>
@@ -262,7 +244,7 @@ const ModificaEsame = ({ navigation, route }: any) => {
                                 key={'value'}
                                 style={{backgroundColor: primary_color(tema), width: '80%', paddingLeft: 20, borderRadius: 10, marginRight: '7.5%'}}
                                 itemTextStyle={{color: tertiary_color(tema)}}
-                                placeholderStyle={{color: tertiary_color(tema) + '80'}}
+                                placeholderStyle={{color: tertiary_color(tema)+(categoria.length>0 ? '' : '80' )}}
                                 onChange={setCategoria}
                                 containerStyle={{backgroundColor: primary_color(tema), borderRadius: 10, borderWidth: 0}}
                                 itemContainerStyle={{backgroundColor: primary_color(tema), borderColor: secondary_color}}
@@ -272,9 +254,6 @@ const ModificaEsame = ({ navigation, route }: any) => {
                                     <Text style={[style.selectItem, {color: tertiary_color(tema)}]}>{item.value}</Text>
                                 )}
                             />
-                            <View>
-                                {}
-                            </View>
                                 <TouchableOpacity style={[style.plusIcon, {backgroundColor: primary_color(tema)}]} onPress={()=>setModalCategory(true)}>
                                       <FontAwesomeIcon
                                          icon={faPlus}

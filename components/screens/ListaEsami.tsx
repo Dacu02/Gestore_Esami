@@ -8,11 +8,11 @@ import { primary_color, secondary_color, tertiary_color } from "../../global"
 import SQLite from 'react-native-sqlite-storage'
 import { getFormatedDate } from "react-native-modern-datepicker"
 import Header from "../Header"
-const ListaEsami = ({navigation}: any) => {
+const ListaEsami = ({ navigation }: any) => {
 
     //interfaccia per gli item altrimenti typescript da problemi
     interface EsameItem {
-        name: string,
+        nome: string,
         corso: string,
         tipologia: string,
         image: any,
@@ -38,7 +38,7 @@ const ListaEsami = ({navigation}: any) => {
             tx.executeSql('select * from esame', [], (tx, results) => {
                 for (let i = 0; i < results.rows.length; i++) {
                     const esame = {
-                        name: results.rows.item(i).nome,
+                        nome: results.rows.item(i).nome,
                         corso: results.rows.item(i).corso,
                         tipologia: results.rows.item(i).tipologia,
                         voto: results.rows.item(i).voto,
@@ -82,67 +82,66 @@ const ListaEsami = ({navigation}: any) => {
             -1 non sostenuto ancora
         */
         return (
-            <TouchableOpacity activeOpacity={0.7} onLongPress={()=>navigation.navigate('')} style={[style.item, { backgroundColor: primary_color(tema) }]}>
+            <TouchableOpacity activeOpacity={0.7} onLongPress={() => navigation.navigate('ModificaEsame', { esame: item.nome })} style={[style.item, { backgroundColor: primary_color(tema) }]}>
                 <View style={style.immagineContainer}>
                     <Image source={item.image} style={style.immagine} />
                     {item.diario && item.diario !== '' ?
-                        <TouchableOpacity onPress={()=>setModalVisible(item.diario?item.diario:'')}>
-                        <View style={[style.diario, { backgroundColor: item.voto ? "#bacdff" : "#ffe491" }]}>
-                            <Text style={[style.diarioText, { color: item.voto ? "#4c74dc" : "#ffa600" }]}>Diario</Text>
-                        </View>
-                    </TouchableOpacity>
-                    : null}
+                        <TouchableOpacity onPress={() => setModalVisible(item.diario ? item.diario : '')}>
+                            <View style={[style.diario, { backgroundColor: item.voto ? "#bacdff" : "#ffe491" }]}>
+                                <Text style={[style.diarioText, { color: item.voto ? "#4c74dc" : "#ffa600" }]}>Diario</Text>
+                            </View>
+                        </TouchableOpacity>
+                        : null}
                 </View>
                 <View style={[style.progressoEsame, !tema ? { backgroundColor: item.voto ? "#019d3a" : "#f0b904" } : { borderColor: item.voto ? "#019d3a" : "#f0b904", borderWidth: 2, borderRadius: 25 }]}>
                     <Text style={[style.votoText, tema ? { color: item.voto ? "#019d3a" : "#f0b904" } : {}]}>{item.voto ? item.voto : 'N/A'}</Text>
                 </View>
                 <View style={style.infoContainer}>
-                    <Text style={[style.name, tema ? { color: 'white' } : {}]}>{item.name}</Text>
+                    <Text style={[style.nome, tema ? { color: 'white' } : {}]}>{item.nome}</Text>
                     <Text style={style.details}>{item.corso}</Text>
                     <Text style={style.details}>CFU: {item.CFU}</Text>
                     <Text style={style.details}>{stato === 1 ? 'Esame superato' : stato === 0 ? 'Esame sostenuto' : 'Esame non ancora sostenuto'}</Text>
                     {item.ora && <Text style={style.details}>{item.data} {item.ora}</Text>}
                     {item.luogo && <Text style={style.details}>Luogo: {item.luogo}</Text>}
                     <Text style={style.details}>Tipologia: {item.tipologia}</Text>
-                    <Text style={style.details}>{item.profEsame}</Text>
+                    <Text style={style.details}>Prof. {item.profEsame}</Text>
                 </View>
             </TouchableOpacity>
         )
     };
 
 
-        const itemSeparator = () => <View style={style.separator}></View>;
+    const itemSeparator = () => <View style={style.separator}></View>;
 
     return (
-        <>
-            <Header title="Lista Esami" leftIcon={faArrowLeft} onPressLeft={()=>navigation.goBack()} scuro={tema} />
-            <View style={{ backgroundColor: primary_color(tema)}}>
-                <FlatList
-                    data={esame}
-                    renderItem={singoloEsame}
-                    ItemSeparatorComponent={itemSeparator}
-                    keyExtractor={(_, i) => i.toString()}
-                />
-                <Modal
-                    animationType="fade"
-                    transparent={true}
-                    visible={modalVisible!==''}
-                    onRequestClose={()=>setModalVisible('')}
-                >
-                    <Pressable android_disableSound={true} android_ripple={{ color: 'transparent' }} onPress={()=>setModalVisible('')} style={[style.modalContainer, { backgroundColor: primary_color(tema) + 'd0' }]}>
-                        <Pressable style={[style.modalContent, { backgroundColor: primary_color(tema) }]}>
-                            <Text style={[style.modalTitle, { color: tema ? 'white' : 'black' }]}>Diario</Text>
-                            <TouchableOpacity style={[style.closeButton, tema ? { borderColor: 'red', borderWidth: 2 } : { backgroundColor: 'red' }]} onPress={()=>setModalVisible('')}>
-                                <FontAwesomeIcon icon={faTimes} style={{ color: tema ? 'red' : 'white' }} />
-                            </TouchableOpacity>
-                            <Text
-                                style={[style.textInput, { color: tertiary_color(tema) }]}
-                            >{modalVisible}</Text>
-                        </Pressable>
+        <View style={{ backgroundColor: primary_color(tema) }}>
+            <Header title="Lista Esami" leftIcon={faArrowLeft} onPressLeft={() => navigation.goBack()} scuro={tema} />
+            <FlatList
+                data={esame}
+                renderItem={singoloEsame}
+                ItemSeparatorComponent={itemSeparator}
+                keyExtractor={(_, i) => i.toString()}
+                style={[{backgroundColor: primary_color(tema)}, style.lista]}
+            />
+            <Modal
+                animationType="fade"
+                transparent={true}
+                visible={modalVisible !== ''}
+                onRequestClose={() => setModalVisible('')}
+            >
+                <Pressable android_disableSound={true} android_ripple={{ color: 'transparent' }} onPress={() => setModalVisible('')} style={[style.modalContainer, { backgroundColor: primary_color(tema) + 'd0' }]}>
+                    <Pressable style={[style.modalContent, { backgroundColor: primary_color(tema) }]}>
+                        <Text style={[style.modalTitle, { color: tema ? 'white' : 'black' }]}>Diario</Text>
+                        <TouchableOpacity style={[style.closeButton, tema ? { borderColor: 'red', borderWidth: 2 } : { backgroundColor: 'red' }]} onPress={() => setModalVisible('')}>
+                            <FontAwesomeIcon icon={faTimes} style={{ color: tema ? 'red' : 'white' }} />
+                        </TouchableOpacity>
+                        <Text
+                            style={[style.textInput, { color: tertiary_color(tema) }]}
+                        >{modalVisible}</Text>
                     </Pressable>
-                </Modal>
-            </View>
-        </>
+                </Pressable>
+            </Modal>
+        </View>
     );
 }
 
@@ -214,7 +213,7 @@ const style = StyleSheet.create({
         flex: 1,
         marginLeft: 10,
     },
-    name: {
+    nome: {
         fontWeight: '600',
         fontSize: 16,
         color: 'black',
@@ -271,6 +270,9 @@ const style = StyleSheet.create({
         justifyContent: 'center',
         borderRadius: 100,
     },
+    lista: {
+        marginBottom: 60,
+    }
 });
 
 

@@ -181,7 +181,7 @@ const Home = ({ navigation }: any) => {
                     </Pressable>
                 </Pressable>
             </Modal>
-            <Header icon={true} title="Lista esami" leftIcon={faGear} onPressLeft={() => setSetting(true)} rightIcon={faCalendarDays} onPressRight={setCalendar} scuro={tema} />
+            <Header icon={true} title="Promemoria" leftIcon={faGear} onPressLeft={() => setSetting(true)} rightIcon={faCalendarDays} onPressRight={setCalendar} scuro={tema} />
             <View style={[style.viewPromemoria, {flexDirection: orientamento === 'portrait' ? "column" : "row",}]}>
                 {notifiche.map((esame, index) => <Promemoria key={index} {...esame} style={style} />)}
             </View>
