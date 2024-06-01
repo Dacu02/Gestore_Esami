@@ -19,7 +19,7 @@ const setCalendar = () => {
 }
 
 
-const Esame = ({ navigation }: any) => {
+const Home = ({ navigation }: any) => {
 
     interface Notifica {
         nome: string,
@@ -243,4 +243,4 @@ const style = StyleSheet.create({
 
 })
 
-export default Esame
+export default Home

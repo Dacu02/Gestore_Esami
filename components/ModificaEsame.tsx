@@ -17,7 +17,7 @@ import  { MultiSelect }  from 'react-native-element-dropdown'
 import { Platform } from 'react-native'
 import Header from './Header';
 
-const Input = ({ navigation }: any) => {
+const ModificaEsame = ({ navigation, route }: any) => {
     const [openCalendar, setOpenCalendar] = useState(false)
     const [openClock, setOpenClock] = useState(false)
 
@@ -38,7 +38,6 @@ const Input = ({ navigation }: any) => {
     const [dataoraInputted, setDataoraInputted] = useState(false)
     const [modalCategory, setModalCategory] = useState(false)
     const [creaCategoria, setCreaCategoria] = useState("")
-    const [color, setColor] = useState('#000000')
     
     
     const getTema = async () =>
@@ -186,7 +185,7 @@ const Input = ({ navigation }: any) => {
 
     return (
     <>
-        <Header title="Inserimento esame" leftIcon={faArrowLeft} onPressLeft={()=>navigation.goBack()} scuro={tema} />
+        <Header title={route.params && route.params.esame ? "Modifica esame" : "Inserimento esame"} leftIcon={faArrowLeft} onPressLeft={()=>navigation.goBack()} scuro={tema} />
         <ScrollView style={style.ex}>
             <Modal
                 animationType='fade'
@@ -565,4 +564,4 @@ const style = StyleSheet.create({
     }
 })
 
-export default Input
+export default ModificaEsame

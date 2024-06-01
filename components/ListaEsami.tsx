@@ -2,14 +2,13 @@ import React, { useContext, useState, useEffect } from "react"
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { StyleSheet, Text, Image, View, FlatList, TouchableOpacity, Modal, Pressable } from "react-native"
 import { DataBaseContext } from "./DataBase"
-import { useNavigation } from "@react-navigation/native"
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faArrowLeft, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { primary_color, secondary_color, tertiary_color } from "../global"
 import SQLite from 'react-native-sqlite-storage'
 import { getFormatedDate } from "react-native-modern-datepicker"
 import Header from "./Header"
-const ListaEsami = () => {
+const ListaEsami = ({navigation}: any) => {
 
     //interfaccia per gli item altrimenti typescript da problemi
     interface EsameItem {
@@ -29,7 +28,6 @@ const ListaEsami = () => {
     const [esame, setEsame] = useState<EsameItem[]>([])
 
     const db = useContext(DataBaseContext);
-    const navigation = useNavigation();
     const [modalVisible, setModalVisible] = useState("");
 
 
@@ -84,7 +82,7 @@ const ListaEsami = () => {
             -1 non sostenuto ancora
         */
         return (
-            <View style={[style.item, { backgroundColor: primary_color(tema) }]}>
+            <TouchableOpacity activeOpacity={0.7} onLongPress={()=>navigation.navigate('')} style={[style.item, { backgroundColor: primary_color(tema) }]}>
                 <View style={style.immagineContainer}>
                     <Image source={item.image} style={style.immagine} />
                     {item.diario && item.diario !== '' ?
@@ -108,7 +106,7 @@ const ListaEsami = () => {
                     <Text style={style.details}>Tipologia: {item.tipologia}</Text>
                     <Text style={style.details}>{item.profEsame}</Text>
                 </View>
-            </View>
+            </TouchableOpacity>
         )
     };
 
