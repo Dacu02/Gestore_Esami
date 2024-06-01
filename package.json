@@ -37,6 +37,7 @@
     "react-native-screens": "^3.31.1",
     "react-native-sqlite-storage": "^6.0.1",
     "react-native-svg": "^15.3.0",
+    "react-native-swipe-list-view": "^3.2.9",
     "victory-native": "^40.2.1"
   },
   "devDependencies": {

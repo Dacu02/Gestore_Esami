@@ -1,14 +1,15 @@
 import React, { useContext, useState, useEffect } from "react"
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { StyleSheet, Text, Image, View, FlatList, TouchableOpacity, Modal, Pressable } from "react-native"
+import { StyleSheet, Text, Image, View, TouchableOpacity, Modal, Pressable } from "react-native"
 import { DataBaseContext } from "../DataBase"
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { faArrowLeft, faTimes } from '@fortawesome/free-solid-svg-icons'
+import { faArrowLeft, faPencil, faTimes, faTrashCan } from '@fortawesome/free-solid-svg-icons'
 import { primary_color, secondary_color, tertiary_color } from "../../global"
 import SQLite from 'react-native-sqlite-storage'
 import { getFormatedDate } from "react-native-modern-datepicker"
 import Header from "../Header"
 import { getOrientamento, rapportoOrizzontale, rapportoVerticale, scala } from "../../global"
+import {SwipeListView} from 'react-native-swipe-list-view'
 
 const ListaEsami = ({ navigation }: any) => {
 
@@ -76,6 +77,28 @@ const ListaEsami = ({ navigation }: any) => {
     }, [])
 
 
+    const deleteEsame = (nome:String) => {
+        (db as SQLite.SQLiteDatabase).transaction((tx) => {
+            tx.executeSql('delete from appartiene where esame = ?', [nome], (tx, res) => console.log(res), (tx, err) => console.log(err))
+            tx.executeSql('delete from esame where nome = ?', [nome], (tx, res) => console.log(res), (tx, err) => console.log(err))
+            tx.executeSql('delete from categoria where nome not in (select categoria from appartiene)', [], (tx, res) => console.log(res), (tx, err) => console.log(err))
+        }
+    )
+    setEsame(esame.filter(e => e.nome !== nome))
+} 
+
+
+    const Bottoni = (props:any) => (
+        <View style={style.bottoniContainer}>
+        <TouchableOpacity style={style.eliminaContainer} onPress={()=>deleteEsame(props.esame)} >
+            <FontAwesomeIcon icon={faTrashCan} style={style.elimina} size={30} />
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => {console.log(props.esame); navigation.navigate('ModificaEsame', { esame: props.esame })}} style={style.modificaContainer}>
+            <FontAwesomeIcon icon={faPencil} style={style.modifica} size={30} />
+        </TouchableOpacity>
+        </View>
+    )
 
     style.details = {
         ...style.details,
@@ -90,7 +113,7 @@ const ListaEsami = ({ navigation }: any) => {
             -1 non sostenuto ancora
         */
         return (
-            <TouchableOpacity activeOpacity={0.7} onLongPress={() => navigation.navigate('ModificaEsame', { esame: item.nome })} style={[style.item, { backgroundColor: primary_color(tema) }]}>
+            <View style={[style.item, { backgroundColor: primary_color(tema) }]}>
                 <View style={style.immagineContainer}>
                     <Image source={item.image} style={style.immagine} />
                     {item.diario && item.diario !== '' ?
@@ -115,7 +138,7 @@ const ListaEsami = ({ navigation }: any) => {
                     <Text style={style.details}>Prof. {item.profEsame}</Text>
                     {item.categoria.length > 0 ? <Text style={style.details}>Categori{item.categoria.length>1?'e':'a'}: {item.categoria.join(', ')}</Text> : null}
                 </View>
-            </TouchableOpacity>
+            </View>
         )
     };
 
@@ -125,12 +148,17 @@ const ListaEsami = ({ navigation }: any) => {
     return (
         <View style={{ backgroundColor: primary_color(tema), height: '100%' }}>
             <Header title="Lista Esami" leftIcon={faArrowLeft} onPressLeft={() => navigation.goBack()} scuro={tema} />
-            <FlatList
+            <SwipeListView
                 data={esame}
                 renderItem={singoloEsame}
                 ItemSeparatorComponent={itemSeparator}
-                keyExtractor={(_, i) => i.toString()}
+                keyExtractor={(e) => e.nome}
                 style={[{backgroundColor: primary_color(tema)}, style.lista]}
+                leftOpenValue={75}
+                stopLeftSwipe={90}
+                rightOpenValue={-75}
+                stopRightSwipe={-90}
+                renderHiddenItem={(data) => (<Bottoni esame={data.item.nome}/>)}
             />
             <Modal
                 animationType="fade"
@@ -273,7 +301,34 @@ const style = StyleSheet.create({
     },
     lista: {
         marginBottom: rapportoOrizzontale(60),
-    }
+    },
+    bottoniContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        height: '100%',
+    },
+    eliminaContainer: {
+        backgroundColor: 'red',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 75,
+        height: '100%',
+    },
+    elimina: {
+        color: 'white',
+    },
+    modificaContainer: {
+        backgroundColor: 'darkgray',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 75,
+        height: '100%',
+    },
+    modifica: {
+        color: 'white',
+    },
+    
 });
 
 
