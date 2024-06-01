@@ -44,7 +44,7 @@ const Footer = ( { navigation, ...props }: any) => {
         <View style={style.footerContainer}>
             <View style={style.footer}>
                 <Tab icon={faList}  nav="ListaEsami"/>
-                <Tab icon={faPlus} nav="Input"/>
+                <Tab icon={faPlus} nav="ModificaEsame"/>
                 <Tab icon={faChartColumn} nav="Statistiche" />
             </View>
         </View>
