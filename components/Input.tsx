@@ -218,7 +218,7 @@ const Input = ({ navigation }: any) => {
                     </Pressable>
                 </Pressable>
             </Modal>
-            <ImageBackground style={style.image} source={tema ? require('../immaginiEsami/OndaBlack2.png') : require('../immaginiEsami/Onda2.png')}>
+            <ImageBackground style={style.image} source={tema ? require('../immaginiEsami/OndaBlack.png') : require('../immaginiEsami/Onda2.png')}>
                 <View style={style.container}>
                     <Campo tema={tema} nome='Nome' value={nome} onChange={setNome} icon={faUser}/>
                     <Campo tema={tema} nome='Corso' value={corso} onChange={setCorso} icon={faUsers}/>
@@ -365,8 +365,8 @@ const Input = ({ navigation }: any) => {
                     </View>
 
                     <View style={style.buttons}>
-                        <TouchableOpacity style={style.confirm}>
-                            <Text onPress={submit} style={style.confirmText}>CONFERMA</Text>
+                        <TouchableOpacity style={[style.confirm, tema ?  {backgroundColor: '#BAB5AD'} : style.confirm ]}>
+                            <Text onPress={submit} style={[style.confirmText, tema ? {color: 'black'} : style.confirmText]}>CONFERMA</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={[style.deny]}>
                             <Text onPress={() => navigation.goBack()} style={style.denyText}>ANNULLA</Text>
