@@ -1,9 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Dimensions, ScrollView, SafeAreaView } from 'react-native';
-import { primary_color, secondary_color, tertiary_color } from '../global';
+import { primary_color, secondary_color, tertiary_color } from '../../global';
 import { Avatar, Button, Card, Text , SegmentedButtons } from 'react-native-paper';
-import Header from './Header';
+import Header from '../Header';
 import {
   LineChart,
   BarChart,
