@@ -3,7 +3,7 @@ import { Settings, StyleSheet, Text, View, TextInput, Modal, Dimensions, Touchab
 import Footer from "../Footer"
 import { primary_color, rapportoOrizzontale, secondary_color, tertiary_color, getOrientamento } from '../../global'
 import Header from "../Header"
-import { faCalendarDays, faGear } from "@fortawesome/free-solid-svg-icons"
+import { faGear } from "@fortawesome/free-solid-svg-icons"
 import { DataBase, DataBaseContext } from "../DataBase"
 import SQLite from 'react-native-sqlite-storage'
 import AsyncStorage from "@react-native-async-storage/async-storage"
@@ -11,12 +11,6 @@ import { SelectList } from "react-native-dropdown-select-list"
 import Promemoria from "../Promemoria"
 import { getFormatedDate } from "react-native-modern-datepicker"
 import { rapportoVerticale, scala } from "../../global"
-
-
-
-const setCalendar = () => {
-    console.log("Calendario")
-}
 
 
 const Home = ({ navigation }: any) => {
@@ -75,10 +69,7 @@ const Home = ({ navigation }: any) => {
                         break
                 }
             }
-
         }
-
-        aggiornaPromemoria()
     }
 
     
@@ -136,7 +127,7 @@ const Home = ({ navigation }: any) => {
         
         ;(db as SQLite.SQLiteDatabase).transaction((tx) => {
             const proms: Notifica[] = []
-            tx.executeSql("SELECT * FROM esame WHERE data>='" + getFormatedDate(new Date(), 'YYYY/MM/DD') +"' AND data<'" + getFormatedDate(dataMax, 'YYYY/MM/DD') +"' ORDER BY data DESC LIMIT 3", [], (tx, res) => {
+            tx.executeSql("SELECT * FROM esame WHERE voto IS NULL AND data>='" + getFormatedDate(new Date(), 'YYYY/MM/DD') +"' AND data<'" + getFormatedDate(dataMax, 'YYYY/MM/DD') +"' ORDER BY data DESC LIMIT 3", [], (tx, res) => {
                 for(let i = 0; i < res.rows.length; i++){
                     const dati = {
                         nome: res.rows.item(i).nome,
@@ -158,7 +149,7 @@ const Home = ({ navigation }: any) => {
     useEffect(() => {
         if (Object.keys(db).length > 0) // se il db è stato inizializzato
             aggiornaPromemoria()
-    }, [db])
+    }, [db, numNotifica, notifica])
 
     const [orientamento, setOrientamento] = useState(getOrientamento())
 
@@ -182,7 +173,7 @@ const Home = ({ navigation }: any) => {
                     </Pressable>
                 </Pressable>
             </Modal>
-            <Header icon={true} title="Promemoria" leftIcon={faGear} onPressLeft={() => setSetting(true)} rightIcon={faCalendarDays} onPressRight={setCalendar} scuro={tema} />
+            <Header icon={true} title="Promemoria" leftIcon={faGear} onPressLeft={() => setSetting(true)} scuro={tema} />
             <View style={[style.viewPromemoria, {flexDirection: orientamento === 'portrait' ? "column" : "row",}]}>
                 {notifiche.map((esame, index) => <Promemoria key={index} {...esame} style={style} />)}
             </View>

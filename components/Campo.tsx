@@ -7,21 +7,24 @@ import { getOrientamento, rapportoOrizzontale, rapportoVerticale, scala } from '
 const Campo = (props: any) => (
     <View style={style.row}>
         <View style={style.label}>
-         <FontAwesomeIcon
-            icon={props.icon}
-            size={16}
-            style={{...style.icona, color: primary_color(props.tema)}}
-        />
-        <Text style={[style.text, {color: primary_color(props.tema)}]}>{props.nome.toUpperCase()}</Text>
-        </View>
-        <TextInput 
-            placeholder={"Inserisci " + props.nome}
-            placeholderTextColor={tertiary_color(props.tema)+'80'} 
-            keyboardType={props.tipo ? props.tipo : 'default'} 
-            style={[style.textinput, {backgroundColor: primary_color(props.tema), color: tertiary_color(props.tema)}]} 
-            value={props.value} 
-            onChangeText={props.onChange} 
+            <FontAwesomeIcon
+                icon={props.icon}
+                size={16}
+                style={{ ...style.icona, color: primary_color(props.tema) }}
             />
+            <Text style={[style.text, { color: primary_color(props.tema) }]}>{props.nome.toUpperCase()}</Text>
+        </View>
+        <View>
+            <TextInput
+                placeholder={"Inserisci " + props.nome}
+                placeholderTextColor={tertiary_color(props.tema) + '80'}
+                keyboardType={props.tipo ? props.tipo : 'default'}
+                style={[style.textinput, { backgroundColor: primary_color(props.tema), color: tertiary_color(props.tema) }]}
+                value={props.value + (props.lode?'L':'')}   
+                onChangeText={props.onChange}
+            />
+            {props.children}
+        </View>
     </View>
 )
 
@@ -41,22 +44,22 @@ const style = StyleSheet.create({
         color: 'black'
     },
     row: {
-        marginBottom: rapportoVerticale(20), 
+        marginBottom: rapportoVerticale(20),
         width: '85%',
         paddingLeft: rapportoOrizzontale(10)
     },
-    text: {        
+    text: {
         fontFamily: 'Roboto-Italic',
         color: 'white',
         fontWeight: 'bold',
     },
-    icona:{
+    icona: {
         marginRight: rapportoOrizzontale(10),
     },
-    label:{
+    label: {
         marginBottom: rapportoVerticale(10),
-        display:'flex',
-        flexDirection:'row'
+        display: 'flex',
+        flexDirection: 'row'
     },
 
 })

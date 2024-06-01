@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { StyleSheet, Text, Image, View, TouchableOpacity, Modal, Pressable } from "react-native"
 import { DataBaseContext } from "../DataBase"
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { faArrowLeft, faPencil, faTimes, faTrashCan } from '@fortawesome/free-solid-svg-icons'
+import { faArrowLeft, faCalendarDay, faCalendarDays, faCalendarWeek, faPencil, faTimes, faTrashCan } from '@fortawesome/free-solid-svg-icons'
 import { primary_color, secondary_color, tertiary_color } from "../../global"
 import SQLite from 'react-native-sqlite-storage'
 import { getFormatedDate } from "react-native-modern-datepicker"
@@ -13,7 +13,6 @@ import {SwipeListView} from 'react-native-swipe-list-view'
 
 const ListaEsami = ({ navigation }: any) => {
 
-    //interfaccia per gli item altrimenti typescript da problemi
     interface EsameItem {
         nome: string,
         corso: string,
@@ -23,9 +22,10 @@ const ListaEsami = ({ navigation }: any) => {
         CFU: number,
         data: string
         profEsame: string | null,
-        ora: string | null,
+        ora: string,
         luogo: string,
         diario: string | null,
+        lode: boolean,
         categoria: string[]
     }
 
@@ -33,7 +33,25 @@ const ListaEsami = ({ navigation }: any) => {
 
     const db = useContext(DataBaseContext);
     const [modalVisible, setModalVisible] = useState("");
+    const [visualizzazione, setVisualizzazione] = useState('giornaliero')
+    const [icona, setIcona] = useState(faCalendarWeek)
 
+    const updateVisualizzazione = () => {
+        switch (visualizzazione) {
+            case 'giornaliero':
+                setIcona(faCalendarWeek)
+                setVisualizzazione('settimanale')
+                break
+            case 'settimanale':
+                setIcona(faCalendarDays)
+                setVisualizzazione('mensile')
+                break
+            case 'mensile':
+                setIcona(faCalendarDay)
+                setVisualizzazione('giornaliero')
+                break
+        }
+    }
 
     const loadData = () => {
         const dati: EsameItem[] = [];
@@ -45,6 +63,7 @@ const ListaEsami = ({ navigation }: any) => {
                         corso: results.rows.item(i).corso,
                         tipologia: results.rows.item(i).tipologia,
                         voto: results.rows.item(i).voto,
+                        lode: results.rows.item(i).lode,
                         CFU: results.rows.item(i).cfu,
                         data: results.rows.item(i).data.split('/').reverse().join('/'),
                         categoria: [''],
@@ -79,9 +98,9 @@ const ListaEsami = ({ navigation }: any) => {
 
     const deleteEsame = (nome:String) => {
         (db as SQLite.SQLiteDatabase).transaction((tx) => {
-            tx.executeSql('delete from appartiene where esame = ?', [nome], (tx, res) => console.log(res), (tx, err) => console.log(err))
-            tx.executeSql('delete from esame where nome = ?', [nome], (tx, res) => console.log(res), (tx, err) => console.log(err))
-            tx.executeSql('delete from categoria where nome not in (select categoria from appartiene)', [], (tx, res) => console.log(res), (tx, err) => console.log(err))
+            tx.executeSql('delete from appartiene where esame = ?', [nome])
+            tx.executeSql('delete from esame where nome = ?', [nome])
+            tx.executeSql('delete from categoria where nome not in (select categoria from appartiene)')
         }
     )
     setEsame(esame.filter(e => e.nome !== nome))
@@ -94,7 +113,7 @@ const ListaEsami = ({ navigation }: any) => {
             <FontAwesomeIcon icon={faTrashCan} style={style.elimina} size={30} />
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => {console.log(props.esame); navigation.navigate('ModificaEsame', { esame: props.esame })}} style={style.modificaContainer}>
+        <TouchableOpacity onPress={() => navigation.navigate('ModificaEsame', { esame: props.esame })} style={style.modificaContainer}>
             <FontAwesomeIcon icon={faPencil} style={style.modifica} size={30} />
         </TouchableOpacity>
         </View>
@@ -125,7 +144,7 @@ const ListaEsami = ({ navigation }: any) => {
                         : null}
                 </View>
                 <View style={[style.progressoEsame, !tema ? { backgroundColor: item.voto ? "#019d3a" : "#f0b904" } : { borderColor: item.voto ? "#019d3a" : "#f0b904", borderWidth: 2, borderRadius: 25 }]}>
-                    <Text style={[style.votoText, tema ? { color: item.voto ? "#019d3a" : "#f0b904" } : {}]}>{item.voto ? item.voto : 'N/A'}</Text>
+                    <Text style={[style.votoText, tema ? { color: item.voto ? "#019d3a" : "#f0b904" } : {}]}>{item.voto ? item.voto + (item.lode ? 'L' : '') : 'N/A'}</Text>
                 </View>
                 <View style={style.infoContainer}>
                     <Text style={[style.nome, tema ? { color: 'white' } : {}]}>{item.nome}</Text>
@@ -147,9 +166,15 @@ const ListaEsami = ({ navigation }: any) => {
 
     return (
         <View style={{ backgroundColor: primary_color(tema), height: '100%' }}>
-            <Header title="Lista Esami" leftIcon={faArrowLeft} onPressLeft={() => navigation.goBack()} scuro={tema} />
+            <Header 
+                title="Lista Esami" 
+                leftIcon={faArrowLeft} 
+                onPressLeft={() => navigation.goBack()} 
+                scuro={tema} 
+                rightIcon={icona} 
+                onPressRight={updateVisualizzazione}  />
             <SwipeListView
-                data={esame}
+                data={esame.sort((a, b) => a.data.localeCompare(b.data)===0 ? a.ora.localeCompare(b.ora) : a.data.localeCompare(b.data))}
                 renderItem={singoloEsame}
                 ItemSeparatorComponent={itemSeparator}
                 keyExtractor={(e) => e.nome}
