@@ -8,7 +8,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import Campo from '../Campo'
 import { DataBaseContext } from '../DataBase'
 import SQLite from 'react-native-sqlite-storage'
-import { Checkbox } from 'react-native-paper';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faPlus,faBook,faUser, faPenNib, faSquarePollVertical,faUsers, faFilter, faUserTie, faLocationDot, faList, faArrowLeft} from '@fortawesome/free-solid-svg-icons';
 import { SelectList } from 'react-native-dropdown-select-list'
@@ -18,7 +17,6 @@ import { getOrientamento, rapportoOrizzontale, rapportoVerticale, scala } from '
 
 import { Platform } from 'react-native'
 import Header from '../Header';
-import { color } from 'd3';
 
 
 const ModificaEsame = ({ navigation, route }: any) => {
@@ -38,24 +36,20 @@ const ModificaEsame = ({ navigation, route }: any) => {
     const [luogo, setLuogo] = useState("")
     const [diario, setDiario] = useState("")
     const [err, setErr] = useState("")
-    const [data, setData] = useState(new Date())
+    const [timeStamp, setTimeStamp] = useState(new Date())
     const [dataoraInputted, setDataoraInputted] = useState(false)
     const [modalCategory, setModalCategory] = useState(false)
     const [creaCategoria, setCreaCategoria] = useState("")
-    
     
     const getTema = async () =>
         (await AsyncStorage.getItem('tema') === 'dark')
 
     const [tema, setTema] = useState(true)
+    const db = useContext(DataBaseContext)
 
     useEffect(() => {
         getTema().then(value => setTema(value))
-    }, [])
-
-    const db = useContext(DataBaseContext)
-    useEffect(() => {
-        ;(db as SQLite.SQLiteDatabase).transaction((tx) => {
+    ;(db as SQLite.SQLiteDatabase).transaction((tx) => {
             let temp: string[] = []
             tx.executeSql('select nome from categoria', [], (_, res) => {
                 for (let i = 0; i < res.rows.length; i++)
@@ -63,21 +57,49 @@ const ModificaEsame = ({ navigation, route }: any) => {
                 setListaCategorie(temp)
             })
         })
+    if (route.params && route.params.esame){
+        (db as SQLite.SQLiteDatabase).transaction((tx) => {
+            tx.executeSql('select * from esame where nome = ?', [route.params.esame], (_, res) => {
+                let esame = res.rows.item(0)
+                setNome(esame.nome)
+                setCorso(esame.corso)
+                setVoto(esame.voto ? esame.voto.toString() : '')
+                setLode(esame.lode === 1)
+                setCfu(esame.cfu.toString())
+                setTipologia(esame.tipologia)
+                setDocente(esame.docente)
+                setLuogo(esame.luogo)
+                setDiario(esame.diario)
+                setTimeStamp(getTimeStamp(esame.data, esame.ora))
+                setDataoraInputted(true)
+                tx.executeSql('select categoria from appartiene where esame = ?', [esame.nome], (tx, res) => {
+                    const categorie: string[] = []
+                    for (let j = 0; j < res.rows.length; j++) 
+                        categorie.push(res.rows.item(j).categoria)
+                    setCategoria(categorie)
+                })
+            })
+        })}
     }, [])
 
 
     const timeInput = (v: Date|undefined) => {
         if (v) {
-            setData(v)
+            setTimeStamp(v)
             setDataoraInputted(true)
         } 
         setOpenClock(false)
     }
 
+    const getTimeStamp = (d:String, t:String) => {
+        const [yyyy, mm, dd] = d.split('/')
+        const [hh, min] = t.split(':')
+        return new Date(parseInt(yyyy, 10), parseInt(mm, 10) - 1, parseInt(dd, 10), parseInt(hh, 10), parseInt(min, 10))
+    }
 
     const formatData = (d: String) => {
         const [yyyy, mm, dd] = d.split('/')
-        setData(new Date(parseInt(yyyy, 10), parseInt(mm, 10) - 1, parseInt(dd, 10)))
+        setTimeStamp(new Date(parseInt(yyyy, 10), parseInt(mm, 10) - 1, parseInt(dd, 10)))
     }
 
 
@@ -87,6 +109,16 @@ const ModificaEsame = ({ navigation, route }: any) => {
             setErr('Nome non può essere vuoto')
             return
         }
+
+        (db as SQLite.SQLiteDatabase).transaction((tx) => {
+            tx.executeSql('select * from esame where nome = ?', [nome], (_, res) => {
+                if (res.rows.length > 0 && (!route.params || route.params.esame !== nome)) {
+                    setErr('Esame già esistente')
+                }
+            })
+        })
+
+
         if (corso === '') {
             setErr('Corso non può essere vuoto')
             return
@@ -99,6 +131,7 @@ const ModificaEsame = ({ navigation, route }: any) => {
             setErr('CFU deve essere maggiore di 0')
             return
         }
+
         if (tipologia === '') {
             setErr('Tipologia non può essere vuota')
             return
@@ -110,6 +143,18 @@ const ModificaEsame = ({ navigation, route }: any) => {
 
         if (dataoraInputted === false) {
             setErr('Data e ora non possono essere vuoti')
+            return
+        }
+
+        if (voto !== '' && (parseInt(voto, 10) < 18 || parseInt(voto, 10) > 30)) { 
+            setErr('Voto deve essere compreso tra 18 e 30')
+            return
+        }
+
+        //TODO LODE
+
+        if (voto!=='' && dataoraInputted && timeStamp >= new Date()) {
+            setErr('Non è possibile inserire un voto futuro')
             return
         }
 
@@ -140,9 +185,19 @@ const ModificaEsame = ({ navigation, route }: any) => {
                 dr = null
             else
                 dr = diario
-                
-            tx.executeSql('insert into esame (nome, corso, cfu, tipologia, docente, voto, lode, data, ora, luogo, diario) values (?,?,?,?,?,?,?,?,?,?,?)', [nome, corso, cfu, tipologia, docente, v, ld, getFormatedDate(data, 'YYYY/MM/DD'), getFormatedDate(data, 'HH:mm'), lg, diario])
-            categoria.forEach((cat) => tx.executeSql('insert into appartiene (nomeEsame, nomeCategoria) values (?, ?)', [nome.trim(), cat.trim()]))
+            if(route.params && route.params.esame){
+                //* veccia foreign key
+                tx.executeSql('delete from appartiene where esame = ?', [route.params.esame])
+                //* update
+                tx.executeSql('update esame set nome = ?, corso = ?, cfu = ?, tipologia = ?, docente = ?, voto = ?, lode = ?, data = ?, ora = ?, luogo = ?, diario = ? where nome = ?', [nome.trim(), corso.trim(), cfu, tipologia.trim(), docente.trim(), v, ld, getFormatedDate(timeStamp, 'YYYY/MM/DD'), getFormatedDate(timeStamp, 'HH:mm'), lg, diario.trim(), route.params.esame])
+                categoria.forEach((cat) => tx.executeSql('insert into appartiene (esame, categoria) values (?, ?)', [nome.trim(), cat.trim()]))
+                tx.executeSql('delete from categoria where nome not in (select categoria from appartiene)')
+                route.params.render()
+            } else {
+                tx.executeSql('insert into esame (nome, corso, cfu, tipologia, docente, voto, lode, data, ora, luogo, diario) values (?,?,?,?,?,?,?,?,?,?,?)', [nome.trim(), corso.trim(), cfu, tipologia.trim(), docente.trim(), v, ld, getFormatedDate(timeStamp, 'YYYY/MM/DD'), getFormatedDate(timeStamp, 'HH:mm'), lg, diario.trim()], (_, res) => console.log('Inserimento', res), (_, err) => console.log('Errore inserimento', err))
+                categoria.forEach((cat) => tx.executeSql('insert into appartiene (esame, categoria) values (?, ?)', [nome.trim(), cat.trim()]))
+            }
+
         })
 
         navigation.goBack()
@@ -156,6 +211,7 @@ const ModificaEsame = ({ navigation, route }: any) => {
         setCreaCategoria("")
         if (creaCategoria !== '' && !listaCategorie.includes(creaCategoria) && !categorieNuove.includes(creaCategoria)) 
             setCategorieNuove([...categorieNuove, creaCategoria])
+        setCategoria([...categoria, creaCategoria])
     }
 
     const getPlaceHolder = () => {
@@ -211,7 +267,7 @@ const ModificaEsame = ({ navigation, route }: any) => {
                         <View style={style.innerRow}>
                             <SelectList 
                                 boxStyles={{borderWidth: 0, backgroundColor: primary_color(tema),width:'100%'}} 
-                                placeholder='Seleziona tipologia' 
+                                placeholder={tipologia==='' ? 'Seleziona tipologia' : tipologia} 
                                 inputStyles={{...style.selectInput, color: tipologia !== '' ? tertiary_color(tema) : tertiary_color(tema)+'80'}} 
                                 dropdownStyles={{...style.selectDrop, backgroundColor: primary_color(tema), borderWidth: 0}} 
                                 setSelected={setTipologia}
@@ -280,7 +336,7 @@ const ModificaEsame = ({ navigation, route }: any) => {
                             <Pressable style={[style.modalView, {backgroundColor: primary_color(tema)}]} onPress={(e) => e.preventDefault()} android_disableSound={true} android_ripple={{ color: primary_color(tema) }}>
                                 <DatePicker
                                     mode='calendar'
-                                    selected={getFormatedDate(data, "YYYY/MM/DD")}
+                                    selected={getFormatedDate(timeStamp, "YYYY/MM/DD")}
                                     onDateChange={(val) => {formatData(val); setOpenCalendar(false); setOpenClock(true); }}
                                     options={{
                                         backgroundColor: primary_color(tema),
@@ -301,7 +357,7 @@ const ModificaEsame = ({ navigation, route }: any) => {
                  
                         <TimePicker
                             mode='time'
-                            value={data}
+                            value={timeStamp}
                             onChange={(_, selectedDate) => timeInput(selectedDate)}
                             onError={() => setOpenClock(false)}
                             style={style.ora}
@@ -313,7 +369,7 @@ const ModificaEsame = ({ navigation, route }: any) => {
                     <View style={style.calendarContainer}>
                         <TouchableOpacity onPress={() => setOpenCalendar(true)}>
                             <Text style={[style.dataora, {backgroundColor: primary_color(tema)}]}>
-                                {!dataoraInputted ? 'Inserisci Data & Ora' : getFormatedDate(data, "DD/MM/YYYY HH:mm")}
+                                {!dataoraInputted ? 'Inserisci Data & Ora' : getFormatedDate(timeStamp, "DD/MM/YYYY HH:mm")}
                             </Text>
                         </TouchableOpacity>
                     </View>

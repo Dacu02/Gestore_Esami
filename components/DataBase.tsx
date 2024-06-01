@@ -38,11 +38,11 @@ export const DataBase = ({ children }: any) => {
 
                 // Tabella assocaizione esame-categoria
                 tx.executeSql("create table if not exists appartiene (" +
-                    "nomeEsame varchar(60) not null," +
-                    "nomeCategoria varchar(60) not null," +
-                    "primary key (nomeEsame, nomeCategoria)," +
-                    "foreign key (nomeEsame) references esame(nome)," +
-                    "foreign key (nomeCategoria) references categoria(nome));")
+                    "esame varchar(60) not null," +
+                    "categoria varchar(60) not null," +
+                    "primary key (esame, categoria)," +
+                    "foreign key (esame) references esame(nome)," +
+                    "foreign key (categoria) references categoria(nome));")
 
                 // tx.executeSql("insert into esame values ('Analisi 1','Matematica','9','scritto','Prof. Rossi','30','1','2021/01/15','19:00','Aula 1', 'ciao');") //! DEBUG
                 // tx.executeSql("insert into esame values ('Analisi 2','Matematica','9','orale','Prof. Rossi', null,'1','2024/06/01','15:30','Aula 2', 'prossimo');") //! DEBUG

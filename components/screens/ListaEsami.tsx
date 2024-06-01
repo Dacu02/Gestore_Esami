@@ -25,13 +25,13 @@ const ListaEsami = ({ navigation }: any) => {
         ora: string | null,
         luogo: string,
         diario: string | null,
+        categoria: string[]
     }
 
     const [esame, setEsame] = useState<EsameItem[]>([])
 
     const db = useContext(DataBaseContext);
     const [modalVisible, setModalVisible] = useState("");
-
 
 
     const loadData = () => {
@@ -46,14 +46,20 @@ const ListaEsami = ({ navigation }: any) => {
                         voto: results.rows.item(i).voto,
                         CFU: results.rows.item(i).cfu,
                         data: results.rows.item(i).data.split('/').reverse().join('/'),
+                        categoria: [''],
                         profEsame: results.rows.item(i).docente,
                         ora: results.rows.item(i).ora,
                         luogo: results.rows.item(i).luogo,
                         diario: results.rows.item(i).diario,
                         image: results.rows.item(i).data <= getFormatedDate(new Date(), 'YYYY/MM/DD') && results.rows.item(i).voto ? require('../../immaginiEsami/Esame.png') : require('../../immaginiEsami/EsameInAttesa.png')
                     }
-                    // TODO Finsci il controllo per vedere se l'esame è stato superato
-                    dati.push(esame);
+                    esame.categoria.pop()
+                    tx.executeSql('select categoria from appartiene where esame = ?', [results.rows.item(i).nome], (tx, res) => {
+                        for (let j = 0; j < res.rows.length; j++) {
+                            esame.categoria.push(res.rows.item(j).categoria)
+                        }
+                        dati.push(esame);
+                    })
                 }
             });
             setEsame(dati);
@@ -107,6 +113,7 @@ const ListaEsami = ({ navigation }: any) => {
                     {item.luogo && <Text style={style.details}>Luogo: {item.luogo}</Text>}
                     <Text style={style.details}>Tipologia: {item.tipologia}</Text>
                     <Text style={style.details}>Prof. {item.profEsame}</Text>
+                    {item.categoria.length > 0 ? <Text style={style.details}>Categori{item.categoria.length>1?'e':'a'}: {item.categoria.join(', ')}</Text> : null}
                 </View>
             </TouchableOpacity>
         )
@@ -190,8 +197,8 @@ const style = StyleSheet.create({
 
     },
     progressoEsame: {
-        height: 34,
-        width: 34,
+        height: rapportoOrizzontale(34),
+        width: rapportoOrizzontale(34),
         borderRadius: 17,
         alignItems: 'center',
         justifyContent: 'center',
