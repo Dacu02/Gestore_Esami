@@ -190,8 +190,8 @@ const style = StyleSheet.create({
 
     },
     progressoEsame: {
-        height: rapportoOrizzontale(34),
-        width: rapportoOrizzontale(34),
+        height: 34,
+        width: 34,
         borderRadius: 17,
         alignItems: 'center',
         justifyContent: 'center',

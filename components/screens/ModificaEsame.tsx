@@ -319,7 +319,7 @@ const ModificaEsame = ({ navigation, route }: any) => {
                     </View>
 
                     <View style={style.buttons}>
-                        <TouchableOpacity style={[style.confirm, tema ?  {backgroundColor: '#BAB5AD'} : style.confirm ]}>
+                        <TouchableOpacity style={style.confirm}>
                             <Text onPress={submit} style={[style.confirmText, tema ? {color: 'black'} : style.confirmText]}>CONFERMA</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={[style.deny]}>
