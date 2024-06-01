@@ -13,9 +13,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faPlus,faBook,faUser, faPenNib, faSquarePollVertical,faUsers, faFilter, faUserTie, faLocationDot, faList, faArrowLeft} from '@fortawesome/free-solid-svg-icons';
 import { SelectList } from 'react-native-dropdown-select-list'
 import  { MultiSelect }  from 'react-native-element-dropdown'
+import { getOrientamento, rapportoOrizzontale, rapportoVerticale, scala } from '../../global';
+
 
 import { Platform } from 'react-native'
 import Header from '../Header';
+import { color } from 'd3';
 
 
 const ModificaEsame = ({ navigation, route }: any) => {
@@ -200,7 +203,7 @@ const ModificaEsame = ({ navigation, route }: any) => {
                         <TextInput 
                             value={creaCategoria} 
                             onChangeText={setCreaCategoria} 
-                            style={[style.categoria, {backgroundColor: primary_color(!tema)+'22'}]} 
+                            style={[style.categoria, {color: tertiary_color(tema)}, {backgroundColor: primary_color(!tema)+'22'}]} 
                             placeholderTextColor={primary_color(!tema)+'dd'} 
                             placeholder='Nome categoria' />
                         <TouchableOpacity style={style.confirm} onPress={onCreaCategoria}>
@@ -232,7 +235,8 @@ const ModificaEsame = ({ navigation, route }: any) => {
                                 dropdownStyles={{...style.selectDrop, backgroundColor: primary_color(tema), borderWidth: 0}} 
                                 setSelected={setTipologia} 
                                 data={['orale', 'scritto', 'scritto e orale']} 
-                                search={false}  
+                                search={false} 
+                                dropdownTextStyles={{color: tertiary_color(tema)}} 
                                 save='value' />
                         </View>
                     </View>
@@ -258,14 +262,14 @@ const ModificaEsame = ({ navigation, route }: any) => {
                                 key={'value'}
                                 style={{backgroundColor: primary_color(tema), width: '80%', paddingLeft: 20, borderRadius: 10, marginRight: '7.5%'}}
                                 itemTextStyle={{color: tertiary_color(tema)}}
-                                placeholderStyle={{color: tertiary_color(tema)+'80'}}
+                                placeholderStyle={{color: tertiary_color(tema) + '80'}}
                                 onChange={setCategoria}
                                 containerStyle={{backgroundColor: primary_color(tema), borderRadius: 10, borderWidth: 0}}
                                 itemContainerStyle={{backgroundColor: primary_color(tema), borderColor: secondary_color}}
                                 selectedStyle={{display: 'none'}}
                                 activeColor={secondary_color+'bb'}
                                 renderItem={(item, set) => (
-                                    <Text style={style.selectItem}>{item.value}</Text>
+                                    <Text style={[style.selectItem, {color: tertiary_color(tema)}]}>{item.value}</Text>
                                 )}
                             />
                             <View>
@@ -366,11 +370,11 @@ const style = StyleSheet.create({
         flex: 1,
     },
     icona:{
-        marginRight:10,
+        marginRight: rapportoOrizzontale (10),
     },
     modal: {
         margin: "auto",
-        width: "100%",
+        width:  "100%",
         height: "100%",
         display: "flex",
         justifyContent: "center",
@@ -378,7 +382,7 @@ const style = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
-        paddingTop: 10
+        paddingTop: rapportoVerticale(10)
     },
 
     buttons: {
@@ -389,8 +393,8 @@ const style = StyleSheet.create({
     confirm: {
         backgroundColor: '#355181',
         borderRadius: 5,
-        margin: 20,
-        padding: 10,
+        margin: rapportoOrizzontale(20),
+        padding: rapportoOrizzontale(10),
         shadowColor: '#000',
         shadowOffset: {
             width: 0,
@@ -404,8 +408,8 @@ const style = StyleSheet.create({
     deny: {
         backgroundColor: '#e1dee3',
         borderRadius: 5,
-        margin: 20,
-        padding: 10,
+        margin: rapportoOrizzontale(20),
+        padding: rapportoOrizzontale(10),
         shadowColor: '#000',
         shadowOffset: {
             width: 0,
@@ -440,7 +444,7 @@ const style = StyleSheet.create({
         margin: 'auto',
         borderRadius: 20,
         width: '90%',
-        padding: 15,
+        padding: rapportoOrizzontale(15),
         alignItems: 'center',
         shadowColor: '#000',
         shadowOffset: {
@@ -453,7 +457,7 @@ const style = StyleSheet.create({
     },
 
     calendarContainer: {
-        marginTop: 20,
+        marginTop: rapportoVerticale(20),
         margin: 'auto',
     },
     dataora: {
@@ -480,8 +484,8 @@ const style = StyleSheet.create({
         fontSize: 15,
         color: 'white',
         fontWeight: 'bold',
-        marginBottom: 10,
-        marginLeft: 25
+        marginBottom: rapportoVerticale(10),
+        marginLeft: rapportoOrizzontale(25)
     },
 
     diary: {
@@ -494,14 +498,14 @@ const style = StyleSheet.create({
         shadowRadius: 4,
         elevation: 5,
         width: "90%",
-        padding: 0,
+        padding: rapportoOrizzontale(0),
         borderRadius: 15,
         margin: "auto",
         fontSize: 15,
         backgroundColor: 'white',
         ...Platform.select({
             ios:{
-        padding:15
+        padding:rapportoOrizzontale(15)
             }
         })
     },
@@ -512,23 +516,23 @@ const style = StyleSheet.create({
         textAlign: "center",
         paddingTop: 3,
         margin: 'auto',
-        marginTop: 10,
+        marginTop: rapportoVerticale(10),
         fontSize: 20,
         backgroundColor: 'transparent',
         borderColor: "red",
-        marginBottom: 10,
-        paddingHorizontal: 15
+        marginBottom: rapportoVerticale(10),
+        paddingHorizontal: rapportoOrizzontale(15)
     },
     categoria: {
         width: '80%',
-        height: 40,
+        height: rapportoVerticale(40),
         borderRadius: 10,
-        margin: 10,
-        padding: 10,
+        margin: rapportoOrizzontale(10),
+        padding: rapportoOrizzontale(10),
     },
     selectRow: {
         width: '80%',
-        marginBottom: 20,
+        marginBottom: rapportoVerticale(20),
     },
    
     selectInput: {
@@ -538,17 +542,17 @@ const style = StyleSheet.create({
         width: '95%',
     },
     plusIcon: {
-        height:20,
-        width:20,
+        height:rapportoVerticale(20),
+        width:rapportoOrizzontale(20),
         alignItems:'center',
         justifyContent:'center',
         borderRadius:25,
-        padding:20
+        padding:rapportoOrizzontale(20)
 
     },
     selectText: {
         fontWeight: 'bold',
-        marginBottom: 10,
+        marginBottom: rapportoVerticale(10),
     },
     innerRow: {
         display: 'flex',
@@ -560,8 +564,8 @@ const style = StyleSheet.create({
         flexDirection: 'row'
     },
     selectItem: {
-        padding: 10,
-        margin: 5,
+        padding: rapportoOrizzontale(10),
+        margin: rapportoOrizzontale(5),
     }
 })
 
