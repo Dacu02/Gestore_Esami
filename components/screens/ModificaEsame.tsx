@@ -192,16 +192,18 @@ const ModificaEsame = ({ navigation, route }: any) => {
                 tx.executeSql('update esame set nome = ?, corso = ?, cfu = ?, tipologia = ?, docente = ?, voto = ?, lode = ?, data = ?, ora = ?, luogo = ?, diario = ? where nome = ?', [nome.trim(), corso.trim(), cfu, tipologia.trim(), docente.trim(), v, ld, getFormatedDate(timeStamp, 'YYYY/MM/DD'), getFormatedDate(timeStamp, 'HH:mm'), lg, diario.trim(), route.params.esame])
                 categoria.forEach((cat) => tx.executeSql('insert into appartiene (esame, categoria) values (?, ?)', [nome.trim(), cat.trim()]))
                 tx.executeSql('delete from categoria where nome not in (select categoria from appartiene)')
-                route.params.render()
+                navigation.goBack()
+                navigation.goBack()
+                navigation.navigate('ListaEsami')
             } else {
-                tx.executeSql('insert into esame (nome, corso, cfu, tipologia, docente, voto, lode, data, ora, luogo, diario) values (?,?,?,?,?,?,?,?,?,?,?)', [nome.trim(), corso.trim(), cfu, tipologia.trim(), docente.trim(), v, ld, getFormatedDate(timeStamp, 'YYYY/MM/DD'), getFormatedDate(timeStamp, 'HH:mm'), lg, diario.trim()], (_, res) => console.log('Inserimento', res), (_, err) => console.log('Errore inserimento', err))
+                tx.executeSql('insert into esame (nome, corso, cfu, tipologia, docente, voto, lode, data, ora, luogo, diario) values (?,?,?,?,?,?,?,?,?,?,?)', [nome.trim(), corso.trim(), cfu, tipologia.trim(), docente.trim(), v, ld, getFormatedDate(timeStamp, 'YYYY/MM/DD'), getFormatedDate(timeStamp, 'HH:mm'), lg, diario.trim()])
                 categoria.forEach((cat) => tx.executeSql('insert into appartiene (esame, categoria) values (?, ?)', [nome.trim(), cat.trim()]))
+                navigation.goBack()
+                navigation.navigate('ListaEsami')
             }
 
         })
 
-        navigation.goBack()
-        navigation.navigate('ListaEsami')
 
     }
 
