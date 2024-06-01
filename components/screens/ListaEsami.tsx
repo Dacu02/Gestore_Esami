@@ -48,7 +48,7 @@ const ListaEsami = ({navigation}: any) => {
                         ora: results.rows.item(i).ora,
                         luogo: results.rows.item(i).luogo,
                         diario: results.rows.item(i).diario,
-                        image: results.rows.item(i).data <= getFormatedDate(new Date(), 'YYYY/MM/DD') && results.rows.item(i).voto ? require('../immaginiEsami/Esame.png') : require('../immaginiEsami/EsameInAttesa.png')
+                        image: results.rows.item(i).data <= getFormatedDate(new Date(), 'YYYY/MM/DD') && results.rows.item(i).voto ? require('../../immaginiEsami/Esame.png') : require('../../immaginiEsami/EsameInAttesa.png')
                     }
                     // TODO Finsci il controllo per vedere se l'esame è stato superato
                     dati.push(esame);

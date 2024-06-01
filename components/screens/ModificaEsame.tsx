@@ -208,7 +208,7 @@ const ModificaEsame = ({ navigation, route }: any) => {
                     </Pressable>
                 </Pressable>
             </Modal>
-            <ImageBackground style={style.image} source={tema ? require('../immaginiEsami/OndaBlack.png') : require('../immaginiEsami/Onda2.png')}>
+            <ImageBackground style={style.image} source={tema ? require('../../immaginiEsami/OndaBlack.png') : require('../../immaginiEsami/Onda2.png')}>
                 <View style={style.container}>
                     <Campo tema={tema} nome='Nome' value={nome} onChange={setNome} icon={faUser}/>
                     <Campo tema={tema} nome='Corso' value={corso} onChange={setCorso} icon={faUsers}/>
