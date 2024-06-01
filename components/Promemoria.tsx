@@ -2,7 +2,7 @@
 import React, { useEffect, useContext, useState } from "react"
 import { Settings, StyleSheet, Text, View, TextInput, Modal, Dimensions, TouchableOpacity, Pressable, Switch } from "react-native"
 import Footer from "./Footer"
-import { primary_color, secondary_color, tertiary_color } from '../global'
+import { primary_color, secondary_color, tertiary_color, getOrientamento, rapportoOrizzontale, rapportoVerticale } from '../global'
 import Header from "./Header"
 import { faCalendarDays, faGear } from "@fortawesome/free-solid-svg-icons"
 import { DataBase, DataBaseContext } from "./DataBase"
@@ -13,12 +13,7 @@ import { SelectList } from "react-native-dropdown-select-list"
 const Promemoria = (props: any) => {
 
     
-    const getOrientamento = () => (
-        (Dimensions.get("screen").width > Dimensions.get("screen").height) ?
-            "landscape"
-            :
-            "portrait"
-    )
+    
 
     const [orientamento, setOrientamento] = useState(getOrientamento())
 
@@ -60,8 +55,8 @@ const Promemoria = (props: any) => {
 
 const style = StyleSheet.create({
     promemoria: {
-        padding: 10,
-        margin: 10,
+        padding: rapportoOrizzontale(10),
+        margin: rapportoVerticale(10),
         borderRadius: 10,
         borderWidth: 2,
         borderColor: secondary_color,

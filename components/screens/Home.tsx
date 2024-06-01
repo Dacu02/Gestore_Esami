@@ -1,7 +1,7 @@
 import React, { useEffect, useContext, useState } from "react"
 import { Settings, StyleSheet, Text, View, TextInput, Modal, Dimensions, TouchableOpacity, Pressable, Switch } from "react-native"
 import Footer from "../Footer"
-import { primary_color, secondary_color, tertiary_color } from '../../global'
+import { primary_color, rapportoOrizzontale, secondary_color, tertiary_color, getOrientamento } from '../../global'
 import Header from "../Header"
 import { faCalendarDays, faGear } from "@fortawesome/free-solid-svg-icons"
 import { DataBase, DataBaseContext } from "../DataBase"
@@ -10,7 +10,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage"
 import { SelectList } from "react-native-dropdown-select-list"
 import Promemoria from "../Promemoria"
 import { getFormatedDate } from "react-native-modern-datepicker"
-
 
 
 
@@ -31,6 +30,7 @@ const Home = ({ navigation }: any) => {
         ora: string | null,
         luogo:string,
     }
+
 
     const db = useContext(DataBaseContext)
     const [setting, setSetting] = useState(false)
@@ -158,12 +158,6 @@ const Home = ({ navigation }: any) => {
         if (Object.keys(db).length > 0) // se il db è stato inizializzato
             aggiornaPromemoria()
     }, [db])
-    const getOrientamento = () => (
-        (Dimensions.get("screen").width > Dimensions.get("screen").height) ?
-            "landscape"
-            :
-            "portrait"
-    )
 
     const [orientamento, setOrientamento] = useState(getOrientamento())
 
