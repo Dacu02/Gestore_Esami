@@ -1,13 +1,13 @@
 import React, { useContext, useState, useEffect } from "react"
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { StyleSheet, Text, Image, View, FlatList, TouchableOpacity, Modal, Pressable } from "react-native"
-import { DataBaseContext } from "./DataBase"
+import { DataBaseContext } from "../DataBase"
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faArrowLeft, faTimes } from '@fortawesome/free-solid-svg-icons'
-import { primary_color, secondary_color, tertiary_color } from "../global"
+import { primary_color, secondary_color, tertiary_color } from "../../global"
 import SQLite from 'react-native-sqlite-storage'
 import { getFormatedDate } from "react-native-modern-datepicker"
-import Header from "./Header"
+import Header from "../Header"
 const ListaEsami = ({navigation}: any) => {
 
     //interfaccia per gli item altrimenti typescript da problemi

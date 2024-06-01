@@ -1,12 +1,12 @@
 import React, { useEffect, createContext, useState, useContext, Component } from 'react'
-import { primary_color, secondary_color, tertiary_color } from '../global'
+import { primary_color, secondary_color, tertiary_color } from '../../global'
 import { View, StyleSheet, Text, TextInput, Button, TouchableOpacity, ScrollView, Switch, Dimensions, Modal, Pressable, BackHandler } from 'react-native'
 import { ImageBackground } from 'react-native';
 import DatePicker, { getToday, getFormatedDate } from 'react-native-modern-datepicker'
 import TimePicker from '@react-native-community/datetimepicker'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import Campo from './Campo'
-import { DataBaseContext } from './DataBase'
+import Campo from '../Campo'
+import { DataBaseContext } from '../DataBase'
 import SQLite from 'react-native-sqlite-storage'
 import { Checkbox } from 'react-native-paper';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
@@ -15,7 +15,7 @@ import { SelectList } from 'react-native-dropdown-select-list'
 import  { MultiSelect }  from 'react-native-element-dropdown'
 
 import { Platform } from 'react-native'
-import Header from './Header';
+import Header from '../Header';
 
 const ModificaEsame = ({ navigation, route }: any) => {
     const [openCalendar, setOpenCalendar] = useState(false)
