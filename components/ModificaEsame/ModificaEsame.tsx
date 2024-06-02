@@ -198,7 +198,7 @@ const ModificaEsame = ({ navigation, route }: any) => {
                     navigation.goBack()
                     navigation.navigate('ListaEsami')
                 } else {
-                    tx.executeSql('insert into esame (nome, corso, cfu, tipologia, docente, voto, lode, data, ora, luogo, diario) values (?,?,?,?,?,?,?,?,?,?,?)', [nome.trim(), corso.trim(), cfu, tipologia.trim(), docente.trim(), v, ld, getFormatedDate(timeStamp, 'YYYY/MM/DD'), getFormatedDate(timeStamp, 'HH:mm'), lg, diario.trim()])
+                    tx.executeSql('insert into esame (nome, corso, cfu, tipologia, docente, voto, lode, data, ora, luogo, diario) values (?,?,?,?,?,?,?,?,?,?,?)', [nome.trim(), corso.trim(), cfu, tipologia.trim(), docente.trim(), v, ld, getFormatedDate(timeStamp, 'YYYY/MM/DD'), getFormatedDate(timeStamp, 'HH:mm'), lg, diario.trim()], (_, res) => console.log(res), (_, err) => console.log(err))
                     categoria.forEach((cat) => tx.executeSql('insert into appartiene (esame, categoria) values (?, ?)', [nome.trim(), cat.trim()]))
                     navigation.goBack()
                     navigation.navigate('ListaEsami')
