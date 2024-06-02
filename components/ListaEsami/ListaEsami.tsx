@@ -208,11 +208,4 @@ const ListaEsami = ({ navigation }: any) => {
 
 }
 
-const style = StyleSheet.create({
-    
-
-
-});
-
-
 export default ListaEsami

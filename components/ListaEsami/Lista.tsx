@@ -53,7 +53,7 @@ const Lista = (props: ListaProps) => {
                 renderItem={(item) => <Esame item={item.item} diario={(text: string) => props.setModalVisible(text)} tema={props.tema} />}
                 ItemSeparatorComponent={itemSeparator}
                 keyExtractor={(e) => e.nome}
-                style={[{ backgroundColor: primary_color(props.tema) }, style.lista]}
+                style={{ backgroundColor: primary_color(props.tema) }}
                 leftOpenValue={75}
                 stopLeftSwipe={90}
                 rightOpenValue={-75}
@@ -133,9 +133,6 @@ const style = StyleSheet.create({
         width: '100%',
         backgroundColor: secondary_color,
 
-    },
-    lista: {
-        marginBottom: rapportoOrizzontale(60),
     },
     text: {
         marginTop: rapportoVerticale(25),
