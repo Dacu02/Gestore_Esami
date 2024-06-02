@@ -1,6 +1,6 @@
 import React, { useEffect, useContext, useState } from "react"
 import { Settings, StyleSheet, Text, View, TextInput, Modal, Dimensions, TouchableOpacity, Pressable, Switch } from "react-native"
-import Footer from "../Footer"
+import Footer from "./Footer"
 import { primary_color, rapportoOrizzontale, secondary_color, tertiary_color, getOrientamento } from '../../global'
 import Header from "../Header"
 import { faGear } from "@fortawesome/free-solid-svg-icons"
@@ -8,7 +8,7 @@ import { DataBase, DataBaseContext } from "../DataBase"
 import SQLite from 'react-native-sqlite-storage'
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { SelectList } from "react-native-dropdown-select-list"
-import Promemoria from "../Promemoria"
+import Promemoria from "./Promemoria"
 import { getFormatedDate } from "react-native-modern-datepicker"
 import { rapportoVerticale, scala } from "../../global"
 

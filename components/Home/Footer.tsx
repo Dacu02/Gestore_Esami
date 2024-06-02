@@ -2,8 +2,7 @@ import { faChartColumn, faList, faPlus } from '@fortawesome/free-solid-svg-icons
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { primary_color, secondary_color, tertiary_color } from '../global';
-import { rapportoOrizzontale, rapportoVerticale, scala, getOrientamento } from '../global';
+import { primary_color, secondary_color, rapportoVerticale } from '../../global';
 
 const Footer = ( { navigation, ...props }: any) => {
 

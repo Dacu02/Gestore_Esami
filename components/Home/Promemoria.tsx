@@ -2,10 +2,10 @@
 import React, { useEffect, useContext, useState } from "react"
 import { Settings, StyleSheet, Text, View, TextInput, Modal, Dimensions, TouchableOpacity, Pressable, Switch } from "react-native"
 import Footer from "./Footer"
-import { primary_color, secondary_color, tertiary_color, getOrientamento, rapportoOrizzontale, rapportoVerticale } from '../global'
-import Header from "./Header"
+import { primary_color, secondary_color, tertiary_color, getOrientamento, rapportoOrizzontale, rapportoVerticale } from '../../global'
+import Header from "../Header"
 import { faCalendarDays, faGear } from "@fortawesome/free-solid-svg-icons"
-import { DataBase, DataBaseContext } from "./DataBase"
+import { DataBase, DataBaseContext } from "../DataBase"
 import { openDatabase } from 'react-native-sqlite-storage'
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { SelectList } from "react-native-dropdown-select-list"

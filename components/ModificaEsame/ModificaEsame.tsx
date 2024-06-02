@@ -5,7 +5,7 @@ import { ImageBackground } from 'react-native';
 import DatePicker, { getToday, getFormatedDate } from 'react-native-modern-datepicker'
 import TimePicker from '@react-native-community/datetimepicker'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import Campo from '../Campo'
+import Campo from './Campo'
 import { DataBaseContext } from '../DataBase'
 import SQLite from 'react-native-sqlite-storage'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'

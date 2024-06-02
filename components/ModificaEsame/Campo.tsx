@@ -1,8 +1,7 @@
 import React from 'react';
 import { Text, TextInput, View, StyleSheet } from "react-native";
-import { primary_color, tertiary_color } from '../global';
+import { primary_color, tertiary_color, rapportoOrizzontale, rapportoVerticale } from '../../global';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { getOrientamento, rapportoOrizzontale, rapportoVerticale, scala } from '../global';
 
 const Campo = (props: any) => (
     <View style={style.row}>

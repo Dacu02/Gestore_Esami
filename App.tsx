@@ -1,17 +1,17 @@
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import React, { useEffect } from 'react'
-import ListaEsami from './components/screens/ListaEsami'
+import ListaEsami from './components/ListaEsami/ListaEsami'
 import {
   StatusBar,
   useColorScheme,
 } from 'react-native'
 
-import Home from './components/screens/Home'
+import Home from './components/Home/Home'
 import { DataBase } from './components/DataBase'
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import ModificaEsame from './components/screens/ModificaEsame'
-import Statistiche from './components/screens/Statistiche'
+import ModificaEsame from './components/ModificaEsame/ModificaEsame'
+import Statistiche from './components/Statistiche/Statistiche'
 
 const Stack = createNativeStackNavigator();
 function App(): React.JSX.Element {

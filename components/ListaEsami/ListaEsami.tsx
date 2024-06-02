@@ -9,7 +9,7 @@ import SQLite from 'react-native-sqlite-storage'
 import { getFormatedDate } from "react-native-modern-datepicker"
 import Header from "../Header"
 import { getOrientamento, rapportoOrizzontale, rapportoVerticale, scala } from "../../global"
-import {SwipeListView} from 'react-native-swipe-list-view'
+import { SwipeListView } from 'react-native-swipe-list-view'
 
 const ListaEsami = ({ navigation }: any) => {
 
@@ -96,26 +96,26 @@ const ListaEsami = ({ navigation }: any) => {
     }, [])
 
 
-    const deleteEsame = (nome:String) => {
+    const deleteEsame = (nome: String) => {
         (db as SQLite.SQLiteDatabase).transaction((tx) => {
             tx.executeSql('delete from appartiene where esame = ?', [nome])
             tx.executeSql('delete from esame where nome = ?', [nome])
             tx.executeSql('delete from categoria where nome not in (select categoria from appartiene)')
         }
-    )
-    setEsame(esame.filter(e => e.nome !== nome))
-} 
+        )
+        setEsame(esame.filter(e => e.nome !== nome))
+    }
 
 
-    const Bottoni = (props:any) => (
+    const Bottoni = (props: any) => (
         <View style={style.bottoniContainer}>
-        <TouchableOpacity style={style.eliminaContainer} onPress={()=>deleteEsame(props.esame)} >
-            <FontAwesomeIcon icon={faTrashCan} style={style.elimina} size={30} />
-        </TouchableOpacity>
+            <TouchableOpacity style={style.eliminaContainer} onPress={() => deleteEsame(props.esame)} >
+                <FontAwesomeIcon icon={faTrashCan} style={style.elimina} size={30} />
+            </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => navigation.navigate('ModificaEsame', { esame: props.esame })} style={style.modificaContainer}>
-            <FontAwesomeIcon icon={faPencil} style={style.modifica} size={30} />
-        </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('ModificaEsame', { esame: props.esame })} style={style.modificaContainer}>
+                <FontAwesomeIcon icon={faPencil} style={style.modifica} size={30} />
+            </TouchableOpacity>
         </View>
     )
 
@@ -155,7 +155,7 @@ const ListaEsami = ({ navigation }: any) => {
                     {item.luogo && <Text style={style.details}>Luogo: {item.luogo}</Text>}
                     <Text style={style.details}>Tipologia: {item.tipologia}</Text>
                     <Text style={style.details}>Prof. {item.profEsame}</Text>
-                    {item.categoria.length > 0 ? <Text style={style.details}>Categori{item.categoria.length>1?'e':'a'}: {item.categoria.join(', ')}</Text> : null}
+                    {item.categoria.length > 0 ? <Text style={style.details}>Categori{item.categoria.length > 1 ? 'e' : 'a'}: {item.categoria.join(', ')}</Text> : null}
                 </View>
             </View>
         )
@@ -163,52 +163,70 @@ const ListaEsami = ({ navigation }: any) => {
 
 
     const itemSeparator = () => <View style={style.separator}></View>;
+    const header = <Header
+        title="Lista Esami"
+        leftIcon={faArrowLeft}
+        onPressLeft={() => navigation.goBack()}
+        scuro={tema}
+        rightIcon={icona}
+        onPressRight={updateVisualizzazione} />
 
-    return (
-        <View style={{ backgroundColor: primary_color(tema), height: '100%' }}>
-            <Header 
-                title="Lista Esami" 
-                leftIcon={faArrowLeft} 
-                onPressLeft={() => navigation.goBack()} 
-                scuro={tema} 
-                rightIcon={icona} 
-                onPressRight={updateVisualizzazione}  />
-            <SwipeListView
-                data={esame.sort((a, b) => a.data.localeCompare(b.data)===0 ? a.ora.localeCompare(b.ora) : a.data.localeCompare(b.data))}
-                renderItem={singoloEsame}
-                ItemSeparatorComponent={itemSeparator}
-                keyExtractor={(e) => e.nome}
-                style={[{backgroundColor: primary_color(tema)}, style.lista]}
-                leftOpenValue={75}
-                stopLeftSwipe={90}
-                rightOpenValue={-75}
-                stopRightSwipe={-90}
-                renderHiddenItem={(data) => (<Bottoni esame={data.item.nome}/>)}
-            />
-            <Modal
-                animationType="fade"
-                transparent={true}
-                visible={modalVisible !== ''}
-                onRequestClose={() => setModalVisible('')}
-            >
-                <Pressable android_disableSound={true} android_ripple={{ color: 'transparent' }} onPress={() => setModalVisible('')} style={[style.modalContainer, { backgroundColor: primary_color(tema) + 'd0' }]}>
-                    <Pressable style={[style.modalContent, { backgroundColor: primary_color(tema) }]}>
-                        <Text style={[style.modalTitle, { color: tema ? 'white' : 'black' }]}>Diario</Text>
-                        <TouchableOpacity style={[style.closeButton, tema ? { borderColor: 'red', borderWidth: 2 } : { backgroundColor: 'red' }]} onPress={() => setModalVisible('')}>
-                            <FontAwesomeIcon icon={faTimes} style={{ color: tema ? 'red' : 'white' }} />
-                        </TouchableOpacity>
-                        <Text
-                            style={[style.textInput, { color: tertiary_color(tema) }]}
-                        >{modalVisible}</Text>
-                    </Pressable>
-                </Pressable>
-            </Modal>
-        </View>
-    );
+    switch (visualizzazione) {
+        case 'giornaliero':
+            return (
+                <View style={{ backgroundColor: primary_color(tema), height: '100%' }}>
+                    {header}
+                    <SwipeListView
+                        data={esame.sort((a, b) => a === b ? (a.ora < b.ora ? -1 : 1) : (a.data < b.data ? -1 : 1))}
+                        renderItem={singoloEsame}
+                        ItemSeparatorComponent={itemSeparator}
+                        keyExtractor={(e) => e.nome}
+                        style={[{ backgroundColor: primary_color(tema) }, style.lista]}
+                        leftOpenValue={75}
+                        stopLeftSwipe={90}
+                        rightOpenValue={-75}
+                        stopRightSwipe={-90}
+                        renderHiddenItem={(data) => (<Bottoni esame={data.item.nome} />)}
+                    />
+                    <Modal
+                        animationType="fade"
+                        transparent={true}
+                        visible={modalVisible !== ''}
+                        onRequestClose={() => setModalVisible('')}
+                    >
+                        <Pressable android_disableSound={true} android_ripple={{ color: 'transparent' }} onPress={() => setModalVisible('')} style={[style.modalContainer, { backgroundColor: primary_color(tema) + 'd0' }]}>
+                            <Pressable style={[style.modalContent, { backgroundColor: primary_color(tema) }]}>
+                                <Text style={[style.modalTitle, { color: tema ? 'white' : 'black' }]}>Diario</Text>
+                                <TouchableOpacity style={[style.closeButton, tema ? { borderColor: 'red', borderWidth: 2 } : { backgroundColor: 'red' }]} onPress={() => setModalVisible('')}>
+                                    <FontAwesomeIcon icon={faTimes} style={{ color: tema ? 'red' : 'white' }} />
+                                </TouchableOpacity>
+                                <Text
+                                    style={[style.textInput, { color: tertiary_color(tema) }]}
+                                >{modalVisible}</Text>
+                            </Pressable>
+                        </Pressable>
+                    </Modal>
+                </View>
+            );
+        case 'settimanale':
+            return (
+                <View style={{ backgroundColor: primary_color(tema), height: '100%' }}>
+                    {header}
+                </View>
+            )
+        case 'mensile':
+            return (
+                <View style={{ backgroundColor: primary_color(tema), height: '100%' }}>
+                    {header}
+                </View>
+            )
+    }
+
+
 }
 
 const style = StyleSheet.create({
-    
+
     backIcon: {
         color: 'black',
         marginRight: rapportoOrizzontale(20),
@@ -353,7 +371,6 @@ const style = StyleSheet.create({
     modifica: {
         color: 'white',
     },
-    
 });
 
 
