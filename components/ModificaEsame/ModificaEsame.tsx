@@ -12,12 +12,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faPlus, faBook, faUser, faPenNib, faSquarePollVertical, faUsers, faFilter, faUserTie, faLocationDot, faList, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { SelectList } from 'react-native-dropdown-select-list'
 import { MultiSelect } from 'react-native-element-dropdown'
-import { getOrientamento, rapportoOrizzontale, rapportoVerticale, scala } from '../../global';
+import { rapportoOrizzontale, rapportoVerticale } from '../../global';
 
 
 import { Platform } from 'react-native'
 import Header from '../Header';
-import { Checkbox } from 'react-native-paper';
 
 
 const ModificaEsame = ({ navigation, route }: any) => {
@@ -46,41 +45,37 @@ const ModificaEsame = ({ navigation, route }: any) => {
         (await AsyncStorage.getItem('tema') === 'dark')
 
     const [tema, setTema] = useState(true)
-    const db = useContext(DataBaseContext)
+    const db = useContext(DataBaseContext) as SQLite.SQLiteDatabase
 
     useEffect(() => {
         getTema().then(value => setTema(value))
-            ; (db as SQLite.SQLiteDatabase).transaction((tx) => {
-                let temp: string[] = []
-                tx.executeSql('select nome from categoria', [], (_, res) => {
-                    for (let i = 0; i < res.rows.length; i++)
-                        temp.push(res.rows.item(i).nome)
-                    setListaCategorie(temp)
-                })
-            })
+        let temp: string[] = []
+        db.transaction((tx)=>tx.executeSql('select nome from categoria', [], (_, res) => {
+            for (let i = 0; i < res.rows.length; i++)
+                temp.push(res.rows.item(i).nome)
+            setListaCategorie(temp)
+        }))
         if (route.params && route.params.esame) {
-            (db as SQLite.SQLiteDatabase).transaction((tx) => {
-                tx.executeSql('select * from esame where nome = ?', [route.params.esame], (_, res) => {
-                    let esame = res.rows.item(0)
-                    setNome(esame.nome)
-                    setCorso(esame.corso)
-                    setVoto(esame.voto ? esame.voto.toString() : '')
-                    setLode(esame.lode === 1)
-                    setCfu(esame.cfu.toString())
-                    setTipologia(esame.tipologia)
-                    setDocente(esame.docente)
-                    setLuogo(esame.luogo)
-                    setDiario(esame.diario)
-                    setTimeStamp(getTimeStamp(esame.data, esame.ora))
-                    setDataoraInputted(true)
-                    tx.executeSql('select categoria from appartiene where esame = ?', [esame.nome], (tx, res) => {
-                        const categorie: string[] = []
-                        for (let j = 0; j < res.rows.length; j++)
-                            categorie.push(res.rows.item(j).categoria)
-                        setCategoria(categorie)
-                    })
+            db.transaction((tx)=>tx.executeSql('select * from esame where nome = ?', [route.params.esame], (t, res) => {
+                let esame = res.rows.item(0)
+                setNome(esame.nome)
+                setCorso(esame.corso)
+                setVoto(esame.voto ? esame.voto.toString() : '')
+                setLode(esame.lode === 1)
+                setCfu(esame.cfu.toString())
+                setTipologia(esame.tipologia)
+                setDocente(esame.docente)
+                setLuogo(esame.luogo)
+                setDiario(esame.diario)
+                setTimeStamp(getTimeStamp(esame.data, esame.ora))
+                setDataoraInputted(true)
+                t.executeSql('select categoria from appartiene where esame = ?', [esame.nome], (_, res) => {
+                    const categorie: string[] = []
+                    for (let j = 0; j < res.rows.length; j++)
+                        categorie.push(res.rows.item(j).categoria)
+                    setCategoria(categorie)
                 })
-            })
+            }))
         }
     }, [])
 
@@ -105,20 +100,19 @@ const ModificaEsame = ({ navigation, route }: any) => {
     }
 
 
-    const submit = () => {
+    const submit =  async () => {
         setErr('')
         if (nome === '') {
             setErr('Nome non può essere vuoto')
             return
         }
 
-        (db as SQLite.SQLiteDatabase).transaction((tx) => {
-            tx.executeSql('select * from esame where nome = ?', [nome], (_, res) => {
-                if (res.rows.length > 0 && (!route.params || route.params.esame !== nome)) {
-                    setErr('Esame già esistente')
-                }
-            })
-        })
+        db.transaction((tx)=>tx.executeSql('select * from esame where nome = ?', [nome], (_, res) => {
+            if (res.rows.length > 0 && (!route.params || route.params.esame !== nome)) {
+                setErr('Esame già esistente')
+                return
+            }
+        }))
 
 
         if (corso === '') {
@@ -153,63 +147,52 @@ const ModificaEsame = ({ navigation, route }: any) => {
             return
         }
 
-        //TODO LODE
 
         if (voto !== '' && dataoraInputted && timeStamp >= new Date()) {
             setErr('Non è possibile inserire un voto futuro')
             return
         }
 
-        categorieNuove.forEach((v) => {
+        categorieNuove.forEach(async (v) => {
             if (categoria.includes(v))
-                (db as SQLite.SQLiteDatabase).transaction((tx) =>
-                    tx.executeSql('insert into categoria values (?)', [v.trim()])
-                )
+                await db.executeSql('insert into categoria values (?)', [v.trim()])
         })
+        let v, lg, ld, dr
+        if (voto === '' || parseInt(voto, 10) < 18 || parseInt(voto, 10) > 30) {
+            v = null
+            ld = null
+        }
+        else {
+            v = parseInt(voto, 10)
+            ld = lode
+        }
 
-            ; (db as SQLite.SQLiteDatabase).transaction((tx) => {
-                let v, lg, ld, dr
-                if (voto === '' || parseInt(voto, 10) < 18 || parseInt(voto, 10) > 30) {
-                    v = null
-                    ld = null
-                }
-                else {
-                    v = parseInt(voto, 10)
-                    ld = lode
-                }
+        if (luogo === '')
+            lg = null
+        else
+            lg = luogo
 
-                if (luogo === '')
-                    lg = null
-                else
-                    lg = luogo
-
-                if (diario === '')
-                    dr = null
-                else
-                    dr = diario
-                if (route.params && route.params.esame) {
-                    //* veccia foreign key
-                    tx.executeSql('delete from appartiene where esame = ?', [route.params.esame])
-                    //* update
-                    tx.executeSql('update esame set nome = ?, corso = ?, cfu = ?, tipologia = ?, docente = ?, voto = ?, lode = ?, data = ?, ora = ?, luogo = ?, diario = ? where nome = ?', [nome.trim(), corso.trim(), cfu, tipologia.trim(), docente.trim(), v, ld, getFormatedDate(timeStamp, 'YYYY/MM/DD'), getFormatedDate(timeStamp, 'HH:mm'), lg, diario.trim(), route.params.esame])
-                    categoria.forEach((cat) => tx.executeSql('insert into appartiene (esame, categoria) values (?, ?)', [nome.trim(), cat.trim()]))
-                    tx.executeSql('delete from categoria where nome not in (select categoria from appartiene)')
-                    navigation.goBack()
-                    navigation.goBack()
-                    navigation.navigate('ListaEsami')
-                } else {
-                    tx.executeSql('select nome, corso, cfu, tipologia, docente, voto, lode, data, ora, luogo, diario from esame', [], (tx, res)=> console.log('test', res), (tx, err)=>console.error('test', err))
-                    tx.executeSql('insert into esame (nome, corso, cfu, tipologia, docente, voto, lode, data, ora, luogo, diario) values (?,?,?,?,?,?,?,?,?,?,?)', [nome.trim(), corso.trim(), cfu, tipologia.trim(), docente.trim(), v, ld, getFormatedDate(timeStamp, 'YYYY/MM/DD'), getFormatedDate(timeStamp, 'HH:mm'), lg, diario.trim()], (_, res) => console.log(res), (_, err) => console.error(err))
-                    categoria.forEach((cat) => tx.executeSql('insert into appartiene (esame, categoria) values (?, ?)', [nome.trim(), cat.trim()]))
-                    navigation.goBack()
-                    navigation.navigate('ListaEsami')
-                }
-
-            })
-
-
+        if (diario === '')
+            dr = null
+        else
+            dr = diario
+        if (route.params && route.params.esame) {
+            //* veccia foreign key
+            await db.executeSql('delete from appartiene where esame = ?', [route.params.esame])
+            //* update
+            await db.executeSql('update esame set nome = ?, corso = ?, cfu = ?, tipologia = ?, docente = ?, voto = ?, lode = ?, data = ?, ora = ?, luogo = ?, diario = ? where nome = ?', [nome.trim(), corso.trim(), cfu, tipologia.trim(), docente.trim(), v, ld, getFormatedDate(timeStamp, 'YYYY/MM/DD'), getFormatedDate(timeStamp, 'HH:mm'), lg, diario.trim(), route.params.esame])
+            categoria.forEach(async (cat) => await db.executeSql('insert into appartiene (esame, categoria) values (?, ?)', [nome.trim(), cat.trim()]))
+            await db.executeSql('delete from categoria where nome not in (select categoria from appartiene)')
+            navigation.goBack()
+            navigation.goBack()
+            navigation.navigate('ListaEsami')
+        } else {
+            await db.executeSql('insert into esame (nome, corso, cfu, tipologia, docente, voto, lode, data, ora, luogo, diario) values (?,?,?,?,?,?,?,?,?,?,?)', [nome.trim(), corso.trim(), cfu, tipologia.trim(), docente.trim(), v, ld, getFormatedDate(timeStamp, 'YYYY/MM/DD'), getFormatedDate(timeStamp, 'HH:mm'), lg, diario.trim()])
+            categoria.forEach(async (cat) => await db.executeSql('insert into appartiene (esame, categoria) values (?, ?)', [nome.trim(), cat.trim()]))
+            navigation.goBack()
+            navigation.navigate('ListaEsami')
+        }
     }
-
 
     const onCreaCategoria = () => {
         setModalCategory(false)

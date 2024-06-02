@@ -34,7 +34,7 @@ const ListaEsami = ({ navigation }: any) => {
 
     const [esame, setEsame] = useState<EsameItem[]>([])
 
-    const db = useContext(DataBaseContext);
+    const db = useContext(DataBaseContext) as SQLite.SQLiteDatabase
     const [modalVisible, setModalVisible] = useState("");
     const [visualizzazione, setVisualizzazione] = useState('giornaliero')
     const [icona, setIcona] = useState(faCalendarDay)
@@ -59,39 +59,36 @@ const ListaEsami = ({ navigation }: any) => {
 
     const loadData = () => {
         const dati: EsameItem[] = [];
-        (db as SQLite.SQLiteDatabase).transaction((tx) => {
-            tx.executeSql('select * from esame order by data desc', [], (tx, results) => {
-                for (let i = 0; i < results.rows.length; i++) {
-                    const dd = results.rows.item(i).data.split('/')[2]
-                    const mm = results.rows.item(i).data.split('/')[1] - 1  
-                    const yyyy = results.rows.item(i).data.split('/')[0]
-                    const esame = {
-                        nome: results.rows.item(i).nome,
-                        corso: results.rows.item(i).corso,
-                        tipologia: results.rows.item(i).tipologia,
-                        voto: results.rows.item(i).voto,
-                        lode: results.rows.item(i).lode,
-                        CFU: results.rows.item(i).cfu,
-                        data: new Date(yyyy, mm, dd),
-                        categoria: [''],
-                        profEsame: results.rows.item(i).docente,
-                        ora: results.rows.item(i).ora,
-                        luogo: results.rows.item(i).luogo,
-                        diario: results.rows.item(i).diario,
-                        image: results.rows.item(i).data <= getFormatedDate(new Date(), 'YYYY/MM/DD') && results.rows.item(i).voto ? require('../../immaginiEsami/Esame.png') : require('../../immaginiEsami/EsameInAttesa.png')
-                    }
-                    esame.categoria.pop()
-                    tx.executeSql('select categoria from appartiene where esame = ?', [results.rows.item(i).nome], (tx, res) => {
-                        for (let j = 0; j < res.rows.length; j++) {
-                            esame.categoria.push(res.rows.item(j).categoria)
-                        }
-                        dati.push(esame);
-                    })
+        db.transaction((tx)=>tx.executeSql('select * from esame order by data desc', [], (t, results) => {
+            for (let i = 0; i < results.rows.length; i++) {
+                const dd = results.rows.item(i).data.split('/')[2]
+                const mm = results.rows.item(i).data.split('/')[1] - 1  
+                const yyyy = results.rows.item(i).data.split('/')[0]
+                const esame = {
+                    nome: results.rows.item(i).nome,
+                    corso: results.rows.item(i).corso,
+                    tipologia: results.rows.item(i).tipologia,
+                    voto: results.rows.item(i).voto,
+                    lode: results.rows.item(i).lode,
+                    CFU: results.rows.item(i).cfu,
+                    data: new Date(yyyy, mm, dd),
+                    categoria: [] as string[],
+                    profEsame: results.rows.item(i).docente,
+                    ora: results.rows.item(i).ora,
+                    luogo: results.rows.item(i).luogo,
+                    diario: results.rows.item(i).diario,
+                    image: results.rows.item(i).data <= getFormatedDate(new Date(), 'YYYY/MM/DD') && results.rows.item(i).voto ? require('../../immaginiEsami/Esame.png') : require('../../immaginiEsami/EsameInAttesa.png')
                 }
-            });
+                t.executeSql('select categoria from appartiene where esame = ?', [results.rows.item(i).nome], (_, res) => {
+                    for (let j = 0; j < res.rows.length; j++) 
+                        esame.categoria.push(res.rows.item(j).categoria)
+                    dati.push(esame);
+                })
+            }
             setEsame(dati)
-        });
+        }));
     }
+
     const getTema = async () =>
         (await AsyncStorage.getItem('tema') === 'dark')
 
@@ -103,13 +100,10 @@ const ListaEsami = ({ navigation }: any) => {
     }, [])
 
 
-    const deleteEsame = (nome: String) => {
-        (db as SQLite.SQLiteDatabase).transaction((tx) => {
-            tx.executeSql('delete from appartiene where esame = ?', [nome])
-            tx.executeSql('delete from esame where nome = ?', [nome])
-            tx.executeSql('delete from categoria where nome not in (select categoria from appartiene)')
-        }
-        )
+    const deleteEsame = async (nome: String) => {
+        await db.executeSql('delete from appartiene where esame = ?', [nome])
+        await db.executeSql('delete from esame where nome = ?', [nome])
+        await db.executeSql('delete from categoria where nome not in (select categoria from appartiene)')
         setEsame(esame.filter(e => e.nome !== nome))
     }
 
@@ -203,6 +197,8 @@ const ListaEsami = ({ navigation }: any) => {
                     {header}
                 </View>
             )
+        default:
+            return null
     }
 
 

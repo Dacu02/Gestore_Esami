@@ -9,15 +9,15 @@ export const DataBase = ({ children }: any) => {
     useEffect(() => {
 
         const initDB = async () => {
+            SQLite.enablePromise(true);
             const conn = SQLite.openDatabase({ name: 'esami.db', location: 'default' })
             const dbc = await conn;
-            dbc.transaction((tx) => {
                 // tx.executeSql('drop table if exists esame') //! DEBUG
                 // tx.executeSql('drop table if exists categoria') //! DEBUG
                 // tx.executeSql('drop table if exists appartiene') //! DEBUG
 
                 // Tabella esame
-                tx.executeSql('create table if not exists esame (' +
+                await dbc.executeSql('create table if not exists esame (' +
                     'nome varchar(60) primary key,' + //nome esame
                     'corso varchar(60) not null,' + // nome corso di laurea
                     'cfu integer check(cfu>0) not null,' + // cfu
@@ -32,12 +32,12 @@ export const DataBase = ({ children }: any) => {
                     'check ((lode and voto=30) or not lode));') //lode solo con 30
 
                 // Tabella categoria
-                tx.executeSql('create table if not exists categoria (' +
+                await dbc.executeSql('create table if not exists categoria (' +
                     'nome varchar(60) primary key);')
 
 
                 // Tabella assocaizione esame-categoria
-                tx.executeSql("create table if not exists appartiene (" +
+                await dbc.executeSql("create table if not exists appartiene (" +
                     "esame varchar(60) not null," +
                     "categoria varchar(60) not null," +
                     "primary key (esame, categoria)," +
@@ -48,9 +48,8 @@ export const DataBase = ({ children }: any) => {
                 // tx.executeSql("insert into esame values ('Analisi 2','Matematica','9','orale','Prof. Rossi', null,'1','2024/06/01','15:30','Aula 2', 'prossimo');") //! DEBUG
                 // tx.executeSql("insert into esame values ('Fisica 1','Matematica','9','orale e scritto','Prof. De Risi', null, null,'2024/05/01','10:00','Aula 2', 'esempio esame non mantenuto aggiornato dall\'utente');") //! DEBUG
                 setDB(dbc);
-            })
-        }
-        initDB();
+            }
+        initDB().then(() => console.log('DB inizializzato')).catch((err) => console.error(err))
     }, [])
 
     return (

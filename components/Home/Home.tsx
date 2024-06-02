@@ -27,7 +27,7 @@ const Home = ({ navigation }: any) => {
     }
 
 
-    const db = useContext(DataBaseContext)
+    const db = useContext(DataBaseContext) as SQLite.SQLiteDatabase
     const [setting, setSetting] = useState(false)
     const [notifica, setNotifica] = useState('giorni')
     const [numNotifica, setNumNotifica] = useState('7')
@@ -123,28 +123,26 @@ const Home = ({ navigation }: any) => {
 
         const dataMax = new Date()
         dataMax.setDate(dataMax.getDate() + tempo)
-        
-        
-        ;(db as SQLite.SQLiteDatabase).transaction((tx) => {
-            const proms: Notifica[] = []
-            tx.executeSql("SELECT * FROM esame WHERE voto IS NULL AND data>='" + getFormatedDate(new Date(), 'YYYY/MM/DD') +"' AND data<'" + getFormatedDate(dataMax, 'YYYY/MM/DD') +"' ORDER BY data DESC LIMIT 3", [], (tx, res) => {
-                for(let i = 0; i < res.rows.length; i++){
-                    const dati = {
-                        nome: res.rows.item(i).nome,
-                        corso: res.rows.item(i).corso,
-                        cfu: res.rows.item(i).cfu,
-                        tipologia: res.rows.item(i).tipologia,
-                        docente: res.rows.item(i).docente,
-                        ora: res.rows.item(i).ora,
-                        data: res.rows.item(i).data,
-                        luogo: res.rows.item(i).luogo,
-                    }
-                    proms.push(dati)
+
+        const proms: Notifica[] = []
+        db.transaction((tx)=>tx.executeSql("SELECT * FROM esame WHERE voto IS NULL AND data>='" + getFormatedDate(new Date(), 'YYYY/MM/DD') + "' AND data<'" + getFormatedDate(dataMax, 'YYYY/MM/DD') + "' ORDER BY data DESC LIMIT 3", 
+        [], (tx, res) => {
+            for (let i = 0; i < res.rows.length; i++) {
+                const dati = {
+                    nome: res.rows.item(i).nome,
+                    corso: res.rows.item(i).corso,
+                    cfu: res.rows.item(i).cfu,
+                    tipologia: res.rows.item(i).tipologia,
+                    docente: res.rows.item(i).docente,
+                    ora: res.rows.item(i).ora,
+                    data: res.rows.item(i).data,
+                    luogo: res.rows.item(i).luogo,
                 }
-                setNotifiche(proms)
-            })
-        })
-    }
+                proms.push(dati)
+            }
+            setNotifiche(proms)
+        }))
+}
 
     useEffect(() => {
         if (Object.keys(db).length > 0) // se il db è stato inizializzato
