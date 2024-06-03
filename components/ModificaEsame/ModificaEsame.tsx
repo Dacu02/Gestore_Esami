@@ -17,9 +17,19 @@ import { rapportoOrizzontale, rapportoVerticale } from '../../global';
 
 import { Platform } from 'react-native'
 import Header from '../Header';
-
-
+import { Calendar, LocaleConfig } from 'react-native-calendars';
 const ModificaEsame = ({ navigation, route }: any) => {
+    
+LocaleConfig.locales.it = {
+    monthNames: ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'],
+    monthNamesShort: ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic'],
+    dayNames: ['Domenica', 'Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato'],
+    dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab']
+};
+
+LocaleConfig.defaultLocale = 'it'
+
+
     const [openCalendar, setOpenCalendar] = useState(false)
     const [openClock, setOpenClock] = useState(false)
 
@@ -81,13 +91,19 @@ const ModificaEsame = ({ navigation, route }: any) => {
 
 
     const timeInput = (v: Date | undefined) => {
-        setOpenClock(false)
-        if (v) {
-            
-            setTimeStamp(v)
+        if (Platform.OS !== 'ios') {
+            setOpenClock(false)
+            if (v) {
+                setTimeStamp(v)
+                setDataoraInputted(true)
+            }
+        } else {
             setDataoraInputted(true)
+            if (v === undefined)
+                setOpenClock(false)
+            else
+                setTimeStamp(v)
         }
-        
     }
 
     const getTimeStamp = (d: String, t: String) => {
@@ -335,20 +351,17 @@ const ModificaEsame = ({ navigation, route }: any) => {
                         >
                             <Pressable onPress={() => setOpenCalendar(false)} style={[style.centeredView, { backgroundColor: primary_color(tema) + 'd0' }]} android_disableSound={true} android_ripple={{ color: primary_color(tema) + '80' }}>
                                 <Pressable style={[style.modalView, { backgroundColor: primary_color(tema) }]} onPress={(e) => e.preventDefault()} android_disableSound={true} android_ripple={{ color: primary_color(tema) }}>
-                                    <DatePicker
+                                    <Calendar
                                         mode='calendar'
-                                        selected={getFormatedDate(timeStamp, "YYYY/MM/DD")}
-                                        onDateChange={(val) => { formatData(val); setOpenCalendar(false); setOpenClock(true); }}
-                                        options={{
+                                        onDayPress={(val) => { setTimeStamp(new Date(val.dateString)); setOpenCalendar(false); setOpenClock(true); }}
+                                        theme={{
                                             backgroundColor: primary_color(tema),
-                                            textHeaderColor: secondary_color,
-                                            mainColor: secondary_color,
-                                            borderColor: secondary_color,
-                                            textDefaultColor: tertiary_color(tema),
-                                            textSecondaryColor: secondary_color,
-
+                                            calendarBackground: primary_color(tema),
+                                            dayTextColor: tertiary_color(tema),
+                                            monthTextColor: secondary_color,
                                         }}
-
+                                        hideExtraDays={true}
+                                        markedDates={dataoraInputted ? { [getFormatedDate(timeStamp, 'YYYY-MM-DD')]: { selected: true, selectedColor: secondary_color } } : {}}
                                     />
                                 </Pressable>
                             </Pressable>
@@ -468,28 +481,15 @@ const style = StyleSheet.create({
 
     ex: {
         flex: 1,
-
     },
 
     centeredView: {
         flex: 1,
         justifyContent: 'center',
-        backgroundColor: 'rgba(0,0,0,0.5)',
     },
     modalView: {
+        width: '75%',
         margin: 'auto',
-        borderRadius: 20,
-        width: '90%',
-        padding: rapportoOrizzontale(15),
-        alignItems: 'center',
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 4,
-        elevation: 5,
     },
 
     calendarContainer: {
@@ -513,8 +513,6 @@ const style = StyleSheet.create({
         elevation: 5,
 
     },
-
-
 
     text: {
         fontSize: 15,

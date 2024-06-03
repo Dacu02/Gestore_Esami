@@ -9,10 +9,10 @@ import SQLite from 'react-native-sqlite-storage'
 import { getFormatedDate } from "react-native-modern-datepicker"
 import Header from "../Header"
 import { getOrientamento, rapportoOrizzontale, rapportoVerticale, scala } from "../../global"
-import { SwipeListView } from 'react-native-swipe-list-view'
-import Esame from './Esame'
 import Settimana from "./Settimana"
 import Lista from "./Lista"
+import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
+import { MarkedDates } from "react-native-calendars/src/types"
 
     interface EsameItem {
         nome: string,
@@ -192,9 +192,24 @@ const ListaEsami = ({ navigation }: any) => {
                 </View>
             )
         case 'mensile':
+            const date:MarkedDates = {}
+            esame.forEach(e => {
+                const data = getFormatedDate(e.data, 'YYYY-MM-DD')
+                date[data] = {selected: true, selectedColor: e.voto ? "#019d3a" : "#f0b904"}
+            })
             return (
                 <View style={{ backgroundColor: primary_color(tema), height: '100%' }}>
                     {header}
+                    <Calendar
+                        theme={{
+                            dayTextColor: tertiary_color(tema),
+                            todayTextColor: secondary_color,
+                            monthTextColor: tertiary_color(tema),
+                            calendarBackground: primary_color(tema),
+                        }}
+                        markedDates={date}
+                        hideExtraDays={true}
+                    />
                 </View>
             )
         default:

@@ -44,7 +44,7 @@ export const DataBase = ({ children }: any) => {
 
                  setDB(dbc);
             }
-        initDB().then(() => console.log('DB inizializzato')).catch((err) => console.error(err))
+        initDB()
     }, [])
 
     return (
