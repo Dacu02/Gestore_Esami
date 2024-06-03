@@ -1,6 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Dimensions, ScrollView, SafeAreaView } from 'react-native';
+import React, { useEffect, useState,useContext } from 'react';
+import { DataBaseContext } from "../DataBase"
+import SQLite from 'react-native-sqlite-storage'
+import { View, StyleSheet, Dimensions, ScrollView, SafeAreaView, FlatList } from 'react-native';
 import { primary_color, secondary_color, tertiary_color } from '../../global';
 import { Avatar, Button, Card, Text , SegmentedButtons } from 'react-native-paper';
 import Header from '../Header';
@@ -12,12 +14,58 @@ import {
   ContributionGraph,
   StackedBarChart
 } from "react-native-chart-kit";
-const LeftContent = (props:any) => <Avatar.Icon {...props} icon="folder" />;
-
-
+import Lista from '../ListaEsami/Lista';
+import { Item } from 'react-native-paper/lib/typescript/components/Drawer/Drawer';
+interface EsameItem {
+  
+  voto: string ,
+  data: Date,
+  CFU?: number,
+}
+interface ListaProps {
+  esami: EsameItem[],
+  tema: boolean,
+}
 
 
 const Statistiche = () => {
+
+  const db = useContext(DataBaseContext) as SQLite.SQLiteDatabase
+  const [esame, setEsame] = useState<EsameItem[]>([])
+
+  const loadData = () => {
+
+    const dati: EsameItem[] = [];
+    db.transaction((tx)=>tx.executeSql('select voto,data from esame order by data desc', [], (t, results) => {
+        for (let i = 0; i < results.rows.length; i++) {
+          const dd = results.rows.item(i).data.split('/')[2]
+          const mm = results.rows.item(i).data.split('/')[1] - 1  
+          const yyyy = results.rows.item(i).data.split('/')[0]
+            const esame = {
+                voto: results.rows.item(i).voto,
+                lode: results.rows.item(i).lode,
+                data: new Date(yyyy, mm, dd),
+                   }
+                   dati.push(esame);
+        }
+        setEsame(dati)
+    }));
+    
+}
+
+const getTema = async () =>
+(await AsyncStorage.getItem('tema') === 'dark')
+
+const [tema, setTema] = useState(true)
+
+useEffect(() => {
+  loadData()
+  getTema().then(value => setTema(value))
+}, [])
+
+
+
+
     const [value, setValue] = React.useState('');
     return(
     <ScrollView>
@@ -63,7 +111,7 @@ const Statistiche = () => {
 
     <LineChart
     data={{
-      labels: ["Gen", "Feb", "Mar", "Apr", "Mag", "Giu", "Lug", "Ago", "Set", "Ott", "Nov", "Dic"],
+      labels: ["Gen", "Feb",  "Mag", "Giu", "Lug",  "Set", "Ott", ],
       datasets: [
         {
           data: [
@@ -107,11 +155,34 @@ const Statistiche = () => {
     }}
   />
 
+
+<View style={{ backgroundColor: primary_color(tema), height: 'auto' }}>
+                 <View>
+                  <Text style={style.titolo}>Esito esami</Text>
+                 </View>
+                    <FlatList
+                    horizontal
+                    data={esame}
+                    renderItem={({item}) => (
+                      <View style={style.item}>
+                        <Text style={style.itemText}>Voto: {item.voto}</Text>
+                        <Text style={style.itemText}>Data: {item.data.toLocaleDateString()}</Text>
+                       
+                      </View>
+                    )}
+                    keyExtractor={(item, index) => index.toString()} 
+                        
+                    />
+                </View>
+
+
+
   </Card>
 
         </View>
         <View>
-
+       
+   
 </View>
   </ScrollView>
 );
@@ -162,6 +233,23 @@ const style = StyleSheet.create({
       Segment:{
         fontSize:14
       },
+      item: {
+        backgroundColor: '#fff',
+        padding: 20,
+        marginVertical: 8,
+        marginHorizontal: 16,
+        borderRadius: 8,
+        elevation: 3,
+    },
+    itemText: {
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    titolo:{
+      textAlign:'center',
+      justifyContent:'center',
+      fontSize:22
+    },
 });
 
 export default Statistiche;
