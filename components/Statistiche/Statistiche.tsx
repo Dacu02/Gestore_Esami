@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useEffect, useState,useContext } from 'react';
 import { DataBaseContext } from "../DataBase"
 import SQLite from 'react-native-sqlite-storage'
-import { View, StyleSheet, Dimensions, ScrollView, SafeAreaView, FlatList } from 'react-native';
+import { View, StyleSheet, Dimensions, ScrollView, SafeAreaView, FlatList, ActivityIndicator } from 'react-native';
 import { primary_color, secondary_color, tertiary_color } from '../../global';
 import { Avatar, Button, Card, Text , SegmentedButtons } from 'react-native-paper';
 import Header from '../Header';
@@ -16,6 +16,7 @@ import {
 } from "react-native-chart-kit";
 import Lista from '../ListaEsami/Lista';
 import { Item } from 'react-native-paper/lib/typescript/components/Drawer/Drawer';
+import { getFormatedDate } from 'react-native-modern-datepicker';
 interface EsameItem {
   
   voto: string ,
@@ -30,13 +31,15 @@ interface ListaProps {
 
 const Statistiche = () => {
 
+  
   const db = useContext(DataBaseContext) as SQLite.SQLiteDatabase
   const [esame, setEsame] = useState<EsameItem[]>([])
-
+  const[loading, setLoading] = useState(true);
+  
   const loadData = () => {
 
     const dati: EsameItem[] = [];
-    db.transaction((tx)=>tx.executeSql('select voto,data from esame order by data desc', [], (t, results) => {
+    db.transaction((tx)=>tx.executeSql('select voto,data from esame  where voto is not null order by data desc', [], (t, results) => {
         for (let i = 0; i < results.rows.length; i++) {
           const dd = results.rows.item(i).data.split('/')[2]
           const mm = results.rows.item(i).data.split('/')[1] - 1  
@@ -48,10 +51,11 @@ const Statistiche = () => {
                    }
                    dati.push(esame);
         }
-        setEsame(dati)
+        setEsame(dati);
+        setLoading(false);
     }));
     
-}
+};
 
 const getTema = async () =>
 (await AsyncStorage.getItem('tema') === 'dark')
@@ -59,12 +63,33 @@ const getTema = async () =>
 const [tema, setTema] = useState(true)
 
 useEffect(() => {
-  loadData()
-  getTema().then(value => setTema(value))
+   loadData()
+   getTema().then(value => setTema(value))
 }, [])
 
 
 
+
+const getMonthName = (monthIndex:number) => {
+  const monthNames = ["Gen", "Feb", "Mar", "Apr", "Mag", "Giu", "Lug", "Ago", "Set", "Ott", "Nov", "Dic"];
+  return monthNames[monthIndex];
+};
+
+const monthData = esame.map(item => ({
+  value: parseInt(item.voto),
+  month: getMonthName(item.data.getMonth())
+}));
+
+// Ordiniamo l'array in base al nome del mese
+monthData.sort((a, b) => {
+  const monthNames = ["Gen", "Feb", "Mar", "Apr", "Mag", "Giu", "Lug", "Ago", "Set", "Ott", "Nov", "Dic"];
+  const monthIndexA = monthNames.indexOf(a.month);
+  const monthIndexB = monthNames.indexOf(b.month);
+  return monthIndexA - monthIndexB;
+});
+
+// etichette ordinate per i mesi
+const sortedLabels = monthData.map(item => item.month);
 
     const [value, setValue] = React.useState('');
     return(
@@ -109,21 +134,17 @@ useEffect(() => {
 
     <Text style={style.cardLabel}variant="bodyMedium">Grafico andamento esami</Text>
 
+    {
+      esame.length != 0 ?
     <LineChart
+    
     data={{
-      labels: ["Gen", "Feb",  "Mag", "Giu", "Lug",  "Set", "Ott", ],
+      labels: sortedLabels,
       datasets: [
         {
-          data: [
-            18,
-            20,
-            22,
-            24,
-            26,
-            28,
-            30
-          ]
-        }
+          data: monthData.map(item => item.value),
+          
+        },
       ]
     }}
     width={Dimensions.get("window").width} // from react-native
@@ -145,7 +166,8 @@ useEffect(() => {
         r: "6",
         strokeWidth: "2",
         stroke: "#ffa726"
-      }
+      },
+     
     }}
     bezier
     style={{
@@ -153,8 +175,9 @@ useEffect(() => {
       borderRadius: 16,
       width:100
     }}
+    
   />
-
+  : null }
 
 <View style={{ backgroundColor: primary_color(tema), height: 'auto' }}>
                  <View>
@@ -166,7 +189,7 @@ useEffect(() => {
                     renderItem={({item}) => (
                       <View style={style.item}>
                         <Text style={style.itemText}>Voto: {item.voto}</Text>
-                        <Text style={style.itemText}>Data: {item.data.toLocaleDateString()}</Text>
+                        <Text style={style.itemText}>Data: {getFormatedDate(item.data, 'DD/MM/YYYY')}</Text>
                        
                       </View>
                     )}
