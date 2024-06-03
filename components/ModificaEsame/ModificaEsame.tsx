@@ -81,11 +81,13 @@ const ModificaEsame = ({ navigation, route }: any) => {
 
 
     const timeInput = (v: Date | undefined) => {
+        setOpenClock(false)
         if (v) {
+            
             setTimeStamp(v)
             setDataoraInputted(true)
         }
-        setOpenClock(false)
+        
     }
 
     const getTimeStamp = (d: String, t: String) => {

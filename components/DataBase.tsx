@@ -12,10 +12,8 @@ export const DataBase = ({ children }: any) => {
             SQLite.enablePromise(true);
             const conn = SQLite.openDatabase({ name: 'esami.db', location: 'default' })
             const dbc = await conn;
-                // tx.executeSql('drop table if exists esame') //! DEBUG
-                // tx.executeSql('drop table if exists categoria') //! DEBUG
-                // tx.executeSql('drop table if exists appartiene') //! DEBUG
-
+            
+               
                 // Tabella esame
                 await dbc.executeSql('create table if not exists esame (' +
                     'nome varchar(60) primary key,' + //nome esame
@@ -44,10 +42,7 @@ export const DataBase = ({ children }: any) => {
                     "foreign key (esame) references esame(nome)," +
                     "foreign key (categoria) references categoria(nome));")
 
-                // tx.executeSql("insert into esame values ('Analisi 1','Matematica','9','scritto','Prof. Rossi','30','1','2021/01/15','19:00','Aula 1', 'ciao');") //! DEBUG
-                // tx.executeSql("insert into esame values ('Analisi 2','Matematica','9','orale','Prof. Rossi', null,'1','2024/06/01','15:30','Aula 2', 'prossimo');") //! DEBUG
-                // tx.executeSql("insert into esame values ('Fisica 1','Matematica','9','orale e scritto','Prof. De Risi', null, null,'2024/05/01','10:00','Aula 2', 'esempio esame non mantenuto aggiornato dall\'utente');") //! DEBUG
-                setDB(dbc);
+                 setDB(dbc);
             }
         initDB().then(() => console.log('DB inizializzato')).catch((err) => console.error(err))
     }, [])
