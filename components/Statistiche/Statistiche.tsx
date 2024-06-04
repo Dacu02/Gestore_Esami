@@ -190,14 +190,12 @@ const sortedLabels = monthData.map(item => item.month);
                       <View style={style.item}>
                         <Text style={style.itemText}>Voto: {item.voto}</Text>
                         <Text style={style.itemText}>Data: {getFormatedDate(item.data, 'DD/MM/YYYY')}</Text>
-                       
                       </View>
                     )}
                     keyExtractor={(item, index) => index.toString()} 
                         
                     />
                 </View>
-
 
 
   </Card>
