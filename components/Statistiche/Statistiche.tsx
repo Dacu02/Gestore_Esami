@@ -179,98 +179,93 @@ const sortedLabels = monthData.map(item => item.month);
   />
   : null }
 
-<View style={{ backgroundColor: primary_color(tema), height: 'auto' }}>
-                 <View>
-                  <Text style={style.titolo}>Esito esami</Text>
-                 </View>
-                    <FlatList
-                    horizontal
-                    data={esame}
-                    renderItem={({item}) => (
-                      <View style={style.item}>
-                        <Text style={style.itemText}>Voto: {item.voto}</Text>
-                        <Text style={style.itemText}>Data: {getFormatedDate(item.data, 'DD/MM/YYYY')}</Text>
-                      </View>
-                    )}
-                    keyExtractor={(item, index) => index.toString()} 
-                        
-                    />
+          <View style={{ backgroundColor: primary_color(tema), height: 'auto' }}>
+            <View>
+              <Text style={[style.titolo, {color: tertiary_color(tema)}]}>Dati statistici</Text>
+            </View>
+            <FlatList
+              horizontal
+              data={analitiche}
+              renderItem={({ item }) => (
+                <View style={[style.item, { backgroundColor: primary_color(tema), borderColor: secondary_color, borderWidth: 1 }]}>
+                  <Text style={[style.itemText, { color: tertiary_color(tema), fontWeight: 'bold' }]}>{item.nome}</Text>
+                  <Text style={[style.itemText, { color: tertiary_color(tema) }]}>{item.valore.toFixed(2)}</Text>
+
                 </View>
+              )}
+              keyExtractor={(item) => item.valore.toString()}
 
-
-  </Card>
-
-        </View>
-        <View>
-       
-   
-</View>
-  </ScrollView>
-);
+            />
+          </View>
+        </Card>
+      </ScrollView>
+    </>
+  );
 };
 
 const style = StyleSheet.create({
-    Card:{
-        marginTop:10,
-        backgroundColor:'white'
-    },
-    cardLabel:{
-      marginLeft:15
-    },
-    Cover:{
-        padding:10,
-        backgroundColor:'white'
-    },
-    Content:{
-      flexDirection:'row',
-      alignItems:'center',
-      justifyContent:'space-between'
-    },
-    header: {
-        marginTop:10,
-        alignItems: 'center',
-        height: 60
-    },
-    headerText: {
-        alignItems: 'center',
-        fontSize:22,
-        fontWeight:'700'
-    },
-    esito: {
-        borderRadius: 30,
-        width: 80,
-        height: 30,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    esitoText:{
-        fontSize: 14,
-        fontWeight: '600',
-    },
-    container: {
-       marginTop:10,
-       color:'red'
-      },
-      Segment:{
-        fontSize:14
-      },
-      item: {
-        backgroundColor: '#fff',
-        padding: 20,
-        marginVertical: 8,
-        marginHorizontal: 16,
-        borderRadius: 8,
-        elevation: 3,
-    },
-    itemText: {
-        fontSize: 16,
-        fontWeight: 'bold',
-    },
-    titolo:{
-      textAlign:'center',
-      justifyContent:'center',
-      fontSize:22
-    },
+  Card: {
+    marginTop: 10,
+    backgroundColor: 'white'
+  },
+  cardLabel: {
+    marginLeft: 15
+  },
+  Cover: {
+    padding: 10,
+    backgroundColor: 'white'
+  },
+  Content: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between'
+  },
+  header: {
+    marginTop: 10,
+    alignItems: 'center',
+    height: 60
+  },
+  headerText: {
+    alignItems: 'center',
+    fontSize: 22,
+    fontWeight: '700'
+  },
+  esito: {
+    borderRadius: 30,
+    width: 80,
+    height: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  esitoText: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  container: {
+    marginTop: 10,
+    color: 'red'
+  },
+  Segment: {
+    fontSize: 14
+  },
+  item: {
+    backgroundColor: '#fff',
+    padding: 20,
+    marginVertical: 8,
+    marginHorizontal: 16,
+    borderRadius: 8,
+    elevation: 3,
+  },
+  itemText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  titolo: {
+    textAlign: 'center',
+    justifyContent: 'center',
+    fontSize: 22
+  },
 });
 
 export default Statistiche;
