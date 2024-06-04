@@ -23,7 +23,7 @@ const Home = ({ navigation }: any) => {
         cfu: number,
         data: string,
         docente: string | null,
-        ora: string | null,
+        ora: string,
         luogo: string,
     }
 
@@ -157,18 +157,23 @@ const Home = ({ navigation }: any) => {
             const yyyy = parseInt(esame.data.split('/')[0])
             const mm = parseInt(esame.data.split('/')[1]) - 1
             const dd = parseInt(esame.data.split('/')[2])
-            const dataNotifica = new Date(yyyy, mm, dd)
+            const [HH, MM] = esame.ora.split(':')
+            const dataNotifica = new Date(dd, mm, yyyy, parseInt(HH), parseInt(MM))
             dataNotifica.setTime(dataNotifica.getTime() - 1000 * 60 * 60 * 24) // un giorno prima
             if (dataNotifica.getTime() <= new Date().getTime())
                 dataNotifica.setTime(dataNotifica.getTime() + 1000 * 60 * 60 * 24 - 1000 * 60 * 60) // un'ora prima
             if (dataNotifica.getTime() > new Date().getTime()) {
-
+                console.log(dataNotifica.toLocaleString())
+                
                 const trigger: TimestampTrigger = {
                     type: TriggerType.TIMESTAMP,
                     timestamp: dataNotifica.getTime()
                 }
-                notifee.createTriggerNotification(
+                console.log('trigger', trigger)
+                await notifee.cancelNotification(esame.nome).then(()=>console.log('rimossa')).catch((err)=>console.error(err)) // cancella notifica se esistente
+                await notifee.createTriggerNotification(
                     {
+                        id: esame.nome,
                         title: 'Esame imminente',
                         body: 'Dovrai sostenere l\'esame ' + esame.nome + ' del corso ' + esame.corso +
                             ' domani alle ' + esame.ora + ' in ' + esame.luogo,
@@ -177,7 +182,7 @@ const Home = ({ navigation }: any) => {
                         },
                     },
                     trigger,
-                )
+                ).then(() => console.log('notifica impostata')).catch(err => console.error(err))
             }
         })
     }
