@@ -30,11 +30,11 @@ const Notifiche = () =>{
     });
 
     await notifee.displayNotification({
-        title:'Titolo notifica',
+        title:'Esame Imminente',
         body:'Corpo della notifica',
         android:{
             channelId,
-            smallIcon: 'cacca',
+           // smallIcon: '',
             pressAction:{
                 id:'default',
             },
@@ -62,3 +62,6 @@ const Notifiche = () =>{
         </View>
     );
 }
+
+
+export default Notifiche;
