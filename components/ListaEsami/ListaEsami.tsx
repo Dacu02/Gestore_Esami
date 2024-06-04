@@ -13,6 +13,7 @@ import Settimana from "./Settimana"
 import Lista from "./Lista"
 import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
 import { MarkedDates } from "react-native-calendars/src/types"
+import Esame from "./Esame"
 
     interface EsameItem {
         nome: string,
@@ -38,6 +39,7 @@ const ListaEsami = ({ navigation }: any) => {
     const [modalVisible, setModalVisible] = useState("");
     const [visualizzazione, setVisualizzazione] = useState('giornaliero')
     const [icona, setIcona] = useState(faCalendarDay)
+    const [dayPressed, setDayPressed] = useState<EsameItem[]>([])
 
     const updateVisualizzazione = () => {
         switch (visualizzazione) {
@@ -209,7 +211,18 @@ const ListaEsami = ({ navigation }: any) => {
                         }}
                         markedDates={date}
                         hideExtraDays={true}
+                        onDayPress={(day) => setDayPressed(esame.filter(e => getFormatedDate(e.data, 'YYYY-MM-DD') === day.dateString))}
                     />
+                    {dayPressed.length!==0 ? 
+                    <Lista
+                        esami={dayPressed}
+                        tema={tema}
+                        setModalVisible={setModalVisible}
+                        delete={(esame)=>{deleteEsame(esame); dayPressed.splice(dayPressed.findIndex(e => e.nome === esame), 1)}}
+                        modalVisible={modalVisible}
+                        naviga={(esame:string)=>navigation.navigate('ModificaEsame', {esame: esame})}
+                    />
+                    : null}
                 </View>
             )
         default:
