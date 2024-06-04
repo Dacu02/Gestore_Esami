@@ -181,12 +181,12 @@ const Statistiche = () => {
               data={analitiche}
               renderItem={({ item }) => (
                 <View style={[style.item, { backgroundColor: primary_color(tema), borderColor: secondary_color, borderWidth: 1 }]}>
-                  <Text style={[style.itemText, { color: tertiary_color(tema), textAlign: 'center', fontWeight: 'bold' }]}>{item.nome}</Text>
-                  <Text style={[style.itemText, { color: tertiary_color(tema) }]}>Voto: {item.valore}</Text>
+                  <Text style={[style.itemText, { color: tertiary_color(tema), fontWeight: 'bold' }]}>{item.nome}</Text>
+                  <Text style={[style.itemText, { color: tertiary_color(tema) }]}>{item.valore.toFixed(2)}</Text>
 
                 </View>
               )}
-              keyExtractor={(item) => item.nome}
+              keyExtractor={(item) => item.valore.toString()}
 
             />
           </View>
@@ -252,6 +252,7 @@ const style = StyleSheet.create({
   itemText: {
     fontSize: 16,
     fontWeight: 'bold',
+    textAlign: 'center',
   },
   titolo: {
     textAlign: 'center',
