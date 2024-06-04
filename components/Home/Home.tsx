@@ -1,33 +1,33 @@
-import React, { useEffect, useContext, useState } from "react"
-import { Settings, StyleSheet, Text, View, TextInput, Modal, Dimensions, TouchableOpacity, Pressable, Switch } from "react-native"
+import React, { useEffect, useState } from "react"
+import { StyleSheet, Text, View, TextInput, Modal, Dimensions, TouchableOpacity, Pressable, Switch } from "react-native"
 import Footer from "./Footer"
 import { primary_color, rapportoOrizzontale, secondary_color, tertiary_color, getOrientamento } from '../../global'
 import Header from "../Header"
 import { faGear } from "@fortawesome/free-solid-svg-icons"
-import { DataBase, DataBaseContext } from "../DataBase"
+import { DataBaseContext } from "../DataBase"
 import SQLite from 'react-native-sqlite-storage'
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { SelectList } from "react-native-dropdown-select-list"
 import Promemoria from "./Promemoria"
 import { getFormatedDate } from "react-native-modern-datepicker"
 import { rapportoVerticale, scala } from "../../global"
+import notifee, { TimestampTrigger, TriggerType } from '@notifee/react-native';
 
 
 const Home = ({ navigation }: any) => {
 
     interface Notifica {
         nome: string,
-        corso:string,
-        tipologia:string,
+        corso: string,
+        tipologia: string,
         cfu: number,
         data: string,
-        docente:string | null,
+        docente: string | null,
         ora: string | null,
-        luogo:string,
+        luogo: string,
     }
 
 
-    const db = useContext(DataBaseContext) as SQLite.SQLiteDatabase
     const [setting, setSetting] = useState(false)
     const [notifica, setNotifica] = useState('giorni')
     const [numNotifica, setNumNotifica] = useState('7')
@@ -72,7 +72,7 @@ const Home = ({ navigation }: any) => {
         }
     }
 
-    
+
 
     const getTema = async () =>
         (await AsyncStorage.getItem('tema') === 'dark')
@@ -111,44 +111,78 @@ const Home = ({ navigation }: any) => {
         });
     }, [])
 
-    const aggiornaPromemoria = () => {
-        
-        let tempo:number
+    const aggiornaPromemoria = async () => {
+        let tempo: number
         if (notifica.startsWith('giorn'))
             tempo = parseInt(numNotifica)
         else if (notifica.startsWith('settiman'))
-            tempo = parseInt(numNotifica)*7
+            tempo = parseInt(numNotifica) * 7
         else
-            tempo = parseInt(numNotifica)*31
+            tempo = parseInt(numNotifica) * 31
 
         const dataMax = new Date()
         dataMax.setDate(dataMax.getDate() + tempo)
 
         const proms: Notifica[] = []
-        db.transaction((tx)=>tx.executeSql("SELECT * FROM esame WHERE voto IS NULL AND data>='" + getFormatedDate(new Date(), 'YYYY/MM/DD') + "' AND data<'" + getFormatedDate(dataMax, 'YYYY/MM/DD') + "' ORDER BY data DESC LIMIT 3", 
-        [], (tx, res) => {
-            for (let i = 0; i < res.rows.length; i++) {
-                const dati = {
-                    nome: res.rows.item(i).nome,
-                    corso: res.rows.item(i).corso,
-                    cfu: res.rows.item(i).cfu,
-                    tipologia: res.rows.item(i).tipologia,
-                    docente: res.rows.item(i).docente,
-                    ora: res.rows.item(i).ora,
-                    data: res.rows.item(i).data,
-                    luogo: res.rows.item(i).luogo,
+        const conn = SQLite.openDatabase({ name: 'esami.db', location: 'default' })
+        const db = await conn
+        db.transaction((tx) => tx.executeSql("SELECT * FROM esame WHERE voto IS NULL AND data>='" + getFormatedDate(new Date(), 'YYYY/MM/DD') + "' AND data<'" + getFormatedDate(dataMax, 'YYYY/MM/DD') + "' ORDER BY data DESC LIMIT 3",
+            [], (tx, res) => {
+                for (let i = 0; i < res.rows.length; i++) {
+                    const dati = {
+                        nome: res.rows.item(i).nome,
+                        corso: res.rows.item(i).corso,
+                        cfu: res.rows.item(i).cfu,
+                        tipologia: res.rows.item(i).tipologia,
+                        docente: res.rows.item(i).docente,
+                        ora: res.rows.item(i).ora,
+                        data: res.rows.item(i).data.split('/').reverse().join('/'),
+                        luogo: res.rows.item(i).luogo,
+                    }
+                    proms.push(dati)
                 }
-                proms.push(dati)
-            }
-            setNotifiche(proms)
-        }))
-}
+                setNotifiche(proms)
+            }))
+    }
 
     useEffect(() => {
-        if (Object.keys(db).length > 0) // se il db è stato inizializzato
-            aggiornaPromemoria()
-    }, [db, numNotifica, notifica])
+        aggiornaPromemoria()
+    }, [numNotifica, notifica])
 
+    useEffect(() => {
+        impostaNotifiche()
+    }, [notifiche])
+
+    const impostaNotifiche = async () => {
+        notifiche.forEach(async (esame) => {
+            await notifee.requestPermission();
+            const yyyy = parseInt(esame.data.split('/')[0])
+            const mm = parseInt(esame.data.split('/')[1]) - 1
+            const dd = parseInt(esame.data.split('/')[2])
+            const dataNotifica = new Date(yyyy, mm, dd)
+            dataNotifica.setTime(dataNotifica.getTime() - 1000 * 60 * 60 * 24) // un giorno prima
+            if (dataNotifica.getTime() <= new Date().getTime())
+                dataNotifica.setTime(dataNotifica.getTime() + 1000 * 60 * 60 * 24 - 1000 * 60 * 60) // un'ora prima
+            if (dataNotifica.getTime() > new Date().getTime()) {
+
+                const trigger: TimestampTrigger = {
+                    type: TriggerType.TIMESTAMP,
+                    timestamp: dataNotifica.getTime()
+                }
+                 notifee.createTriggerNotification(
+                    {
+                        title: 'Esame imminente',
+                        body: 'Dovrai sostenere l\'esame ' + esame.nome + ' del corso ' + esame.corso +
+                            ' domani alle ' + esame.ora + ' in ' + esame.luogo,
+                        android: {
+                            channelId: 'default',
+                        },
+                    },
+                    trigger,
+                )
+            }
+        })
+    }
     const [orientamento, setOrientamento] = useState(getOrientamento())
 
     Dimensions.addEventListener("change", () => setOrientamento(getOrientamento()))
@@ -156,23 +190,23 @@ const Home = ({ navigation }: any) => {
     return (
         <View style={{ backgroundColor: primary_color(tema), minHeight: "100%" }}>
             <Modal transparent={true} visible={setting} animationType="fade" onRequestClose={chiudiSetting}>
-                <Pressable android_disableSound={true} android_ripple={{ color: primary_color(tema)+'d0' }} onPress={chiudiSetting} style={[style.modal, {backgroundColor: primary_color(tema)+'d0'}]}>
-                    <Pressable onPress={(e) => e.preventDefault()} style={[style.modalView, {backgroundColor: primary_color(tema)}]} android_disableSound={true} android_ripple={{ color: primary_color(tema) }} >
-                        <Text style={[style.modalTitle, {color: tertiary_color(tema)}]}>Impostazioni</Text>
+                <Pressable android_disableSound={true} android_ripple={{ color: primary_color(tema) + 'd0' }} onPress={chiudiSetting} style={[style.modal, { backgroundColor: primary_color(tema) + 'd0' }]}>
+                    <Pressable onPress={(e) => e.preventDefault()} style={[style.modalView, { backgroundColor: primary_color(tema) }]} android_disableSound={true} android_ripple={{ color: primary_color(tema) }} >
+                        <Text style={[style.modalTitle, { color: tertiary_color(tema) }]}>Impostazioni</Text>
                         <View style={style.modalRow} >
-                            <Text style={[style.modalRowText, {color: tertiary_color(tema)}]}>Tema:</Text>
+                            <Text style={[style.modalRowText, { color: tertiary_color(tema) }]}>Tema:</Text>
                             <Switch thumbColor={secondary_color} value={tema} onValueChange={(v) => { setTema(v); AsyncStorage.setItem('tema', v ? 'dark' : 'light') }} trackColor={{ false: 'darkblue', true: 'lightyellow' }} />
                         </View>
                         <View style={style.modalRow}>
-                            <Text style={[style.modalRowText, {color: tertiary_color(tema)}]}>Notifica promemoria:</Text>
-                            <TextInput style={[style.modalNumInput, {color: tertiary_color(tema)}]} keyboardType="numeric" value={numNotifica} onChangeText={changeNotifica} />
-                            <SelectList inputStyles={{color: tertiary_color(tema)}} data={lista} search={false} placeholder={notifica} setSelected={setNotifica} />
+                            <Text style={[style.modalRowText, { color: tertiary_color(tema) }]}>Notifica promemoria:</Text>
+                            <TextInput style={[style.modalNumInput, { color: tertiary_color(tema) }]} keyboardType="numeric" value={numNotifica} onChangeText={changeNotifica} />
+                            <SelectList inputStyles={{ color: tertiary_color(tema) }} data={lista} search={false} placeholder={notifica} setSelected={setNotifica} />
                         </View>
                     </Pressable>
                 </Pressable>
             </Modal>
             <Header icon={true} title="Promemoria" leftIcon={faGear} onPressLeft={() => setSetting(true)} scuro={tema} />
-            <View style={[style.viewPromemoria, {flexDirection: orientamento === 'portrait' ? "column" : "row",}]}>
+            <View style={[style.viewPromemoria, { flexDirection: orientamento === 'portrait' ? "column" : "row", }]}>
                 {notifiche.map((esame, index) => <Promemoria key={index} {...esame} style={style} />)}
             </View>
             <Footer navigation={navigation} scuro={tema} />
@@ -202,7 +236,7 @@ const style = StyleSheet.create({
         borderRadius: 20,
         borderWidth: 2,
         borderColor: secondary_color,
-        opacity:5
+        opacity: 5
     },
     modalRow: {
         display: "flex",

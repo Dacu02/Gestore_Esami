@@ -12,7 +12,6 @@ import { DataBase } from './components/DataBase'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ModificaEsame from './components/ModificaEsame/ModificaEsame';
 import Statistiche from './components/Statistiche/Statistiche';
-import Notifiche from './components/Notifiche/Notifiche'
 
 const Stack = createNativeStackNavigator();
 function App(): React.JSX.Element {
@@ -21,14 +20,13 @@ function App(): React.JSX.Element {
     if(AsyncStorage.getItem('tema')===null)
       AsyncStorage.setItem('tema', useColorScheme() ? 'dark' : 'light')
   }, [])
-    
   
   return (
     <DataBase>
       <StatusBar />
       <NavigationContainer>
-        <Stack.Navigator initialRouteName='Notifiche' screenOptions={{headerShown: false}} >
-          <Stack.Screen name="Notifiche" component={Notifiche}/>
+        <Stack.Navigator initialRouteName='Home' screenOptions={{headerShown: false}} >
+          <Stack.Screen name="Home" component={Home}/>
           <Stack.Screen name="ListaEsami" component={ListaEsami} />
           <Stack.Screen name="Statistiche" component={Statistiche} />
           <Stack.Screen name="ModificaEsame" component={ModificaEsame} />
