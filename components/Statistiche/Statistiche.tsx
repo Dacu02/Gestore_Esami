@@ -125,7 +125,7 @@ const sortedLabels = monthData.map(item => item.month);
         />
 
   <Card style={style.Card}>
-    <Card.Content style={style.Content}>
+    <Card.Content style={style.Content}> 
       <Text variant="titleLarge">Analisi</Text>
       <View style={[style.esito, { backgroundColor:  "#99ffaf" }]}>
                         <Text style={[style.esitoText, {color:"#239900"}]}>Positivo</Text>
