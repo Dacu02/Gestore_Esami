@@ -11,7 +11,7 @@ import Header from "../Header"
 import { getOrientamento, rapportoOrizzontale, rapportoVerticale, scala } from "../../global"
 import Settimana from "./Settimana"
 import Lista from "./Lista"
-import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
+import { Calendar, CalendarList, Agenda, LocaleConfig } from 'react-native-calendars';
 import { MarkedDates } from "react-native-calendars/src/types"
 import Esame from "./Esame"
 
@@ -30,8 +30,21 @@ import Esame from "./Esame"
         lode: boolean,
         categoria: string[]
     }
-
+    LocaleConfig.locales.it = {
+        monthNames: ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'],
+        monthNamesShort: ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic'],
+        dayNames: ['Domenica', 'Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato'],
+        dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab']
+    };
+    
+    LocaleConfig.defaultLocale = 'it'
+    
+    
+    
 const ListaEsami = ({ navigation }: any) => {
+
+
+    
 
     const [esame, setEsame] = useState<EsameItem[]>([])
 

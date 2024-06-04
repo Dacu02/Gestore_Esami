@@ -18,8 +18,6 @@ import { rapportoOrizzontale, rapportoVerticale } from '../../global';
 import { Platform } from 'react-native'
 import Header from '../Header';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
-const ModificaEsame = ({ navigation, route }: any) => {
-    
 LocaleConfig.locales.it = {
     monthNames: ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'],
     monthNamesShort: ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic'],
@@ -30,6 +28,8 @@ LocaleConfig.locales.it = {
 LocaleConfig.defaultLocale = 'it'
 
 
+const ModificaEsame = ({ navigation, route }: any) => {
+        
     const [openCalendar, setOpenCalendar] = useState(false)
     const [openClock, setOpenClock] = useState(false)
 
