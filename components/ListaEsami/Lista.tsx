@@ -22,13 +22,14 @@ interface EsameItem {
     categoria: string[]
 }
 
-interface ListaProps {
+type ListaProps = {
     esami: EsameItem[],
     tema: boolean,
     setModalVisible: (text: string) => void,
     modalVisible: string,
     naviga: (esame:string) => void,
     delete: (esame: string) => void,
+    children: React.ReactNode | undefined,
 }
 
 const Lista = (props: ListaProps) => {
@@ -49,6 +50,7 @@ const Lista = (props: ListaProps) => {
     return (
         <>
             <SwipeListView
+                ListHeaderComponent={props.children ? <>{props.children}</> : null}
                 data={props.esami}
                 renderItem={(item) => <Esame item={item.item} diario={(text: string) => props.setModalVisible(text)} tema={props.tema} />}
                 ItemSeparatorComponent={itemSeparator}

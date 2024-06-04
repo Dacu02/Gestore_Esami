@@ -15,36 +15,36 @@ import { Calendar, CalendarList, Agenda, LocaleConfig } from 'react-native-calen
 import { MarkedDates } from "react-native-calendars/src/types"
 import Esame from "./Esame"
 
-    interface EsameItem {
-        nome: string,
-        corso: string,
-        tipologia: string,
-        image: any,
-        voto: string | null,
-        CFU: number,
-        data: Date,
-        profEsame: string | null,
-        ora: string,
-        luogo: string,
-        diario: string | null,
-        lode: boolean,
-        categoria: string[]
-    }
-    LocaleConfig.locales.it = {
-        monthNames: ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'],
-        monthNamesShort: ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic'],
-        dayNames: ['Domenica', 'Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato'],
-        dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab']
-    };
-    
-    LocaleConfig.defaultLocale = 'it'
-    
-    
-    
+interface EsameItem {
+    nome: string,
+    corso: string,
+    tipologia: string,
+    image: any,
+    voto: string | null,
+    CFU: number,
+    data: Date,
+    profEsame: string | null,
+    ora: string,
+    luogo: string,
+    diario: string | null,
+    lode: boolean,
+    categoria: string[]
+}
+LocaleConfig.locales.it = {
+    monthNames: ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'],
+    monthNamesShort: ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic'],
+    dayNames: ['Domenica', 'Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato'],
+    dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab']
+};
+
+LocaleConfig.defaultLocale = 'it'
+
+
+
 const ListaEsami = ({ navigation }: any) => {
 
 
-    
+
 
     const [esame, setEsame] = useState<EsameItem[]>([])
 
@@ -74,10 +74,10 @@ const ListaEsami = ({ navigation }: any) => {
 
     const loadData = () => {
         const dati: EsameItem[] = [];
-        db.transaction((tx)=>tx.executeSql('select * from esame order by data desc', [], (t, results) => {
+        db.transaction((tx) => tx.executeSql('select * from esame order by data desc', [], (t, results) => {
             for (let i = 0; i < results.rows.length; i++) {
                 const dd = results.rows.item(i).data.split('/')[2]
-                const mm = results.rows.item(i).data.split('/')[1] - 1  
+                const mm = results.rows.item(i).data.split('/')[1] - 1
                 const yyyy = results.rows.item(i).data.split('/')[0]
                 const esame = {
                     nome: results.rows.item(i).nome,
@@ -95,7 +95,7 @@ const ListaEsami = ({ navigation }: any) => {
                     image: results.rows.item(i).data <= getFormatedDate(new Date(), 'YYYY/MM/DD') && results.rows.item(i).voto ? require('../../immaginiEsami/Esame.png') : require('../../immaginiEsami/EsameInAttesa.png')
                 }
                 t.executeSql('select categoria from appartiene where esame = ?', [results.rows.item(i).nome], (_, res) => {
-                    for (let j = 0; j < res.rows.length; j++) 
+                    for (let j = 0; j < res.rows.length; j++)
                         esame.categoria.push(res.rows.item(j).categoria)
                     dati.push(esame);
                 })
@@ -125,12 +125,12 @@ const ListaEsami = ({ navigation }: any) => {
     const esamiPerSettimana = () => {
         // restituisce la settimana minima e la settimana massima
         // in cui ci sono esami relativamente alla setttimana corrente
-        if(esame.length === 0) return 0
+        if (esame.length === 0) return 0
         const oggi = new Date()
         const inizio = new Date()
-        let i=0
-        while(true) {
-            if(inizio <= new Date(esame[esame.length-1].data)){
+        let i = 0
+        while (true) {
+            if (inizio <= new Date(esame[esame.length - 1].data)) {
                 break
             }
             i++
@@ -139,8 +139,8 @@ const ListaEsami = ({ navigation }: any) => {
         const m = -i
         i = 0
         inizio.setTime(oggi.getTime())
-        while(true) {
-            if(inizio > new Date(esame[0].data)){
+        while (true) {
+            if (inizio > new Date(esame[0].data)) {
                 break
             }
             i++
@@ -165,12 +165,13 @@ const ListaEsami = ({ navigation }: any) => {
                 <View style={{ backgroundColor: primary_color(tema), height: '100%' }}>
                     {header}
                     <Lista
+                        children={null}
                         esami={esame}
                         tema={tema}
                         setModalVisible={setModalVisible}
                         delete={deleteEsame}
                         modalVisible={modalVisible}
-                        naviga={(esame:string)=>navigation.navigate('ModificaEsame', {esame: esame})}
+                        naviga={(esame: string) => navigation.navigate('ModificaEsame', { esame: esame })}
                     />
                 </View>
             );
@@ -181,18 +182,18 @@ const ListaEsami = ({ navigation }: any) => {
             const inizio = new Date()
             const fine = new Date()
             for (let i = M; i >= m; i--) {
-                inizio.setTime(oggi.getTime() + 7 * (i-1) * 24 * 60 * 60 * 1000)
+                inizio.setTime(oggi.getTime() + 7 * (i - 1) * 24 * 60 * 60 * 1000)
                 fine.setTime(oggi.getTime() + 7 * (i) * 24 * 60 * 60 * 1000)
                 settimane.push(
-                    <Settimana 
-                        inizio={getFormatedDate(inizio, 'DD/MM/YYYY')} 
-                        fine={getFormatedDate(fine, 'DD/MM/YYYY')} 
-                        esami={esame.filter((e)=> inizio<= e.data && e.data < fine)}
+                    <Settimana
+                        inizio={getFormatedDate(inizio, 'DD/MM/YYYY')}
+                        fine={getFormatedDate(fine, 'DD/MM/YYYY')}
+                        esami={esame.filter((e) => inizio <= e.data && e.data < fine)}
                         tema={tema}
                         setModalVisible={setModalVisible}
                         delete={deleteEsame}
                         modalVisible={modalVisible}
-                        naviga={(esame:string)=>navigation.navigate('ModificaEsame', {esame: esame})}
+                        naviga={(esame: string) => navigation.navigate('ModificaEsame', { esame: esame })}
                     />
                 )
             }
@@ -207,35 +208,34 @@ const ListaEsami = ({ navigation }: any) => {
                 </View>
             )
         case 'mensile':
-            const date:MarkedDates = {}
+            const date: MarkedDates = {}
             esame.forEach(e => {
                 const data = getFormatedDate(e.data, 'YYYY-MM-DD')
-                date[data] = {selected: true, selectedColor: e.voto ? "#019d3a" : "#f0b904"}
+                date[data] = { selected: true, selectedColor: e.voto ? "#019d3a" : "#f0b904" }
             })
             return (
                 <View style={{ backgroundColor: primary_color(tema), height: '100%' }}>
                     {header}
-                    <Calendar
-                        theme={{
-                            dayTextColor: tertiary_color(tema),
-                            todayTextColor: secondary_color,
-                            monthTextColor: tertiary_color(tema),
-                            calendarBackground: primary_color(tema),
-                        }}
-                        markedDates={date}
-                        hideExtraDays={true}
-                        onDayPress={(day) => setDayPressed(esame.filter(e => getFormatedDate(e.data, 'YYYY-MM-DD') === day.dateString))}
-                    />
-                    {dayPressed.length!==0 ? 
-                    <Lista
-                        esami={dayPressed}
-                        tema={tema}
-                        setModalVisible={setModalVisible}
-                        delete={(esame)=>{deleteEsame(esame); dayPressed.splice(dayPressed.findIndex(e => e.nome === esame), 1)}}
-                        modalVisible={modalVisible}
-                        naviga={(esame:string)=>navigation.navigate('ModificaEsame', {esame: esame})}
-                    />
-                    : null}
+                        <Lista
+                            esami={dayPressed}
+                            tema={tema}
+                            setModalVisible={setModalVisible}
+                            delete={(esame) => { deleteEsame(esame); dayPressed.splice(dayPressed.findIndex(e => e.nome === esame), 1) }}
+                            modalVisible={modalVisible}
+                            naviga={(esame: string) => navigation.navigate('ModificaEsame', { esame: esame })}
+                        >
+                            <Calendar
+                                theme={{
+                                    dayTextColor: tertiary_color(tema),
+                                    todayTextColor: secondary_color,
+                                    monthTextColor: tertiary_color(tema),
+                                    calendarBackground: primary_color(tema),
+                                }}
+                                markedDates={date}
+                                hideExtraDays={true}
+                                onDayPress={(day) => setDayPressed(esame.filter(e => getFormatedDate(e.data, 'YYYY-MM-DD') === day.dateString))}
+                            />
+                        </Lista>
                 </View>
             )
         default:
