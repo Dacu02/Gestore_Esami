@@ -16,7 +16,6 @@ import {
 } from "react-native-chart-kit";
 import { Item } from 'react-native-paper/lib/typescript/components/Drawer/Drawer';
 import { getFormatedDate } from 'react-native-modern-datepicker';
-import AnimatedProgressChart from './AnimatedProgressChart';
 type EsameItem = {
   voto: string,
   data: Date,
@@ -41,7 +40,12 @@ const Statistiche = () => {
   const [loading, setLoading] = useState(true);
   const [analitiche, setAnalitiche] = useState<Dato[] | null>([])
 
+
+
   //dati del diagramma rotondo "progress-chart"
+
+    
+
   const data = {
     labels: ["Esami passati", "CFU "], // optional
     data: [0.4, 0.6]
@@ -121,83 +125,29 @@ const Statistiche = () => {
 
   return (
     <>
-      <Header scuro={tema} title='Statistiche' />
+      
       <ScrollView style={{ backgroundColor: primary_color(tema) }}>
         <Card style={[style.Card, { backgroundColor: primary_color(tema) }]}>
-          <Card.Content style={style.Content}>
-            <Text variant="titleLarge" style={{ color: tertiary_color(tema) }}>Analisi</Text>
-            <View style={[style.esito, { backgroundColor: "#99ffaf" }]}>
-              <Text style={[style.esitoText, { color: "#239900" }]}>Positivo</Text>
-            </View>
-          </Card.Content>
-
-          <Text style={[style.cardLabel, { color: tertiary_color(tema) }]} variant="bodyMedium">Grafico andamento esami</Text>
-
-          {
-            esame.length != 0 ?
-              <LineChart
-
-                data={{
-                  labels: esame.map((item) => item.nome),
-                  datasets: [
-                    {
-                      data: esame.map((item) => parseInt(item.voto)),
-
-                    },
-                  ]
-                }}
-                width={width}
-                height={280}
-                yAxisLabel=""
-                yAxisSuffix=""
-                yAxisInterval={1}
-                chartConfig={{
-                  backgroundColor: "#e26a00",
-                  backgroundGradientFrom: "#fb8c00",
-                  backgroundGradientTo: "#ffa726",
-                  decimalPlaces: 2,
-                  color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                  labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                  style: {
-                    borderRadius: 16,
-                  },
-                  propsForDots: {
-                    r: "6",
-                    strokeWidth: "2",
-                    stroke: "#ffa726"
-                  },
-
-                }}
-                bezier
-                style={{
-                  marginVertical: 8,
-                  borderRadius: 16,
-                  width: 100
-                }}
-
-              />
-              
-              : null}
-
-          <View style={[style.boxCentrale, { backgroundColor: primary_color(tema), height: 'auto' }]}>
-            <View>
-              <Text style={[style.titolo, {color: tertiary_color(tema)}]}>Dati statistici</Text>
-            </View>
-            <FlatList
-              horizontal
-              data={analitiche}
-              renderItem={({ item }) => (
-                <View style={[style.item, { backgroundColor: primary_color(tema), borderColor: secondary_color, borderWidth: 1 }]}>
-                  <Text style={[style.itemText, { color: tertiary_color(tema), fontWeight: 'bold' }]}>{item.nome}</Text>
-                  <Text style={[style.itemText, { color: tertiary_color(tema) }]}>{item.valore.toFixed(2)}</Text>
-
-                </View>
-              )}
-              keyExtractor={(item) => item.valore.toString()}
-
-            />
-          </View>
-          <AnimatedProgressChart
+          <ProgressChart
+  data={data}
+  width={width}
+  height={220}
+  strokeWidth={16}
+  radius={32}
+  chartConfig={{
+    backgroundGradientFrom: "#3d85c6",
+    backgroundGradientTo: "#073763",
+    color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
+    strokeWidth: 1, // optional, default 3
+    barPercentage: 0.5,
+    useShadowColorFromDataset: false // optional
+  }}
+  style={{
+    marginVertical: 8,
+    borderRadius: 16,
+    width: 100
+  }}
+  hideLegend={false}
 />
         </Card>
       </ScrollView>

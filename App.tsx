@@ -10,8 +10,9 @@ import {
 import Home from './components/Home/Home'
 import { DataBase } from './components/DataBase'
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import ModificaEsame from './components/ModificaEsame/ModificaEsame'
-import Statistiche from './components/Statistiche/Statistiche'
+import ModificaEsame from './components/ModificaEsame/ModificaEsame';
+import Statistiche from './components/Statistiche/Statistiche';
+
 
 const Stack = createNativeStackNavigator();
 function App(): React.JSX.Element {
