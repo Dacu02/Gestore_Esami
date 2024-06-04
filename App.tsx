@@ -21,6 +21,7 @@ function App(): React.JSX.Element {
       AsyncStorage.setItem('tema', useColorScheme() ? 'dark' : 'light')
   }, [])
     
+  
   return (
     <DataBase>
       <StatusBar />

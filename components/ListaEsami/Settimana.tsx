@@ -50,6 +50,7 @@ const Settimana = (props: ListaProps) => {
                 delete={props.delete}
                 modalVisible={props.modalVisible}
                 naviga={props.naviga}
+                children={null}
 
             /> : null}
         </>
