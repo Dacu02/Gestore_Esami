@@ -23,3 +23,4 @@ export const getOrientamento = () => (
 export const rapportoOrizzontale = (size:number) => (width / guidelineBaseWidth) * size;
 export const rapportoVerticale = (size:number) => (height / guidelineBaseHeight) * size;
 export const scala = (size:number, factor = 0.5) => size + (rapportoOrizzontale(size) - size) * factor;
+
