@@ -166,7 +166,7 @@ const Home = ({ navigation }: any) => {
                         <View style={style.modalRow}>
                             <Text style={[style.modalRowText, {color: tertiary_color(tema)}]}>Notifica promemoria:</Text>
                             <TextInput style={[style.modalNumInput, {color: tertiary_color(tema)}]} keyboardType="numeric" value={numNotifica} onChangeText={changeNotifica} />
-                            <SelectList inputStyles={{color: tertiary_color(tema)}} data={lista} search={false} placeholder={notifica} setSelected={setNotifica} />
+                            <SelectList inputStyles={{color: tertiary_color(tema)}} data={lista} dropdownTextStyles={{ color: tertiary_color(tema) }} search={false} placeholder={notifica} setSelected={setNotifica} />
                         </View>
                     </Pressable>
                 </Pressable>
