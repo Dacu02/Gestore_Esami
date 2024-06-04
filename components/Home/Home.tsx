@@ -70,6 +70,7 @@ const Home = ({ navigation }: any) => {
                 }
             }
         }
+        aggiornaPromemoria()
     }
 
 
@@ -109,8 +110,8 @@ const Home = ({ navigation }: any) => {
                 AsyncStorage.setItem('tipoNotifica', 'giorni')
             }
         });
+        aggiornaPromemoria()
     }, [])
-
     const aggiornaPromemoria = async () => {
         let tempo: number
         if (notifica.startsWith('giorn'))
@@ -145,9 +146,6 @@ const Home = ({ navigation }: any) => {
             }))
     }
 
-    useEffect(() => {
-        aggiornaPromemoria()
-    }, [numNotifica, notifica])
 
     useEffect(() => {
         impostaNotifiche()
@@ -169,7 +167,7 @@ const Home = ({ navigation }: any) => {
                     type: TriggerType.TIMESTAMP,
                     timestamp: dataNotifica.getTime()
                 }
-                 notifee.createTriggerNotification(
+                notifee.createTriggerNotification(
                     {
                         title: 'Esame imminente',
                         body: 'Dovrai sostenere l\'esame ' + esame.nome + ' del corso ' + esame.corso +
