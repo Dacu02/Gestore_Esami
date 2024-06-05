@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useEffect, useState, useContext } from 'react';
 import { DataBaseContext } from "../DataBase"
 import SQLite from 'react-native-sqlite-storage'
-import { View, StyleSheet, Dimensions, ScrollView, FlatList } from 'react-native';
+import { View, StyleSheet, Dimensions, ScrollView, FlatList,ActivityIndicator } from 'react-native';
 import { primary_color, rapportoOrizzontale, secondary_color, tertiary_color } from '../../global';
 import { Card, Text } from 'react-native-paper';
 import Header from '../Header';
@@ -11,6 +11,7 @@ import {
   ProgressChart,
 } from "react-native-chart-kit";
 import { MultiSelect } from 'react-native-element-dropdown';
+
 type EsameItem = {
   voto: string,
   data: Date,
@@ -31,12 +32,15 @@ const Statistiche = () => {
   const [esame, setEsame] = useState<EsameItem[]>([])
   const [vista, setVista] = useState<EsameItem[]>([])
   const [analitiche, setAnalitiche] = useState<Dato[] | null>([])
+  const[loading, setLoading] = useState(true)
+
   const [dataCerchio, setDataCerchio] = useState({
     labels: ["Esami", "CFU"],
     data: [0, 0]
   });
   const [categoria, setCategoria] = useState<string[]>([])
   const [categorieInserite, setCategorieInserite] = useState([] as string[])
+
   const loadData = () => {
     const dati: EsameItem[] = [];
     db.transaction((tx) => tx.executeSql('select nome, voto, data, cfu from esame where voto is not null order by data desc', [], (t, results) => {
@@ -74,21 +78,27 @@ const Statistiche = () => {
         newDataCerchio.data = [dati.length / (dati.length + nonPassati), 0] // rapporto esami passati su totali
         let cfuOttenuti = 0
         dati.map((item) => cfuOttenuti += item.cfu)
+
         let cfuTotali = 0
         for (let i = 0; i < res.rows.length; i++)
           cfuTotali += res.rows.item(i).cfu
         newDataCerchio.data[1] = cfuOttenuti / (cfuOttenuti + cfuTotali) // rapporto cfuOttenuti su cfu totali
         setDataCerchio(newDataCerchio)
+        setLoading(false);
       })
+
+      //media
       let media = 0
       dati.map((item) => media += parseInt(item.voto))
       media = media / dati.length
 
+      //ponderata
       let ponderata = 0
       dati.map((item) => ponderata += parseInt(item.voto) * item.cfu)
       let cfuTot = 0
       dati.map((item) => cfuTot += item.cfu)
       ponderata = ponderata / cfuTot
+
       const stats = dati.length !== 0 ? [
         {
           nome: 'Voto minimo',
@@ -114,7 +124,8 @@ const Statistiche = () => {
 
       setEsame(dati);
       setVista(dati);
-      setAnalitiche(stats)
+      setAnalitiche(stats);
+      
     }));
 
   };
@@ -194,6 +205,16 @@ const Statistiche = () => {
       setVista(temp)
     }
   }, [categoria])
+
+
+if(loading){
+  return(
+    <View style={style.loadingContainer}>
+      <ActivityIndicator size='large' color='#0000ff'/>
+      <Text> Stiamo calcolando le tue statistiche...</Text>
+    </View>
+  );
+}
 
   return (
     <>
@@ -309,6 +330,8 @@ const Statistiche = () => {
               }}
               style={{
                 borderRadius: 16,
+                marginBottom:20,
+
               }}
               hasLegend
             />
@@ -396,6 +419,12 @@ const style = StyleSheet.create({
   selectItem: {
     padding: rapportoOrizzontale(10),
     margin: rapportoOrizzontale(5),
+  },
+  loadingContainer:{
+    flex:1,
+    justifyContent:'center',
+    alignItems:'center',
+  
   },
 });
 
