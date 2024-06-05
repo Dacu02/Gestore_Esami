@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from "react"
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { StyleSheet, Text, Image, View, TouchableOpacity, Modal, Pressable, FlatList, ScrollView } from "react-native"
+import { StyleSheet, Text, Image, View, TouchableOpacity, Modal, Pressable, FlatList, ScrollView, ImageSourcePropType } from "react-native"
 import { DataBaseContext } from "../DataBase"
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faArrowLeft, faCalendarDay, faCalendarDays, faCalendarWeek, faPencil, faTimes, faTrashCan } from '@fortawesome/free-solid-svg-icons'
@@ -14,12 +14,13 @@ import Lista from "./Lista"
 import { Calendar, CalendarList, Agenda, LocaleConfig } from 'react-native-calendars';
 import { MarkedDates } from "react-native-calendars/src/types"
 import Esame from "./Esame"
+import { NavigationProp } from "@react-navigation/native"
 
 interface EsameItem {
     nome: string,
     corso: string,
     tipologia: string,
-    image: any,
+    image: ImageSourcePropType,
     voto: string | null,
     CFU: number,
     data: Date,
@@ -41,7 +42,7 @@ LocaleConfig.defaultLocale = 'it'
 
 
 
-const ListaEsami = ({ navigation }: any) => {
+const ListaEsami = ({ navigation }: {navigation: NavigationProp<any>}) => {
 
 
 
@@ -176,7 +177,7 @@ const ListaEsami = ({ navigation }: any) => {
                 </View>
             );
         case 'settimanale':
-            const settimane: any[] = [];
+            const settimane: React.ReactElement[] = [];
             const [m, M] = esamiPerSettimana() || [0, 0]
             const oggi = new Date()
             const inizio = new Date()

@@ -12,9 +12,9 @@ import Promemoria from "./Promemoria"
 import { getFormatedDate } from "react-native-modern-datepicker"
 import { rapportoVerticale, scala } from "../../global"
 import notifee, { TimestampTrigger, TriggerType } from '@notifee/react-native';
+import { NavigationProp } from "@react-navigation/native"
 
-
-const Home = ({ navigation }: any) => {
+const Home = ({ navigation }: { navigation: NavigationProp<any> }) => {
 
     interface Notifica {
         nome: string,
@@ -163,26 +163,26 @@ const Home = ({ navigation }: any) => {
             if (dataNotifica.getTime() <= new Date().getTime())
                 dataNotifica.setTime(dataNotifica.getTime() + 1000 * 60 * 60 * 24 - 1000 * 60 * 60) // un'ora prima
             if (dataNotifica.getTime() > new Date().getTime()) {
-                console.log(dataNotifica.toLocaleString())
-                
+
+
+
                 const trigger: TimestampTrigger = {
                     type: TriggerType.TIMESTAMP,
-                    timestamp: dataNotifica.getTime()
+                    timestamp: dataNotifica.getTime(),
                 }
-                console.log('trigger', trigger)
-                await notifee.cancelNotification(esame.nome).then(()=>console.log('rimossa')).catch((err)=>console.error(err)) // cancella notifica se esistente
+                await notifee.cancelNotification(esame.nome)
                 await notifee.createTriggerNotification(
                     {
                         id: esame.nome,
                         title: 'Esame imminente',
                         body: 'Dovrai sostenere l\'esame ' + esame.nome + ' del corso ' + esame.corso +
-                            ' domani alle ' + esame.ora + ' in ' + esame.luogo,
+                            ' alle ' + esame.ora + ' in ' + esame.luogo,
                         android: {
                             channelId: 'default',
                         },
                     },
                     trigger,
-                ).then(() => console.log('notifica impostata')).catch(err => console.error(err))
+                )
             }
         })
     }

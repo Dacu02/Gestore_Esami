@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faGraduationCap } from '@fortawesome/free-solid-svg-icons';
+import { IconDefinition, faGraduationCap } from '@fortawesome/free-solid-svg-icons';
 
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -9,8 +9,8 @@ import { rapportoOrizzontale, rapportoVerticale } from "../global";
 
 interface HeaderProps{
     title?: string;
-    leftIcon?: any;
-    rightIcon?: any;
+    leftIcon?: IconDefinition;
+    rightIcon?: IconDefinition;
     onPressLeft?: () => void;
     onPressRight?: () => void;
     scuro?: boolean;

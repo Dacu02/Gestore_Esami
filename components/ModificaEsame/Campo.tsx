@@ -2,8 +2,20 @@ import React from 'react';
 import { Text, TextInput, View, StyleSheet } from "react-native";
 import { primary_color, tertiary_color, rapportoOrizzontale, rapportoVerticale } from '../../global';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 
-const Campo = (props: any) => (
+type CampoProps = {
+    icon: IconDefinition,
+    nome: string,
+    tema: boolean,
+    tipo?: any,
+    value: string,
+    onChange: (text: string) => void,
+    lode?: boolean,
+    children?: React.ReactNode
+}
+
+const Campo = (props: CampoProps) => (
     <View style={style.row}>
         <View style={style.label}>
             <FontAwesomeIcon

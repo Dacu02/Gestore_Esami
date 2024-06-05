@@ -1,10 +1,16 @@
-import { faChartColumn, faList, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { IconDefinition, faChartColumn, faList, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { primary_color, secondary_color, rapportoVerticale } from '../../global';
+import { NavigationProp } from '@react-navigation/native';
 
-const Footer = ( { navigation, ...props }: any) => {
+type FooterProps = {
+    navigation: NavigationProp<any>,
+    scuro: boolean,
+}
+
+const Footer = ( { navigation, ...props }: FooterProps) => {
 
 
     const style = StyleSheet.create({
@@ -34,7 +40,7 @@ const Footer = ( { navigation, ...props }: any) => {
     })
 
 
-    const Tab = (props: any) => (
+    const Tab = (props: {icon: IconDefinition, nav: string}) => (
         <TouchableOpacity style={style.tab} onPress={() => { navigation.navigate(props.nav) }}>
             <FontAwesomeIcon size={20} color={secondary_color} icon={props.icon} />
         </TouchableOpacity>
