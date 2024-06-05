@@ -32,8 +32,8 @@ const Statistiche = () => {
   const [esame, setEsame] = useState<EsameItem[]>([])
   const [vista, setVista] = useState<EsameItem[]>([])
   const [analitiche, setAnalitiche] = useState<Dato[] | null>([])
-  const[loading, setLoading] = useState(true)
-
+  const [loading, setLoading] = useState(true)
+  const [votoDiLaurea, setVotoDiLaurea] = useState(0)
   const [dataCerchio, setDataCerchio] = useState({
     labels: ["Esami", "CFU"],
     data: [0, 0]
@@ -122,10 +122,10 @@ const Statistiche = () => {
         }
       ] : null
 
-      setEsame(dati);
       setVista(dati);
+      setEsame(dati);
       setAnalitiche(stats);
-      
+      setVotoDiLaurea(ponderata * 110 / 30)
     }));
 
   };
@@ -141,9 +141,10 @@ const Statistiche = () => {
   }
 
 
-
   useEffect(() => {
     let media = 0
+
+
     vista.map((item) => media += parseInt(item.voto))
     media = media / vista.length
 
@@ -171,7 +172,7 @@ const Statistiche = () => {
         valore: ponderata
       }, {
         nome: 'Voto di laurea',
-        valore:  analitiche ? analitiche[4].valore : 0
+        valore:  votoDiLaurea
       }
     ] : null
     setAnalitiche(stats)
@@ -184,13 +185,13 @@ const Statistiche = () => {
   const [width, setWidth] = useState(Dimensions.get('window').width)
 
   useEffect(() => {
-    loadData()
     getTema().then(value => setTema(value))
-
+    
     const updateLayout = () => {
       setWidth(Dimensions.get('window').width)
     }
     Dimensions.addEventListener('change', updateLayout)
+    loadData()
   }, [])
 
   useEffect(() => {
