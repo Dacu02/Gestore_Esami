@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Pressable, StyleSheet, Text } from 'react-native';
+import { ImageSourcePropType, Pressable, StyleSheet, Text } from 'react-native';
 import Lista from './Lista';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faAngleDown, faAngleRight } from '@fortawesome/free-solid-svg-icons';
@@ -9,7 +9,7 @@ interface EsameItem {
     nome: string,
     corso: string,
     tipologia: string,
-    image: any,
+    image: ImageSourcePropType,
     voto: string | null,
     CFU: number,
     data: Date,

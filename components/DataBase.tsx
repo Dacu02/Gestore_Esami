@@ -3,7 +3,7 @@ import SQLite from 'react-native-sqlite-storage';
 
 
 export const DataBaseContext = createContext({});
-export const DataBase = ({ children }: any) => {
+export const DataBase = (props: {children: React.ReactNode}) => {
 
     const [db, setDB] = useState({})
     useEffect(() => {
@@ -49,7 +49,7 @@ export const DataBase = ({ children }: any) => {
 
     return (
         <DataBaseContext.Provider value={db}>
-            {children}
+            {props.children}
         </DataBaseContext.Provider>
     );
 };

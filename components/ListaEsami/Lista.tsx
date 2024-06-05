@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, Modal, Pressable, TouchableOpacity, StyleSheet } from 'react-native';
+import { Text, View, Modal, Pressable, TouchableOpacity, StyleSheet, ImageSourcePropType } from 'react-native';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import { primary_color, rapportoOrizzontale, rapportoVerticale, secondary_color, tertiary_color } from '../../global';
 import Esame from './Esame';
@@ -10,7 +10,7 @@ interface EsameItem {
     nome: string,
     corso: string,
     tipologia: string,
-    image: any,
+    image: ImageSourcePropType,
     voto: string | null,
     CFU: number,
     data: Date,

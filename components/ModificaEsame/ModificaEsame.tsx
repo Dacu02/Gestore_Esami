@@ -18,6 +18,7 @@ import { rapportoOrizzontale, rapportoVerticale } from '../../global';
 import { Platform } from 'react-native'
 import Header from '../Header';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
+import { NavigationProp, RouteProp } from '@react-navigation/native';
 LocaleConfig.locales.it = {
     monthNames: ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'],
     monthNamesShort: ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic'],
@@ -27,8 +28,11 @@ LocaleConfig.locales.it = {
 
 LocaleConfig.defaultLocale = 'it'
 
-
-const ModificaEsame = ({ navigation, route }: any) => {
+type Props = {
+    navigation: NavigationProp<any>,
+    route: RouteProp<any, any>
+}
+const ModificaEsame = ({ navigation, route }: Props) => {
         
     const [openCalendar, setOpenCalendar] = useState(false)
     const [openClock, setOpenClock] = useState(false)
@@ -65,8 +69,8 @@ const ModificaEsame = ({ navigation, route }: any) => {
                 temp.push(res.rows.item(i).nome)
             setListaCategorie(temp)
         }))
-        if (route.params && route.params.esame) {
-            db.transaction((tx)=>tx.executeSql('select * from esame where nome = ?', [route.params.esame], (t, res) => {
+        if (route.params!==undefined && route.params.esame) {
+            db.transaction((tx)=>tx.executeSql('select * from esame where nome = ?', [route.params?.esame], (t, res) => {
                 let esame = res.rows.item(0)
                 setNome(esame.nome)
                 setCorso(esame.corso)

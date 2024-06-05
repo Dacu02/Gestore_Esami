@@ -12,9 +12,9 @@ import Promemoria from "./Promemoria"
 import { getFormatedDate } from "react-native-modern-datepicker"
 import { rapportoVerticale, scala } from "../../global"
 import notifee, { TimestampTrigger, TriggerType } from '@notifee/react-native';
+import { NavigationProp } from "@react-navigation/native"
 
-
-const Home = ({ navigation }: any) => {
+const Home = ({ navigation }: {navigation: NavigationProp<any>}) => {
 
     interface Notifica {
         nome: string,
@@ -26,6 +26,9 @@ const Home = ({ navigation }: any) => {
         ora: string,
         luogo: string,
     }
+
+
+    console.log(navigation)
 
 
     const [setting, setSetting] = useState(false)

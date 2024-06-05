@@ -1,9 +1,31 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ImageSourcePropType } from 'react-native';
 import { primary_color, secondary_color, tertiary_color, rapportoOrizzontale, rapportoVerticale } from '../../global';
 import { getFormatedDate } from 'react-native-modern-datepicker';
 
-const Esame = (props:any) => {
+
+type EsameProps = {
+    item: {
+        nome: string,
+        corso: string,
+        tipologia: string,
+        image: ImageSourcePropType,
+        voto: string | null,
+        CFU: number,
+        data: Date,
+        profEsame: string | null,
+        ora: string,
+        luogo: string,
+        diario: string | null,
+        lode: boolean,
+        categoria: string[]
+    },
+    tema: boolean,
+    diario: (text: string) => void,
+
+}
+
+const Esame = (props:EsameProps) => {
 
     style.details = {
         ...style.details,
