@@ -218,11 +218,11 @@ if(loading){
 
   return (
     <>
-      <Header scuro={tema} title='Statistiche' />
-      <ScrollView style={{ backgroundColor: primary_color(tema) }}>
+      <Header scuro={tema}  title='Statistiche' />
+      <ScrollView style={ {backgroundColor: primary_color(tema) }}>
         <Card style={[style.Card, { backgroundColor: primary_color(tema) }]}>
           <Card.Content style={style.Content}>
-            <Text variant="titleLarge" style={{ color: tertiary_color(tema) }}>Analisi</Text>
+            <Text variant="titleLarge" style={[style.Prova, { color: tertiary_color(tema) }]}>Analisi</Text>
             <MultiSelect
               selectedTextStyle={{ color: tertiary_color(tema) }}
               mode='auto'
@@ -347,8 +347,12 @@ const style = StyleSheet.create({
     marginTop: 10,
     backgroundColor: 'white'
   },
+  Prova:{
+    fontFamily:'Montserrat-SemiBoldItalic'
+  },
   cardLabel: {
-    marginLeft: 15
+    marginLeft: 15,
+    fontFamily:'Montserrat-Italic'
   },
   Cover: {
     padding: 10,
@@ -407,7 +411,7 @@ const style = StyleSheet.create({
   titolo: {
     textAlign: 'center',
     justifyContent: 'center',
-    fontSize: 22
+    fontSize: 22,
   },
   selectList: {
     borderRadius: 8,
